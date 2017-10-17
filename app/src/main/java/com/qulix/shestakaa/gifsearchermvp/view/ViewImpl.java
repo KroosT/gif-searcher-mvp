@@ -1,10 +1,8 @@
 package com.qulix.shestakaa.gifsearchermvp.view;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
