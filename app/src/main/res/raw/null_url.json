@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "images": {
+        "original": {
+          "url": null,
+          "width": "480",
+          "height": "270",
+          "size": "850917",
+          "frames": "45",
+          "mp4": "https:\/\/media0.giphy.com\/media\/3ohhwv2b8qqgdC3sRi\/giphy.mp4",
+          "mp4_size": "177263",
+          "webp": "https:\/\/media4.giphy.com\/media\/3ohhwv2b8qqgdC3sRi\/giphy.webp",
+          "webp_size": "251986",
+          "hash": "3f0116bdbddc0c32624f6e04636599e0"
+        }
+      }
+    }
+  ]
+}

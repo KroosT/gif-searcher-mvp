@@ -22,6 +22,9 @@ public class Original {
     }
 
     public String getUrl() {
+        if (mUrl == null) {
+            return "";
+        }
         return mUrl;
     }
 }
