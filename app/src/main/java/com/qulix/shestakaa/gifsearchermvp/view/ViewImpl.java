@@ -35,7 +35,7 @@ public class ViewImpl implements ViewInterface {
     private final AppCompatEditText mEditText;
     private final Activity mActivity;
 
-    private String mRequest;
+    private String mRequest = "";
 
     private ViewImpl(final Activity activity) {
 
@@ -74,7 +74,7 @@ public class ViewImpl implements ViewInterface {
         return new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                mPresenter.getTrending();
+                mPresenter.onTitleClicked();
                 mTitleTextView.setText(R.string.trending);
             }
         };
@@ -92,7 +92,7 @@ public class ViewImpl implements ViewInterface {
                 }
                 mJellyToolbar.collapse();
                 mTitleTextView.setText(mActivity.getString(R.string.gifs_for, mRequest));
-                mPresenter.getByRequest(mRequest);
+                mPresenter.onCancelIconClicked(mRequest);
             }
 
             @Override

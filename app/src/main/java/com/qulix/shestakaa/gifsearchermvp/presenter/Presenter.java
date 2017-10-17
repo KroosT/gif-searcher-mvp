@@ -24,7 +24,7 @@ public class Presenter {
         mModelInterface = modelInterface;
         mView = view;
         mCallback = createCallback();
-        getTrending();
+        onTitleClicked();
     }
 
     private Callback<Feed> createCallback() {
@@ -46,11 +46,11 @@ public class Presenter {
         };
     }
 
-    public void getTrending() {
+    public void onTitleClicked() {
         mModelInterface.getTrending(mCallback);
     }
 
-    public void getByRequest(final String request) {
+    public void onCancelIconClicked(final String request) {
         mModelInterface.getByRequest(mCallback, request);
     }
 }
