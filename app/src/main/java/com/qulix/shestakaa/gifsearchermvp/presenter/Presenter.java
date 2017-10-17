@@ -23,8 +23,12 @@ public class Presenter {
     public Presenter(final ModelInterface modelInterface, final ViewInterface view){
         mModelInterface = modelInterface;
         mView = view;
+        mCallback = createCallback();
+        getTrending();
+    }
 
-        mCallback = new Callback<Feed>() {
+    private Callback<Feed> createCallback() {
+        return new Callback<Feed>() {
             @Override
             public void onResponse(@Nonnull final Call<Feed> call,
                                    @Nonnull final Response<Feed> response) {
@@ -40,8 +44,6 @@ public class Presenter {
                 mView.showError();
             }
         };
-
-        getTrending();
     }
 
     public void getTrending() {
