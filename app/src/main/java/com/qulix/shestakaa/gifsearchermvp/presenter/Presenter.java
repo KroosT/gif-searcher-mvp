@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
 import com.qulix.shestakaa.gifsearchermvp.model.ModelInterface;
-import com.qulix.shestakaa.gifsearchermvp.view.MainView;
+import com.qulix.shestakaa.gifsearchermvp.view.ViewInterface;
 
 import java.util.List;
 
@@ -17,10 +17,10 @@ import retrofit2.Response;
 public class Presenter {
 
     private final ModelInterface mModelInterface;
-    private final MainView mView;
+    private final ViewInterface mView;
     private final Callback<Feed> mCallback;
 
-    public Presenter(final ModelInterface modelInterface, final MainView view){
+    public Presenter(final ModelInterface modelInterface, final ViewInterface view){
         mModelInterface = modelInterface;
         mView = view;
 

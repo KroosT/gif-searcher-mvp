@@ -6,7 +6,7 @@ import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 
 import java.util.List;
 
-public interface MainView {
+public interface ViewInterface {
 
     void updateData(@NonNull final List<Data> urls);
 
