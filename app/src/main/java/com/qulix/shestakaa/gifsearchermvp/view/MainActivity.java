@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
-import com.qulix.shestakaa.gifsearchermvp.model.Model;
+import com.qulix.shestakaa.gifsearchermvp.model.ModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.ViewUtils;
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        mPresenter = new Presenter(new Model(), this);
+        mPresenter = new Presenter(new ModelImpl(), this);
 
         mTitleTextView = findViewById(R.id.title);
         mTitleTextView.setText(R.string.trending);

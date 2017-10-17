@@ -11,12 +11,12 @@ import javax.annotation.Nonnull;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class Model implements ModelInterface {
+public class ModelImpl implements ModelInterface {
 
     private final ApiInterface mApiInterface;
     private static final String API_KEY = "fWieUtS84ZkjIWupFAQvqpUapoYj1k29";
 
-    public Model() {
+    public ModelImpl() {
         mApiInterface = ApiService.getClient().create(ApiInterface.class);
     }
 
