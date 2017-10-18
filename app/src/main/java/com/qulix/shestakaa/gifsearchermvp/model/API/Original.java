@@ -1,30 +1,22 @@
 package com.qulix.shestakaa.gifsearchermvp.model.API;
 
 import com.google.gson.annotations.SerializedName;
+import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 public class Original {
 
+    @Nonnull
     @SerializedName("url")
     private final String mUrl;
 
-    Original() {
+    public Original() {
         mUrl = "";
     }
 
-    Original(@Nullable final Original original) {
-        if (original == null) {
-            mUrl = "";
-        } else {
-            mUrl = original.getUrl();
-        }
-    }
-
     public String getUrl() {
-        if (mUrl == null) {
-            return "";
-        }
+        Validator.isArgNotNull(mUrl, "mUrl");
         return mUrl;
     }
 }

@@ -1,6 +1,7 @@
 package com.qulix.shestakaa.gifsearchermvp.model.API;
 
 import com.google.gson.annotations.SerializedName;
+import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import javax.annotation.Nullable;
 
@@ -9,15 +10,12 @@ public class Images {
     @SerializedName("original")
     private final Original mOriginal;
 
-    Images(@Nullable final Images images) {
-        if (images == null) {
-            mOriginal = new Original();
-        } else {
-            mOriginal = images.getOriginal();
-        }
+    public Images() {
+        mOriginal = new Original();
     }
 
     public Original getOriginal() {
-        return new Original(mOriginal);
+        Validator.isArgNotNull(mOriginal, "mOriginal");
+        return mOriginal;
     }
 }
