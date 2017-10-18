@@ -29,16 +29,17 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
 
     @Override
     public MyViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+        final View view = LayoutInflater.from(parent.getContext())
+                                        .inflate(R.layout.list_item, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         Glide.with(mContext)
-                .load(mData.get(position).getImages().getOriginal().getUrl())
-                .apply(RequestOptions.placeholderOf(R.mipmap.ic_downloading))
-                .into(holder.mImageView);
+             .load(mData.get(position).getImages().getOriginal().getUrl())
+             .apply(RequestOptions.placeholderOf(R.mipmap.ic_downloading))
+             .into(holder.mImageView);
     }
 
     @Override

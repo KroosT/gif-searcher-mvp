@@ -7,6 +7,7 @@ import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
 import com.qulix.shestakaa.gifsearchermvp.model.ModelInterface;
 import com.qulix.shestakaa.gifsearchermvp.view.ViewInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,7 +33,11 @@ public class Presenter {
             @Override
             public void onResponse(@Nonnull final Call<Feed> call,
                                    @Nonnull final Response<Feed> response) {
-                final List<Data> data = response.body().getData();
+                final Feed body = response.body();
+                List<Data> data = new ArrayList<>();
+                if (body != null) {
+                     data = body.getData();
+                }
                 if (data.isEmpty()) {
                     mView.showNoGifsError();
                 }

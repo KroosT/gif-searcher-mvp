@@ -1,8 +1,6 @@
 package com.qulix.shestakaa.gifsearchermvp.view;
 
-import android.app.Activity;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +13,6 @@ import android.widget.Toast;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
-import com.qulix.shestakaa.gifsearchermvp.model.ModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.ViewUtils;
@@ -25,59 +22,52 @@ import com.yalantis.jellytoolbar.widget.JellyToolbar;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 public class ViewImpl implements ViewInterface {
 
-    private final Presenter mPresenter;
-    private final RecyclerAdapter mAdapter;
+    private final View mView;
+    private final TextView mToolbarTextView;
     private final JellyToolbar mJellyToolbar;
     private final TextView mTitleTextView;
-    private final TextView mToolbarTextView;
     private final AppCompatEditText mEditText;
-    private final Activity mActivity;
-
+    private final Presenter mPresenter;
     private String mRequest = "";
+    private final RecyclerAdapter mAdapter;
 
-    private ViewImpl(final Activity activity) {
+    public ViewImpl(final View view, final Presenter presenter) {
 
-        mActivity = activity;
-        mPresenter = new Presenter(new ModelImpl(), this);
+        mView = view;
+        mPresenter = presenter;
 
-        mTitleTextView = activity.findViewById(R.id.title);
+        mToolbarTextView = view.findViewById(R.id.toolbar_title);
+        mToolbarTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                mPresenter.onTitleClicked();
+                mTitleTextView.setText(R.string.trending);
+            }
+        });
+
+        mTitleTextView = view.findViewById(R.id.title);
         mTitleTextView.setText(R.string.trending);
-        mToolbarTextView = activity.findViewById(R.id.toolbar_title);
 
-        mToolbarTextView.setOnClickListener(createOnClickListener());
-
-        mJellyToolbar = activity.findViewById(R.id.toolbar);
+        mJellyToolbar = view.findViewById(R.id.toolbar);
         mJellyToolbar.setJellyListener(createJellyListener());
 
-        mEditText = (AppCompatEditText) LayoutInflater.from(activity).inflate(R.layout.edit_text,
-                null);
+        mEditText = (AppCompatEditText) LayoutInflater.from(view.getContext())
+                                                      .inflate(R.layout.edit_text, null);
         mEditText.setBackgroundResource(R.color.colorTransparent);
         mEditText.setTextColor(Color.WHITE);
         mJellyToolbar.setContentView(mEditText);
 
-        final RecyclerView recyclerView = activity.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        final RecyclerView recyclerView = mView.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(mView.getContext()));
 
         final List<Data> dataList = new ArrayList<>();
-        mAdapter = new RecyclerAdapter(activity, dataList);
+        mAdapter = new RecyclerAdapter(mView.getContext(), dataList);
         recyclerView.setAdapter(mAdapter);
 
-    }
-
-    public static void createView(final Activity activity) {
-        new ViewImpl(activity);
-    }
-
-    private View.OnClickListener createOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                mPresenter.onTitleClicked();
-                mTitleTextView.setText(R.string.trending);
-            }
-        };
     }
 
     private JellyListener createJellyListener() {
@@ -91,7 +81,7 @@ public class ViewImpl implements ViewInterface {
                     request.clear();
                 }
                 mJellyToolbar.collapse();
-                mTitleTextView.setText(mActivity.getString(R.string.gifs_for, mRequest));
+                mTitleTextView.setText(mView.getContext().getString(R.string.gifs_for, mRequest));
                 mPresenter.onCancelIconClicked(mRequest);
             }
 
@@ -111,24 +101,23 @@ public class ViewImpl implements ViewInterface {
     }
 
     @Override
-    public void updateData(@NonNull final List<Data> data) {
+    public void updateData(@Nonnull final List<Data> data) {
         Validator.isArgNotNull(data, "data");
         mAdapter.updateData(data);
     }
 
     @Override
     public void showError() {
-        Toast.makeText(mActivity,
+        Toast.makeText(mView.getContext(),
                 "Something went wrong. Check your connection to Internet",
-                Toast.LENGTH_SHORT)
-             .show();
+                Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void showNoGifsError() {
-        Toast.makeText(mActivity,
-                "No gifs for such request found."
-                , Toast.LENGTH_SHORT)
-             .show();
+        Toast.makeText(mView.getContext(),
+                "No gifs for such request found.",
+                Toast.LENGTH_SHORT).show();
     }
 }
