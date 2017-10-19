@@ -17,9 +17,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        mPresenter = new Presenter(
-                            new ModelImpl(),
-                            new ViewImpl(findViewById(R.id.root), mPresenter));
+        final ViewImpl view = new ViewImpl(findViewById(R.id.root));
+        mPresenter = new Presenter(new ModelImpl(), view);
+        view.registerPresenter(mPresenter);
     }
 
+    @Override
+    protected void onStop() {
+        mPresenter.onStop();
+        super.onStop();
+    }
 }

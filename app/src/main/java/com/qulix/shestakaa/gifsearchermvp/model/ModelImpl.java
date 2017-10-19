@@ -4,6 +4,7 @@ import com.qulix.shestakaa.gifsearchermvp.model.API.ApiInterface;
 import com.qulix.shestakaa.gifsearchermvp.model.API.ApiService;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
+import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 
 
 import javax.annotation.Nonnull;
@@ -21,17 +22,29 @@ public class ModelImpl implements ModelInterface {
     }
 
     @Override
-    public void getTrending(@Nonnull final Callback<Feed> callback) {
+    public Cancelable getTrending(@Nonnull final Callback<Feed> callback) {
         Validator.isArgNotNull(callback, "callback");
         final Call<Feed> call = mApiInterface.getTrendingNow(API_KEY);
         call.enqueue(callback);
+        return createEventListener(call);
     }
 
     @Override
-    public void getByRequest(@Nonnull final Callback<Feed> callback, final String req) {
+    public Cancelable getByRequest(@Nonnull final Callback<Feed> callback,
+                                   final String req) {
         Validator.isArgNotNull(callback, "callback");
         final Call<Feed> call = mApiInterface.getSearch(req, API_KEY);
         call.enqueue(callback);
+        return createEventListener(call);
     }
 
+    private <T> Cancelable createEventListener(final Call<T> call) {
+        Validator.isArgNotNull(call, "call");
+        return new Cancelable() {
+            @Override
+            public void onCancel() {
+                call.cancel();
+            }
+        };
+    }
 }

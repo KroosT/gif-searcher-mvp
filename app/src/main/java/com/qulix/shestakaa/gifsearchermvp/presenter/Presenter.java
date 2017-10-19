@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
 import com.qulix.shestakaa.gifsearchermvp.model.ModelInterface;
+import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.view.ViewInterface;
 
 import java.util.ArrayList;
@@ -20,8 +21,10 @@ public class Presenter {
     private final ModelInterface mModelInterface;
     private final ViewInterface mView;
     private final Callback<Feed> mCallback;
+    private Cancelable mCancelable;
 
-    public Presenter(final ModelInterface modelInterface, final ViewInterface view){
+    public Presenter(final ModelInterface modelInterface,
+                     final ViewInterface view){
         mModelInterface = modelInterface;
         mView = view;
         mCallback = createCallback();
@@ -33,6 +36,7 @@ public class Presenter {
             @Override
             public void onResponse(@Nonnull final Call<Feed> call,
                                    @Nonnull final Response<Feed> response) {
+
                 final Feed body = response.body();
                 List<Data> data = new ArrayList<>();
                 if (body != null) {
@@ -46,16 +50,30 @@ public class Presenter {
 
             @Override
             public void onFailure(@Nonnull final Call<Feed> call, @Nonnull final Throwable t) {
-                mView.showError();
+                if (!call.isCanceled()) {
+                    mView.showError();
+                }
             }
         };
     }
 
     public void onTitleClicked() {
-        mModelInterface.getTrending(mCallback);
+        if (mCancelable != null) {
+            mCancelable.onCancel();
+        }
+        mCancelable = mModelInterface.getTrending(mCallback);
     }
 
-    public void onCancelIconClicked(final String request) {
-        mModelInterface.getByRequest(mCallback, request);
+    public void onCloseIconClicked(final String request) {
+        if (mCancelable != null) {
+            mCancelable.onCancel();
+        }
+        mCancelable = mModelInterface.getByRequest(mCallback, request);
+    }
+
+    public void onStop() {
+        if (mCancelable != null) {
+            mCancelable.onCancel();
+        }
     }
 }

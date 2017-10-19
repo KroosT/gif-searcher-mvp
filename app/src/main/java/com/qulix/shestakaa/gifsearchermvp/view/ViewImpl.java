@@ -31,14 +31,16 @@ public class ViewImpl implements ViewInterface {
     private final JellyToolbar mJellyToolbar;
     private final TextView mTitleTextView;
     private final AppCompatEditText mEditText;
-    private final Presenter mPresenter;
+    private Presenter mPresenter;
     private String mRequest = "";
     private final RecyclerAdapter mAdapter;
 
-    public ViewImpl(final View view, final Presenter presenter) {
+    public ViewImpl(final View view) {
 
         mView = view;
-        mPresenter = presenter;
+
+        mTitleTextView = view.findViewById(R.id.title);
+        mTitleTextView.setText(R.string.trending);
 
         mToolbarTextView = view.findViewById(R.id.toolbar_title);
         mToolbarTextView.setOnClickListener(new View.OnClickListener() {
@@ -48,9 +50,6 @@ public class ViewImpl implements ViewInterface {
                 mTitleTextView.setText(R.string.trending);
             }
         });
-
-        mTitleTextView = view.findViewById(R.id.title);
-        mTitleTextView.setText(R.string.trending);
 
         mJellyToolbar = view.findViewById(R.id.toolbar);
         mJellyToolbar.setJellyListener(createJellyListener());
@@ -70,6 +69,10 @@ public class ViewImpl implements ViewInterface {
 
     }
 
+    public void registerPresenter(final Presenter presenter) {
+        mPresenter = presenter;
+    }
+
     private JellyListener createJellyListener() {
         return new JellyListener() {
             @Override
@@ -79,10 +82,10 @@ public class ViewImpl implements ViewInterface {
                 if (!TextUtils.isEmpty(request)) {
                     mRequest = request.toString();
                     request.clear();
+                    mTitleTextView.setText(mView.getContext().getString(R.string.gifs_for, mRequest));
+                    mPresenter.onCloseIconClicked(mRequest);
                 }
                 mJellyToolbar.collapse();
-                mTitleTextView.setText(mView.getContext().getString(R.string.gifs_for, mRequest));
-                mPresenter.onCancelIconClicked(mRequest);
             }
 
             @Override
