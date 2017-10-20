@@ -2,4 +2,6 @@
     <string name="app_name">GifSearcher</string>
     <string name="gifs_for">Gifs for: %1$s</string>
     <string name="trending">Trending now</string>
+    <string name="connectionError">"Something went wrong. Check your connection to Internet"</string>
+    <string name="noGifsError">"No gifs for such request found."</string>
 </resources>

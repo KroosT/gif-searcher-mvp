@@ -112,7 +112,7 @@ public class ViewImpl implements ViewInterface {
     @Override
     public void showError() {
         Toast.makeText(mView.getContext(),
-                "Something went wrong. Check your connection to Internet",
+                R.string.connectionError,
                 Toast.LENGTH_SHORT).show();
 
     }
@@ -120,7 +120,7 @@ public class ViewImpl implements ViewInterface {
     @Override
     public void showNoGifsError() {
         Toast.makeText(mView.getContext(),
-                "No gifs for such request found.",
+                R.string.noGifsError,
                 Toast.LENGTH_SHORT).show();
     }
 }
