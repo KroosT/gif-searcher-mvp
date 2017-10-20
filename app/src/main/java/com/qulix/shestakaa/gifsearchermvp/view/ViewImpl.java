@@ -1,6 +1,8 @@
 package com.qulix.shestakaa.gifsearchermvp.view;
 
 import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +18,7 @@ import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.ViewUtils;
+import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.GifDetailsFragment;
 import com.yalantis.jellytoolbar.listener.JellyListener;
 import com.yalantis.jellytoolbar.widget.JellyToolbar;
 
@@ -34,10 +37,12 @@ public class ViewImpl implements ViewInterface {
     private Presenter mPresenter;
     private String mRequest = "";
     private final RecyclerAdapter mAdapter;
+    private final FragmentManager mFragmentManager;
 
-    public ViewImpl(final View view) {
+    public ViewImpl(final View view, final FragmentManager fragmentManager) {
 
         mView = view;
+        mFragmentManager = fragmentManager;
 
         mTitleTextView = view.findViewById(R.id.title);
         mTitleTextView.setText(R.string.trending);
@@ -71,6 +76,7 @@ public class ViewImpl implements ViewInterface {
 
     public void registerPresenter(final Presenter presenter) {
         mPresenter = presenter;
+        mAdapter.setPresenter(presenter);
     }
 
     private JellyListener createJellyListener() {
@@ -122,5 +128,17 @@ public class ViewImpl implements ViewInterface {
         Toast.makeText(mView.getContext(),
                 R.string.noGifsError,
                 Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showSelectedGif(final String url) {
+        final GifDetailsFragment gifDetailsFragment = new GifDetailsFragment();
+        final Bundle bundle = new Bundle();
+        bundle.putString("gifUrl", url);
+        gifDetailsFragment.setArguments(bundle);
+        mFragmentManager.beginTransaction()
+                        .replace(R.id.fragment, gifDetailsFragment)
+                        .addToBackStack("gifDetails")
+                        .commit();
     }
 }

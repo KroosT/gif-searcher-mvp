@@ -24,7 +24,8 @@ public class MainFragment extends Fragment {
                              final Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        final ViewImpl viewImpl = new ViewImpl(view.findViewById(R.id.root));
+        final ViewImpl viewImpl = new ViewImpl(view.findViewById(R.id.root),
+                                                getActivity().getSupportFragmentManager());
         mPresenter = new Presenter(new ModelImpl(), viewImpl);
         viewImpl.registerPresenter(mPresenter);
 

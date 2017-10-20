@@ -8,10 +8,12 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 
+@ParametersAreNonnullByDefault
 public class ModelImpl implements ModelInterface {
 
     private final ApiInterface mApiInterface;
@@ -22,7 +24,7 @@ public class ModelImpl implements ModelInterface {
     }
 
     @Override
-    public Cancelable getTrending(@Nonnull final Callback<Feed> callback) {
+    public Cancelable getTrending(final Callback<Feed> callback) {
         Validator.isArgNotNull(callback, "callback");
         final Call<Feed> call = mApiInterface.getTrendingNow(API_KEY);
         call.enqueue(callback);
@@ -30,7 +32,7 @@ public class ModelImpl implements ModelInterface {
     }
 
     @Override
-    public Cancelable getByRequest(@Nonnull final Callback<Feed> callback,
+    public Cancelable getByRequest(final Callback<Feed> callback,
                                    final String req) {
         Validator.isArgNotNull(callback, "callback");
         final Call<Feed> call = mApiInterface.getSearch(req, API_KEY);

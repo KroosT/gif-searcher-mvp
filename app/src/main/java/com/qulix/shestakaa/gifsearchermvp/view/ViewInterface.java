@@ -1,6 +1,7 @@
 package com.qulix.shestakaa.gifsearchermvp.view;
 
 import android.support.annotation.NonNull;
+import android.view.View;
 
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 
@@ -13,4 +14,6 @@ public interface ViewInterface {
     void showError();
 
     void showNoGifsError();
+
+    void showSelectedGif(final String url);
 }

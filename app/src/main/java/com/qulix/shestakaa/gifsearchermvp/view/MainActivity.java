@@ -1,6 +1,8 @@
 package com.qulix.shestakaa.gifsearchermvp.view;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
@@ -12,12 +14,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        final MainFragment mainFragment = (MainFragment) getSupportFragmentManager()
-                                                            .findFragmentById(R.id.mainFragment);
-        if (mainFragment == null) {
+        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
+        if (fragment == null) {
             getSupportFragmentManager().beginTransaction()
-                                       .add(R.id.mainFragment, new MainFragment())
+                                       .add(R.id.fragment, new MainFragment())
                                        .commit();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        final FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() != 0) {
+            fm.popBackStack();
+        } else {
+            super.onBackPressed();
         }
     }
 }

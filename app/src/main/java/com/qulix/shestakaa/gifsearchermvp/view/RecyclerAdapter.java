@@ -15,16 +15,23 @@ import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+
+import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
     private List<Data> mData;
     private final Context mContext;
+    private Presenter mPresenter;
 
     RecyclerAdapter(final Context context, final List<Data> data) {
         mData = data;
         mContext = context;
+    }
+
+    public void setPresenter(final Presenter presenter) {
+        mPresenter = presenter;
     }
 
     @Override
@@ -36,10 +43,19 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        final String gifUrl = mData.get(position).getImages().getOriginal().getUrl();
         Glide.with(mContext)
-             .load(mData.get(position).getImages().getOriginal().getUrl())
+             .load(gifUrl)
              .apply(RequestOptions.placeholderOf(R.mipmap.ic_downloading))
              .into(holder.mImageView);
+
+        holder.mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                mPresenter.onGifClick(gifUrl);
+            }
+        });
+
     }
 
     @Override
