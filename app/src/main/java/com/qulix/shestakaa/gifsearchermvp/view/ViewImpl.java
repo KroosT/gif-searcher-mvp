@@ -78,10 +78,10 @@ public class ViewImpl implements ViewInterface {
             @Override
             public void onCancelIconClicked() {
                 ViewUtils.hideSoftKeyboard(mEditText);
-                final Editable request = mEditText.getText();
-                if (!TextUtils.isEmpty(request)) {
-                    mRequest = request.toString();
-                    request.clear();
+                final Editable searchField = mEditText.getText();
+                if (!TextUtils.isEmpty(searchField)) {
+                    mRequest = searchField.toString();
+                    searchField.clear();
                     mTitleTextView.setText(mView.getContext().getString(R.string.gifs_for, mRequest));
                     mPresenter.onCloseIconClicked(mRequest);
                 }

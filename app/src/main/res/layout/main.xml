@@ -1,52 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.yalantis.jellytoolbar.widget.JellyToolbar
-        android:id="@+id/toolbar"
+    <FrameLayout
+        android:id="@+id/mainFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        app:cancelIcon="@mipmap/ic_close"
-        app:endColor="@color/colorEnd"
-        app:icon="@mipmap/ic_search"
-        app:startColor="@color/colorStart"
-        app:titleTextColor="@android:color/white">
-
-        <TextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="monospace"
-            android:text="@string/app_name"
-            android:textColor="@android:color/white"
-            android:textSize="25sp"/>
-
-    </com.yalantis.jellytoolbar.widget.JellyToolbar>
-
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorTransparent"
-        android:fontFamily="monospace"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
-        android:textSize="25sp"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/black"/>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
