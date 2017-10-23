@@ -4,5 +4,5 @@ public interface DetailsViewInterface {
 
     void showGif(final String url);
     void showSuccess();
-
+    void showError();
 }

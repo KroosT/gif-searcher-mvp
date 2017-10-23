@@ -2,7 +2,6 @@ package com.qulix.shestakaa.gifsearchermvp.view;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,15 +9,18 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
+import com.qulix.shestakaa.gifsearchermvp.utils.Router;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.ViewUtils;
 import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.GifDetailsFragment;
+import com.qulix.shestakaa.gifsearchermvp.view.offline.OfflineFragment;
 import com.yalantis.jellytoolbar.listener.JellyListener;
 import com.yalantis.jellytoolbar.widget.JellyToolbar;
 
@@ -33,16 +35,15 @@ public class ViewImpl implements ViewInterface {
     private final TextView mToolbarTextView;
     private final JellyToolbar mJellyToolbar;
     private final TextView mTitleTextView;
+    private final ImageButton mOffline;
     private final AppCompatEditText mEditText;
     private Presenter mPresenter;
     private String mRequest = "";
     private final RecyclerAdapter mAdapter;
-    private final FragmentManager mFragmentManager;
 
-    public ViewImpl(final View view, final FragmentManager fragmentManager) {
+    public ViewImpl(final View view) {
 
         mView = view;
-        mFragmentManager = fragmentManager;
 
         mTitleTextView = view.findViewById(R.id.title);
         mTitleTextView.setText(R.string.trending);
@@ -53,6 +54,14 @@ public class ViewImpl implements ViewInterface {
             public void onClick(final View v) {
                 mPresenter.onTitleClicked();
                 mTitleTextView.setText(R.string.trending);
+            }
+        });
+
+        mOffline = view.findViewById(R.id.offlineModeButton);
+        mOffline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                mPresenter.onSwitchToOffline();
             }
         });
 
@@ -99,12 +108,14 @@ public class ViewImpl implements ViewInterface {
                 super.onToolbarExpandingStarted();
                 ViewUtils.showSoftKeyboard(mEditText);
                 mToolbarTextView.setVisibility(View.INVISIBLE);
+                mOffline.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onToolbarCollapsingStarted() {
                 super.onToolbarCollapsingStarted();
                 mToolbarTextView.setVisibility(View.VISIBLE);
+                mOffline.setVisibility(View.VISIBLE);
             }
         };
     }
@@ -136,9 +147,11 @@ public class ViewImpl implements ViewInterface {
         final Bundle bundle = new Bundle();
         bundle.putString("gifUrl", url);
         gifDetailsFragment.setArguments(bundle);
-        mFragmentManager.beginTransaction()
-                        .replace(R.id.fragment, gifDetailsFragment)
-                        .addToBackStack("gifDetails")
-                        .commit();
+        Router.getRouter().startFragment(gifDetailsFragment);
+    }
+
+    @Override
+    public void showOfflineGifs() {
+        Router.getRouter().startFragment(new OfflineFragment());
     }
 }

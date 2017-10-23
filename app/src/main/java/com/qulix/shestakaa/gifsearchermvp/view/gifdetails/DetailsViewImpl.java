@@ -16,6 +16,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class DetailsViewImpl implements DetailsViewInterface {
 
+    private static final String SUCCESS_MESSAGE = "Success";
+    private static final String ERROR_MESSAGE = "Something went wrong. Cannot save gif.";
     private final View mView;
     private final String mUrl;
     private DetailsPresenter mDetailsPresenter;
@@ -39,22 +41,28 @@ public class DetailsViewImpl implements DetailsViewInterface {
 
     @Override
     public void showSuccess() {
-        Toast.makeText(mView.getContext(), R.string.success, Toast.LENGTH_SHORT).show();
+        Toast.makeText(mView.getContext(), SUCCESS_MESSAGE, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showError() {
+        Toast.makeText(mView.getContext(), ERROR_MESSAGE,
+                Toast.LENGTH_SHORT).show();
     }
 
     public void registerPresenter(final DetailsPresenter detailsPresenter) {
         Validator.isArgNotNull(detailsPresenter, "detailsPresenter");
         mDetailsPresenter = detailsPresenter;
-        mDetailsPresenter.onShowGif(mUrl);
         afterPresenterRegistered();
     }
 
     private void afterPresenterRegistered() {
+        mDetailsPresenter.onShowGif(mUrl);
         final Button buttonSave = mView.findViewById(R.id.buttonSave);
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                mDetailsPresenter.onSaveGif(mUrl);
+                mDetailsPresenter.onSaveGif(mView.getContext(), mUrl);
             }
         });
     }

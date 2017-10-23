@@ -16,4 +16,6 @@ public interface ViewInterface {
     void showNoGifsError();
 
     void showSelectedGif(final String url);
+
+    void showOfflineGifs();
 }

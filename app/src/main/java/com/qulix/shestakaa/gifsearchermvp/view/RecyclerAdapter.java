@@ -21,7 +21,7 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
-    private List<Data> mData;
+    private final List<Data> mData;
     private final Context mContext;
     private Presenter mPresenter;
 
@@ -52,7 +52,9 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
         holder.mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                mPresenter.onGifClick(gifUrl);
+                if (mPresenter != null) {
+                    mPresenter.onGifClick(gifUrl);
+                }
             }
         });
 
@@ -65,7 +67,8 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
 
     public void updateData(@Nonnull final List<Data> data) {
         Validator.isArgNotNull(data, "data");
-        mData = data;
+        mData.clear();
+        mData.addAll(data);
         notifyDataSetChanged();
     }
 

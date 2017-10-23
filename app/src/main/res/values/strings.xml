@@ -5,5 +5,4 @@
     <string name="connectionError">"Something went wrong. Check your connection to Internet"</string>
     <string name="noGifsError">"No gifs for such request found."</string>
     <string name="save">Save</string>
-    <string name="success">Success</string>
 </resources>

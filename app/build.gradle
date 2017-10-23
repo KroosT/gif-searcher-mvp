@@ -41,6 +41,7 @@ dependencies {
     testCompile 'org.json:json:20140107'
     testCompile 'org.assertj:assertj-core:1.7.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
 }
 
 allprojects {

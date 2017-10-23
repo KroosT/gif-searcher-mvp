@@ -13,6 +13,8 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 public class GifDetailsFragment extends Fragment {
 
+    private DetailsPresenter mPresenter;
+
     public GifDetailsFragment() {
 
     }
@@ -27,11 +29,16 @@ public class GifDetailsFragment extends Fragment {
         final DetailsViewImpl viewImpl = new DetailsViewImpl(view.findViewById(
                                                                             R.id.rootDetails),
                                                                             arg);
-        final DetailsPresenter detailsPresenter = new DetailsPresenter(new DetailsModelImpl(),
+        mPresenter = new DetailsPresenter(new DetailsModelImpl(),
                                                                        viewImpl);
-        viewImpl.registerPresenter(detailsPresenter);
+        viewImpl.registerPresenter(mPresenter);
 
         return view;
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        mPresenter.onCancelSaving();
+    }
 }

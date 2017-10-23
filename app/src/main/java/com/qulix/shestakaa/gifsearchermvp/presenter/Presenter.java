@@ -82,4 +82,8 @@ public class Presenter {
         }
     }
 
+    public void onSwitchToOffline() {
+        mView.showOfflineGifs();
+    }
+
 }

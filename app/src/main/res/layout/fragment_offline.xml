@@ -1,34 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root"
+    android:id="@+id/rootOffline"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <com.yalantis.jellytoolbar.widget.JellyToolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/offline_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        app:cancelIcon="@mipmap/ic_close"
-        app:endColor="@color/colorEnd"
-        app:icon="@mipmap/ic_search"
-        app:startColor="@color/colorStart"
-        app:titleTextColor="@android:color/white">
-
-        <ImageButton
-            android:id="@+id/offlineModeButton"
-            android:src="@mipmap/ic_offline"
-            android:layout_marginStart="10dp"
-            android:background="@color/colorTransparent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"/>
+        android:background="@color/colorPrimary">
 
         <TextView
-            android:id="@+id/toolbar_title"
+            android:id="@+id/offline_toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -39,9 +23,8 @@
 
     </com.yalantis.jellytoolbar.widget.JellyToolbar>
 
-
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/offline_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorTransparent"
@@ -53,7 +36,7 @@
         android:textSize="25sp"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/offline_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"/>
