@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
+import com.qulix.shestakaa.gifsearchermvp.utils.AnswerProvider;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.ViewUtils;
 import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.GifDetailsFragment;
@@ -80,14 +81,23 @@ public class ViewImpl implements ViewInterface {
         recyclerView.setLayoutManager(new LinearLayoutManager(mView.getContext()));
 
         final List<Data> dataList = new ArrayList<>();
-        mAdapter = new RecyclerAdapter(mView.getContext(), dataList);
+        final AnswerProvider answerProvider = new AnswerProvider() {
+            @Override
+            public void onStringProvided(final String arg) {
+                Validator.isArgNotNull(arg, "arg");
+                Validator.isArgNotNull(mPresenter, "mPresenter");
+
+                mPresenter.onGifClick(arg);
+            }
+        };
+
+        mAdapter = new RecyclerAdapter(mView.getContext(), dataList, answerProvider);
         recyclerView.setAdapter(mAdapter);
 
     }
 
     public void registerPresenter(final Presenter presenter) {
         mPresenter = presenter;
-        mAdapter.setPresenter(presenter);
     }
 
     private JellyListener createJellyListener() {

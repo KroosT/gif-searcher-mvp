@@ -3,6 +3,7 @@ package com.qulix.shestakaa.gifsearchermvp.view.offline;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.presenter.offline.OfflinePresenter;
@@ -21,6 +22,10 @@ public class OfflineViewImpl implements OfflineViewInterface{
         Validator.isArgNotNull(view, "view");
         mView = view;
         mOfflineAdapter = new OfflineAdapter(mView.getContext(), new ArrayList<byte[]>());
+
+        final TextView offlineTitle = view.findViewById(R.id.offline_title);
+        offlineTitle.setText(R.string.saved_gifs);
+
         final RecyclerView recyclerView = mView.findViewById(R.id.offline_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(mView.getContext()));
         recyclerView.setAdapter(mOfflineAdapter);

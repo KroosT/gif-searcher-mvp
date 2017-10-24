@@ -16,22 +16,21 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
+import com.qulix.shestakaa.gifsearchermvp.utils.AnswerProvider;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
     private final List<Data> mData;
     private final Context mContext;
-    private Presenter mPresenter;
+    private final AnswerProvider mAnswerProvider;
 
-    RecyclerAdapter(final Context context, final List<Data> data) {
+    RecyclerAdapter(final Context context,
+                    final List<Data> data,
+                    final AnswerProvider answerProvider) {
         mData = data;
         mContext = context;
-    }
-
-    public void setPresenter(final Presenter presenter) {
-        mPresenter = presenter;
+        mAnswerProvider = answerProvider;
     }
 
     @Override
@@ -52,8 +51,8 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
         holder.mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if (mPresenter != null) {
-                    mPresenter.onGifClick(gifUrl);
+                if (mAnswerProvider != null) {
+                    mAnswerProvider.onStringProvided(gifUrl);
                 }
             }
         });

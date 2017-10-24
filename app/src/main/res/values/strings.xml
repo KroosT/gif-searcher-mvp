@@ -3,4 +3,5 @@
     <string name="gifs_for">Gifs for: %1$s</string>
     <string name="trending">Trending now</string>
     <string name="save">Save</string>
+    <string name="saved_gifs">Saved gifs</string>
 </resources>
