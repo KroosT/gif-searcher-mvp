@@ -17,6 +17,7 @@ import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.utils.AnswerProvider;
 import com.qulix.shestakaa.gifsearchermvp.utils.CancelableTextWatcher;
+import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.ViewUtils;
 import com.yalantis.jellytoolbar.listener.JellyListener;
@@ -176,7 +177,7 @@ public class ViewImpl implements View {
     }
 
     private void execute(final String request) {
-        if (request.length() != 0) {
+        if (StringUtils.isNotNullOrBlank(request)) {
             mPresenter.onTextInputChanged(request);
         } else {
             mPresenter.onMainScreenSet();
@@ -190,8 +191,8 @@ public class ViewImpl implements View {
         final String searchText = context.getString(R.string.gifs_for, request);
         final String trendingText = context.getString(R.string.trending);
 
-        final String title = request.length() != 0 ? searchText
-                                                   : trendingText;
+        final String title = StringUtils.isNotNullOrBlank(request) ? searchText
+                                                                   : trendingText;
 
         mTitleTextView.setText(title);
     }
