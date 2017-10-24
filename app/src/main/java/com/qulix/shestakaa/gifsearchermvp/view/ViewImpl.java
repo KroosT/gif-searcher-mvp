@@ -30,6 +30,9 @@ import javax.annotation.Nonnull;
 
 public class ViewImpl implements ViewInterface {
 
+    private static final String CONNECTION_ERROR = "Something went wrong. Check your Internet connection";
+    private static final String NO_GIFS_ERROR = "No gifs for such request found.";
+
     private final View mView;
     private final TextView mToolbarTextView;
     private final JellyToolbar mJellyToolbar;
@@ -128,7 +131,7 @@ public class ViewImpl implements ViewInterface {
     @Override
     public void showError() {
         Toast.makeText(mView.getContext(),
-                R.string.connectionError,
+                CONNECTION_ERROR,
                 Toast.LENGTH_SHORT).show();
 
     }
@@ -136,7 +139,7 @@ public class ViewImpl implements ViewInterface {
     @Override
     public void showNoGifsError() {
         Toast.makeText(mView.getContext(),
-                R.string.noGifsError,
+                NO_GIFS_ERROR,
                 Toast.LENGTH_SHORT).show();
     }
 }
