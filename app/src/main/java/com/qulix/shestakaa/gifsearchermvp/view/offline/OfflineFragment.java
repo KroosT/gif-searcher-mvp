@@ -39,4 +39,7 @@ public class OfflineFragment extends Fragment {
         mPresenter.onCancelLoading();
     }
 
+    public static OfflineFragment newInstance() {
+        return new OfflineFragment();
+    }
 }

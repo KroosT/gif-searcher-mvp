@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
-import com.qulix.shestakaa.gifsearchermvp.utils.Router;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,7 +14,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        Router.getRouter().setFragmentManager(getSupportFragmentManager());
         final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
         if (fragment == null) {
             getSupportFragmentManager().beginTransaction()

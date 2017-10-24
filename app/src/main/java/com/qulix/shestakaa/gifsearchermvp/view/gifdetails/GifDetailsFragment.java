@@ -13,6 +13,7 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 public class GifDetailsFragment extends Fragment {
 
+    public static final String GIF_URL = "gifUrl";
     private DetailsPresenter mPresenter;
 
     public GifDetailsFragment() {
@@ -23,7 +24,7 @@ public class GifDetailsFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
 
-        final String arg = getArguments().getString("gifUrl");
+        final String arg = getArguments().getString(GIF_URL);
         Validator.isArgNotNull(arg, "arg");
         final View view = inflater.inflate(R.layout.fragment_gif_details, container, false);
         final DetailsViewImpl viewImpl = new DetailsViewImpl(view.findViewById(
@@ -40,5 +41,13 @@ public class GifDetailsFragment extends Fragment {
     public void onStop() {
         super.onStop();
         mPresenter.onCancelSaving();
+    }
+
+    public static GifDetailsFragment newInstance(final String url) {
+        final GifDetailsFragment gifDetailsFragment = new GifDetailsFragment();
+        final Bundle bundle = new Bundle();
+        bundle.putString(GIF_URL, url);
+        gifDetailsFragment.setArguments(bundle);
+        return gifDetailsFragment;
     }
 }

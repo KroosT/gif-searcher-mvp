@@ -1,17 +1,17 @@
 package com.qulix.shestakaa.gifsearchermvp.presenter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
 import com.qulix.shestakaa.gifsearchermvp.model.ModelInterface;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
+import com.qulix.shestakaa.gifsearchermvp.view.Router;
 import com.qulix.shestakaa.gifsearchermvp.view.ViewInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,15 +23,21 @@ public class Presenter {
     private final ModelInterface mModel;
     private final ViewInterface mView;
     private final Callback<Feed> mCallback;
+    private final Router mRouter;
     private Cancelable mCancelable;
 
     public Presenter(final ModelInterface modelInterface,
-                     final ViewInterface view){
+                     final ViewInterface view,
+                     final Router router){
         Validator.isArgNotNull(modelInterface, "modelInterface");
         Validator.isArgNotNull(view, "view");
+        Validator.isArgNotNull(router, "router");
+
         mModel = modelInterface;
         mView = view;
+        mRouter = router;
         mCallback = createCallback();
+
         onTitleClicked();
     }
 
@@ -73,7 +79,7 @@ public class Presenter {
 
     public void onGifClick(final String url) {
         Validator.isArgNotNull(url, "url");
-        mView.showSelectedGif(url);
+        mRouter.goToDetailsScreen(url);
     }
 
     public void onStop() {
@@ -83,7 +89,7 @@ public class Presenter {
     }
 
     public void onSwitchToOffline() {
-        mView.showOfflineGifs();
+        mRouter.goToOfflineScreen();
     }
 
 }

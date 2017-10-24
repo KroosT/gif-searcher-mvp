@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
-import com.qulix.shestakaa.gifsearchermvp.utils.Router;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.ViewUtils;
 import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.GifDetailsFragment;
@@ -139,19 +138,5 @@ public class ViewImpl implements ViewInterface {
         Toast.makeText(mView.getContext(),
                 R.string.noGifsError,
                 Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showSelectedGif(final String url) {
-        final GifDetailsFragment gifDetailsFragment = new GifDetailsFragment();
-        final Bundle bundle = new Bundle();
-        bundle.putString("gifUrl", url);
-        gifDetailsFragment.setArguments(bundle);
-        Router.getRouter().startFragment(gifDetailsFragment);
-    }
-
-    @Override
-    public void showOfflineGifs() {
-        Router.getRouter().startFragment(new OfflineFragment());
     }
 }
