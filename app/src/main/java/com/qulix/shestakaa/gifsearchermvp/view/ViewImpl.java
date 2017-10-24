@@ -187,14 +187,16 @@ public class ViewImpl implements View {
     private void updateUI(final String request) {
 
         final Context context = mView.getContext();
-
         final String searchText = context.getString(R.string.gifs_for, request);
         final String trendingText = context.getString(R.string.trending);
 
         final String title = StringUtils.isNotNullOrBlank(request) ? searchText
                                                                    : trendingText;
+        final int iconResId = StringUtils.isNotNullOrBlank(request) ? R.mipmap.ic_done
+                                                                   : R.mipmap.ic_close;
 
         mTitleTextView.setText(title);
+        mJellyToolbar.setCancelIconRes(iconResId);
     }
 
     public void onStopWatcher() {
