@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.qulix.shestakaa.gifsearchermvp.utils.Loadable;
+import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import org.apache.commons.io.IOUtils;
 
@@ -12,15 +13,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 class GifLoader extends AsyncTask<Void, Void, List<byte[]>> {
 
     private static final String SAVED_GIFS_FOLDER = "/SavedGifs/";
     private final Context mContext;
-    private final Loadable mLoadable;
+    private final Loadable mRequest;
 
     public GifLoader(final Context context, final Loadable loadable) {
+        Validator.isArgNotNull(context, "context");
+        Validator.isArgNotNull(loadable, "loadable");
+
         mContext = context;
-        mLoadable = loadable;
+        mRequest = loadable;
     }
 
     @Override
@@ -48,6 +55,6 @@ class GifLoader extends AsyncTask<Void, Void, List<byte[]>> {
 
     @Override
     protected void onPostExecute(final List<byte[]> result) {
-        mLoadable.onLoad(result);
+        mRequest.onLoad(result);
     }
 }

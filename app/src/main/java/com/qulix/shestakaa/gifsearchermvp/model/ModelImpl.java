@@ -7,14 +7,13 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 
 @ParametersAreNonnullByDefault
-public class ModelImpl implements ModelInterface {
+public class ModelImpl implements Model {
 
     private final ApiInterface mApiInterface;
     private static final String API_KEY = "fWieUtS84ZkjIWupFAQvqpUapoYj1k29";

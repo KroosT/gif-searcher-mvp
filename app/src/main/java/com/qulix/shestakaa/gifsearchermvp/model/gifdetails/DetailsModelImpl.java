@@ -9,11 +9,12 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class DetailsModelImpl implements DetailsModelInterface {
+public class DetailsModelImpl implements DetailsModel {
 
     private final Context mContext;
 
     public DetailsModelImpl(final Context context) {
+        Validator.isArgNotNull(context, "context");
         mContext = context;
     }
 
@@ -21,6 +22,7 @@ public class DetailsModelImpl implements DetailsModelInterface {
     public Cancelable saveGifByUrl(final String url,
                                    final Downloadable downloadable) {
         Validator.isArgNotNull(url, "url");
+        Validator.isArgNotNull(downloadable, "downloadable");
 
         final GifDownloader gifDownloader = new GifDownloader(mContext, downloadable);
         gifDownloader.execute(url);

@@ -1,27 +1,32 @@
 package com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails;
 
-import com.qulix.shestakaa.gifsearchermvp.model.gifdetails.DetailsModelInterface;
+import com.qulix.shestakaa.gifsearchermvp.model.gifdetails.DetailsModel;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Downloadable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
-import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.DetailsViewInterface;
+import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.DetailsView;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class DetailsPresenter {
 
-    private final DetailsModelInterface mModel;
-    private final DetailsViewInterface mView;
-    private Cancelable mCancelable;
+    private final DetailsModel mModel;
+    private DetailsView mView;
+    private Cancelable mRequest;
 
-    public DetailsPresenter(final DetailsModelInterface model,
-                            final DetailsViewInterface view) {
+    public DetailsPresenter(final DetailsModel model) {
         Validator.isArgNotNull(model, "model");
-        Validator.isArgNotNull(view, "view");
-
-        mView = view;
         mModel = model;
+    }
+
+    public void onViewBind(final DetailsView view) {
+        Validator.isArgNotNull(view, "view");
+        mView = view;
+    }
+
+    public void onViewUnbind() {
+        mView = null;
     }
 
     public void onShowGif(final String url) {
@@ -43,12 +48,12 @@ public class DetailsPresenter {
             }
         };
 
-        mCancelable = mModel.saveGifByUrl(url, downloadable);
+        mRequest = mModel.saveGifByUrl(url, downloadable);
     }
 
     public void onCancelSaving() {
-        if (mCancelable != null) {
-            mCancelable.onCancel();
+        if (mRequest != null) {
+            mRequest.onCancel();
         }
     }
 }

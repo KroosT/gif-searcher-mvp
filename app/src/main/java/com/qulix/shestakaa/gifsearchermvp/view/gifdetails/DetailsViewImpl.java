@@ -14,19 +14,33 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class DetailsViewImpl implements DetailsViewInterface {
+public class DetailsViewImpl implements DetailsView {
 
     private static final String SUCCESS_MESSAGE = "Success";
     private static final String ERROR_MESSAGE = "Something went wrong. Cannot save gif.";
     private final View mView;
     private final String mUrl;
-    private DetailsPresenter mDetailsPresenter;
+    private final DetailsPresenter mDetailsPresenter;
 
-    public DetailsViewImpl(final View view, final String url) {
+    public DetailsViewImpl(final View view, final String url, final DetailsPresenter presenter) {
         Validator.isArgNotNull(view, "view");
         Validator.isArgNotNull(url, "url");
+        Validator.isArgNotNull(presenter, "presenter");
+
         mView = view;
         mUrl = url;
+        mDetailsPresenter = presenter;
+        mDetailsPresenter.onViewBind(this);
+
+        mDetailsPresenter.onShowGif(mUrl);
+
+        final Button buttonSave = mView.findViewById(R.id.buttonSave);
+        buttonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                mDetailsPresenter.onSaveGif(mUrl);
+            }
+        });
     }
 
     @Override
@@ -48,22 +62,5 @@ public class DetailsViewImpl implements DetailsViewInterface {
     public void showError() {
         Toast.makeText(mView.getContext(), ERROR_MESSAGE,
                 Toast.LENGTH_SHORT).show();
-    }
-
-    public void registerPresenter(final DetailsPresenter detailsPresenter) {
-        Validator.isArgNotNull(detailsPresenter, "detailsPresenter");
-        mDetailsPresenter = detailsPresenter;
-        afterPresenterRegistered();
-    }
-
-    private void afterPresenterRegistered() {
-        mDetailsPresenter.onShowGif(mUrl);
-        final Button buttonSave = mView.findViewById(R.id.buttonSave);
-        buttonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                mDetailsPresenter.onSaveGif(mUrl);
-            }
-        });
     }
 }

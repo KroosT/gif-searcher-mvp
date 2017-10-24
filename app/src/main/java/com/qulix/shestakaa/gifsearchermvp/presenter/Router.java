@@ -1,4 +1,4 @@
-package com.qulix.shestakaa.gifsearchermvp.view;
+package com.qulix.shestakaa.gifsearchermvp.presenter;
 
 import android.support.v4.app.FragmentManager;
 
@@ -7,6 +7,9 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.GifDetailsFragment;
 import com.qulix.shestakaa.gifsearchermvp.view.offline.OfflineFragment;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class Router {
 
     private final FragmentManager mFragmentManager;
@@ -26,6 +29,7 @@ public class Router {
     }
 
     public void goToDetailsScreen(final String url) {
+        Validator.isArgNotNull(url, "url");
         mFragmentManager.beginTransaction()
                         .replace(R.id.fragment, GifDetailsFragment.newInstance(url))
                         .addToBackStack(FRAGMENT_TAG)

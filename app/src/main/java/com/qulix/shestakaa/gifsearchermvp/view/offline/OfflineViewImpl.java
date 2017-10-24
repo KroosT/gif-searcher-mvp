@@ -12,15 +12,23 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OfflineViewImpl implements OfflineViewInterface{
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public class OfflineViewImpl implements OfflineView {
 
     private final View mView;
-    private OfflinePresenter mOfflinePresenter;
+    private final OfflinePresenter mOfflinePresenter;
     private final OfflineAdapter mOfflineAdapter;
 
-    public OfflineViewImpl(final View view) {
+    public OfflineViewImpl(final View view, final OfflinePresenter offlinePresenter) {
         Validator.isArgNotNull(view, "view");
+        Validator.isArgNotNull(offlinePresenter, "offlinePresenter");
+
         mView = view;
+        mOfflinePresenter = offlinePresenter;
+        mOfflinePresenter.onViewBind(this);
+
         mOfflineAdapter = new OfflineAdapter(mView.getContext(), new ArrayList<byte[]>());
 
         final TextView offlineTitle = view.findViewById(R.id.offline_title);
@@ -29,21 +37,13 @@ public class OfflineViewImpl implements OfflineViewInterface{
         final RecyclerView recyclerView = mView.findViewById(R.id.offline_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(mView.getContext()));
         recyclerView.setAdapter(mOfflineAdapter);
-    }
 
-    public void registerPresenter(final OfflinePresenter offlinePresenter) {
-        Validator.isArgNotNull(offlinePresenter, "offlinePresenter");
-        mOfflinePresenter = offlinePresenter;
-        afterPresenterRegistered();
+        mOfflinePresenter.onScreenStarted();
     }
-
-    private void afterPresenterRegistered() {
-        mOfflinePresenter.onViewStarted();
-    }
-
 
     @Override
     public void showAvailableGifs(final List<byte[]> bytes) {
+        Validator.isArgNotNull(bytes, "bytes");
         mOfflineAdapter.updateDate(bytes);
     }
 }

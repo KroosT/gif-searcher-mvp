@@ -2,6 +2,9 @@ package com.qulix.shestakaa.gifsearchermvp.view.offline;
 
 import java.util.List;
 
-public interface OfflineViewInterface {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public interface OfflineView {
     void showAvailableGifs(final List<byte[]> bytes);
 }

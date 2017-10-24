@@ -23,6 +23,9 @@ public class OfflineAdapter extends RecyclerView.Adapter<OfflineAdapter.MyViewHo
     private final Context mContext;
 
     public OfflineAdapter(final Context context, final List<byte[]> bytes) {
+        Validator.isArgNotNull(context, "context");
+        Validator.isArgNotNull(bytes, "bytes");
+
         mBytes = bytes;
         mContext = context;
     }

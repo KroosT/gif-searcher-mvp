@@ -1,15 +1,15 @@
 package com.qulix.shestakaa.gifsearchermvp.view;
 
-import android.support.annotation.NonNull;
-import android.view.View;
-
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 
 import java.util.List;
 
-public interface ViewInterface {
+import javax.annotation.ParametersAreNonnullByDefault;
 
-    void updateData(@NonNull final List<Data> urls);
+@ParametersAreNonnullByDefault
+public interface View {
+
+    void updateData(final List<Data> urls);
 
     void showError();
 

@@ -2,11 +2,10 @@ package com.qulix.shestakaa.gifsearchermvp.presenter;
 
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
-import com.qulix.shestakaa.gifsearchermvp.model.ModelInterface;
+import com.qulix.shestakaa.gifsearchermvp.model.Model;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
-import com.qulix.shestakaa.gifsearchermvp.view.Router;
-import com.qulix.shestakaa.gifsearchermvp.view.ViewInterface;
+import com.qulix.shestakaa.gifsearchermvp.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,25 +19,21 @@ import retrofit2.Response;
 @ParametersAreNonnullByDefault
 public class Presenter {
 
-    private final ModelInterface mModel;
-    private final ViewInterface mView;
+    private final Model mModel;
     private final Callback<Feed> mCallback;
     private final Router mRouter;
-    private Cancelable mCancelable;
+    private Cancelable mRequest;
+    private View mView;
 
-    public Presenter(final ModelInterface modelInterface,
-                     final ViewInterface view,
-                     final Router router){
-        Validator.isArgNotNull(modelInterface, "modelInterface");
-        Validator.isArgNotNull(view, "view");
+    public Presenter(final Model model, final Router router){
+        Validator.isArgNotNull(model, "model");
         Validator.isArgNotNull(router, "router");
 
-        mModel = modelInterface;
-        mView = view;
+        mModel = model;
         mRouter = router;
         mCallback = createCallback();
 
-        onRequestTrending();
+        onMainScreenSet();
     }
 
     private Callback<Feed> createCallback() {
@@ -66,15 +61,24 @@ public class Presenter {
         };
     }
 
-    public void onRequestTrending() {
-        onStop();
-        mCancelable = mModel.getTrending(mCallback);
+    public void onViewBind(final View view) {
+        Validator.isArgNotNull(view, "view");
+        mView = view;
     }
 
-    public void onSendRequest(final String request) {
+    public void onViewUnbind() {
+        mView = null;
+    }
+
+    public void onMainScreenSet() {
+        onStopRequest();
+        mRequest = mModel.getTrending(mCallback);
+    }
+
+    public void onTextInputChanged(final String request) {
         Validator.isArgNotNull(request, "request");
-        onStop();
-        mCancelable = mModel.getByRequest(mCallback, request);
+        onStopRequest();
+        mRequest = mModel.getByRequest(mCallback, request);
     }
 
     public void onGifClicked(final String url) {
@@ -82,9 +86,9 @@ public class Presenter {
         mRouter.goToDetailsScreen(url);
     }
 
-    public void onStop() {
-        if (mCancelable != null) {
-            mCancelable.onCancel();
+    public void onStopRequest() {
+        if (mRequest != null) {
+            mRequest.onCancel();
         }
     }
 

@@ -21,11 +21,11 @@ class GifDownloader extends AsyncTask<String, Void, Boolean> {
     private static final String FILENAME = "gif_";
     private static final String SAVED_GIFS_FOLDER = "/SavedGifs/";
     private static final String EXTENSION = ".gif";
-    private final Downloadable mDownloadable;
+    private final Downloadable mRequest;
     private final Context mContext;
 
     public GifDownloader(final Context context, final Downloadable downloadable) {
-        mDownloadable = downloadable;
+        mRequest = downloadable;
         mContext = context;
     }
 
@@ -57,6 +57,6 @@ class GifDownloader extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(final Boolean result) {
-        mDownloadable.onDownload(result);
+        mRequest.onDownload(result);
     }
 }

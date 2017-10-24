@@ -4,10 +4,11 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Downloadable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-public interface DetailsModelInterface {
+@ParametersAreNonnullByDefault
+public interface DetailsModel {
 
-    Cancelable saveGifByUrl(@Nonnull final String url,
-                            @Nonnull final Downloadable downloadable);
+    Cancelable saveGifByUrl(final String url, final Downloadable downloadable);
 
 }

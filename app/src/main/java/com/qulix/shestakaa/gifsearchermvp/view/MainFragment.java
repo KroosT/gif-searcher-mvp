@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.ModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
+import com.qulix.shestakaa.gifsearchermvp.presenter.Router;
 
 public class MainFragment extends Fragment {
 
@@ -25,17 +26,16 @@ public class MainFragment extends Fragment {
                              final Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mView = new ViewImpl(view.findViewById(R.id.root));
-        mPresenter = new Presenter(new ModelImpl(), mView, new Router(getFragmentManager()));
-        mView.registerPresenter(mPresenter);
+        mPresenter = new Presenter(new ModelImpl(), new Router(getFragmentManager()));
+        mView = new ViewImpl(view.findViewById(R.id.root), mPresenter);
 
         return view;
     }
 
     @Override
     public void onStop() {
-        mPresenter.onStop();
-        mView.onStop();
+        mPresenter.onStopRequest();
+        mView.onStopWatcher();
         super.onStop();
     }
 }

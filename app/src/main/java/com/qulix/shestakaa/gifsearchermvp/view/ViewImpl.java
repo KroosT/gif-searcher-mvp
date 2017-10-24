@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,13 +26,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-public class ViewImpl implements ViewInterface {
+@ParametersAreNonnullByDefault
+public class ViewImpl implements View {
 
     private static final String CONNECTION_ERROR = "Something went wrong. Check your Internet connection";
     private static final String NO_GIFS_ERROR = "No gifs for such request found.";
 
-    private final View mView;
+    private final android.view.View mView;
     private final TextView mToolbarTextView;
     private final JellyToolbar mJellyToolbar;
     private final TextView mTitleTextView;
@@ -41,29 +42,33 @@ public class ViewImpl implements ViewInterface {
     private final AppCompatEditText mEditText;
     private final RecyclerAdapter mAdapter;
     private final CancelableTextWatcher mWatcher;
+    private final Presenter mPresenter;
 
-    private Presenter mPresenter;
 
-    public ViewImpl(final View view) {
+    public ViewImpl(final android.view.View view, final Presenter presenter) {
+        Validator.isArgNotNull(view, "view");
+        Validator.isArgNotNull(presenter, "presenter");
 
         mView = view;
+        mPresenter = presenter;
+        mPresenter.onViewBind(this);
 
         mTitleTextView = view.findViewById(R.id.title);
         mTitleTextView.setText(R.string.trending);
 
         mToolbarTextView = view.findViewById(R.id.toolbar_title);
-        mToolbarTextView.setOnClickListener(new View.OnClickListener() {
+        mToolbarTextView.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
-            public void onClick(final View v) {
-                mPresenter.onRequestTrending();
+            public void onClick(final android.view.View v) {
+                mPresenter.onMainScreenSet();
                 mTitleTextView.setText(R.string.trending);
             }
         });
 
         mOffline = view.findViewById(R.id.offlineModeButton);
-        mOffline.setOnClickListener(new View.OnClickListener() {
+        mOffline.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
-            public void onClick(final View v) {
+            public void onClick(final android.view.View v) {
                 mPresenter.onSwitchToOffline();
             }
         });
@@ -99,10 +104,6 @@ public class ViewImpl implements ViewInterface {
 
     }
 
-    public void registerPresenter(final Presenter presenter) {
-        mPresenter = presenter;
-    }
-
     @Override
     public void updateData(@Nonnull final List<Data> data) {
         Validator.isArgNotNull(data, "data");
@@ -132,15 +133,15 @@ public class ViewImpl implements ViewInterface {
             public void onToolbarExpandingStarted() {
                 super.onToolbarExpandingStarted();
                 ViewUtils.showSoftKeyboard(mEditText);
-                mToolbarTextView.setVisibility(View.INVISIBLE);
-                mOffline.setVisibility(View.INVISIBLE);
+                mToolbarTextView.setVisibility(android.view.View.INVISIBLE);
+                mOffline.setVisibility(android.view.View.INVISIBLE);
             }
 
             @Override
             public void onToolbarCollapsingStarted() {
                 super.onToolbarCollapsingStarted();
-                mToolbarTextView.setVisibility(View.VISIBLE);
-                mOffline.setVisibility(View.VISIBLE);
+                mToolbarTextView.setVisibility(android.view.View.VISIBLE);
+                mOffline.setVisibility(android.view.View.VISIBLE);
             }
         };
     }
@@ -165,7 +166,7 @@ public class ViewImpl implements ViewInterface {
             }
 
             @Override
-            public void onCancel() {
+            public void onCancelCallbacks() {
                 mHandler.removeCallbacksAndMessages(null);
             }
 
@@ -176,9 +177,9 @@ public class ViewImpl implements ViewInterface {
 
     private void execute(final String request) {
         if (request.length() != 0) {
-            mPresenter.onSendRequest(request);
+            mPresenter.onTextInputChanged(request);
         } else {
-            mPresenter.onRequestTrending();
+            mPresenter.onMainScreenSet();
         }
     }
 
@@ -195,7 +196,7 @@ public class ViewImpl implements ViewInterface {
         mTitleTextView.setText(title);
     }
 
-    public void onStop() {
-        mWatcher.onCancel();
+    public void onStopWatcher() {
+        mWatcher.onCancelCallbacks();
     }
 }
