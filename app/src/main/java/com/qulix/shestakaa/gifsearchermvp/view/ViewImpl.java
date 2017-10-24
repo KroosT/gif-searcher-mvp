@@ -1,12 +1,12 @@
 package com.qulix.shestakaa.gifsearchermvp.view;
 
+import android.content.Context;
 import android.graphics.Color;
-import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -17,10 +17,9 @@ import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.utils.AnswerProvider;
+import com.qulix.shestakaa.gifsearchermvp.utils.CancelableTextWatcher;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.ViewUtils;
-import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.GifDetailsFragment;
-import com.qulix.shestakaa.gifsearchermvp.view.offline.OfflineFragment;
 import com.yalantis.jellytoolbar.listener.JellyListener;
 import com.yalantis.jellytoolbar.widget.JellyToolbar;
 
@@ -40,9 +39,10 @@ public class ViewImpl implements ViewInterface {
     private final TextView mTitleTextView;
     private final ImageButton mOffline;
     private final AppCompatEditText mEditText;
-    private Presenter mPresenter;
-    private String mRequest = "";
     private final RecyclerAdapter mAdapter;
+    private final CancelableTextWatcher mWatcher;
+
+    private Presenter mPresenter;
 
     public ViewImpl(final View view) {
 
@@ -55,7 +55,7 @@ public class ViewImpl implements ViewInterface {
         mToolbarTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                mPresenter.onTitleClicked();
+                mPresenter.onRequestTrending();
                 mTitleTextView.setText(R.string.trending);
             }
         });
@@ -75,6 +75,9 @@ public class ViewImpl implements ViewInterface {
                                                       .inflate(R.layout.edit_text, null);
         mEditText.setBackgroundResource(R.color.colorTransparent);
         mEditText.setTextColor(Color.WHITE);
+        mWatcher = initTextWatcher();
+        mEditText.addTextChangedListener(mWatcher);
+
         mJellyToolbar.setContentView(mEditText);
 
         final RecyclerView recyclerView = mView.findViewById(R.id.recycler_view);
@@ -87,7 +90,7 @@ public class ViewImpl implements ViewInterface {
                 Validator.isArgNotNull(arg, "arg");
                 Validator.isArgNotNull(mPresenter, "mPresenter");
 
-                mPresenter.onGifClick(arg);
+                mPresenter.onGifClicked(arg);
             }
         };
 
@@ -100,18 +103,28 @@ public class ViewImpl implements ViewInterface {
         mPresenter = presenter;
     }
 
+    @Override
+    public void updateData(@Nonnull final List<Data> data) {
+        Validator.isArgNotNull(data, "data");
+        mAdapter.updateData(data);
+    }
+
+    @Override
+    public void showError() {
+        Toast.makeText(mView.getContext(), CONNECTION_ERROR, Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void showNoGifsError() {
+        Toast.makeText(mView.getContext(), NO_GIFS_ERROR, Toast.LENGTH_SHORT).show();
+    }
+
     private JellyListener createJellyListener() {
         return new JellyListener() {
             @Override
             public void onCancelIconClicked() {
                 ViewUtils.hideSoftKeyboard(mEditText);
-                final Editable searchField = mEditText.getText();
-                if (!TextUtils.isEmpty(searchField)) {
-                    mRequest = searchField.toString();
-                    searchField.clear();
-                    mTitleTextView.setText(mView.getContext().getString(R.string.gifs_for, mRequest));
-                    mPresenter.onCloseIconClicked(mRequest);
-                }
                 mJellyToolbar.collapse();
             }
 
@@ -132,24 +145,57 @@ public class ViewImpl implements ViewInterface {
         };
     }
 
-    @Override
-    public void updateData(@Nonnull final List<Data> data) {
-        Validator.isArgNotNull(data, "data");
-        mAdapter.updateData(data);
+    private CancelableTextWatcher initTextWatcher() {
+        return new CancelableTextWatcher() {
+
+            private final static int DELAY = 300;
+            private final Handler mHandler = new Handler();
+
+            @Override
+            public void afterTextChanged(final Editable s) {
+                final String request = s.toString();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        execute(request);
+                    }
+                }, DELAY);
+
+                updateUI(request);
+            }
+
+            @Override
+            public void onCancel() {
+                mHandler.removeCallbacksAndMessages(null);
+            }
+
+            @Override public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) { /*ignored*/ }
+            @Override public void onTextChanged(final CharSequence s, final int start, final int before, final int count) { /*ignored*/ }
+        };
     }
 
-    @Override
-    public void showError() {
-        Toast.makeText(mView.getContext(),
-                CONNECTION_ERROR,
-                Toast.LENGTH_SHORT).show();
-
+    private void execute(final String request) {
+        if (request.length() != 0) {
+            mPresenter.onSendRequest(request);
+        } else {
+            mPresenter.onRequestTrending();
+        }
     }
 
-    @Override
-    public void showNoGifsError() {
-        Toast.makeText(mView.getContext(),
-                NO_GIFS_ERROR,
-                Toast.LENGTH_SHORT).show();
+    private void updateUI(final String request) {
+
+        final Context context = mView.getContext();
+
+        final String searchText = context.getString(R.string.gifs_for, request);
+        final String trendingText = context.getString(R.string.trending);
+
+        final String title = request.length() != 0 ? searchText
+                                                   : trendingText;
+
+        mTitleTextView.setText(title);
+    }
+
+    public void onStop() {
+        mWatcher.onCancel();
     }
 }

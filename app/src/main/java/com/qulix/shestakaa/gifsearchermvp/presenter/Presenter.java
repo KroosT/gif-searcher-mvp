@@ -38,7 +38,7 @@ public class Presenter {
         mRouter = router;
         mCallback = createCallback();
 
-        onTitleClicked();
+        onRequestTrending();
     }
 
     private Callback<Feed> createCallback() {
@@ -66,18 +66,18 @@ public class Presenter {
         };
     }
 
-    public void onTitleClicked() {
+    public void onRequestTrending() {
         onStop();
         mCancelable = mModel.getTrending(mCallback);
     }
 
-    public void onCloseIconClicked(final String request) {
+    public void onSendRequest(final String request) {
         Validator.isArgNotNull(request, "request");
         onStop();
         mCancelable = mModel.getByRequest(mCallback, request);
     }
 
-    public void onGifClick(final String url) {
+    public void onGifClicked(final String url) {
         Validator.isArgNotNull(url, "url");
         mRouter.goToDetailsScreen(url);
     }

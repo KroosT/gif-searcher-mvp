@@ -14,6 +14,7 @@ import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 public class MainFragment extends Fragment {
 
     private Presenter mPresenter;
+    private ViewImpl mView;
 
     public MainFragment() {
 
@@ -24,9 +25,9 @@ public class MainFragment extends Fragment {
                              final Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        final ViewImpl viewImpl = new ViewImpl(view.findViewById(R.id.root));
-        mPresenter = new Presenter(new ModelImpl(), viewImpl, new Router(getFragmentManager()));
-        viewImpl.registerPresenter(mPresenter);
+        mView = new ViewImpl(view.findViewById(R.id.root));
+        mPresenter = new Presenter(new ModelImpl(), mView, new Router(getFragmentManager()));
+        mView.registerPresenter(mPresenter);
 
         return view;
     }
@@ -34,6 +35,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onStop() {
         mPresenter.onStop();
+        mView.onStop();
         super.onStop();
     }
 }
