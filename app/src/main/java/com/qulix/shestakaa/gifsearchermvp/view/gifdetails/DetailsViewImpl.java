@@ -62,7 +62,7 @@ public class DetailsViewImpl implements DetailsViewInterface {
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                mDetailsPresenter.onSaveGif(mView.getContext(), mUrl);
+                mDetailsPresenter.onSaveGif(mUrl);
             }
         });
     }

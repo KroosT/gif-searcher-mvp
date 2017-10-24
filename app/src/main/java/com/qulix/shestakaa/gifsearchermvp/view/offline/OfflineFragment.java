@@ -27,7 +27,7 @@ public class OfflineFragment extends Fragment {
 
         final View v = inflater.inflate(R.layout.fragment_offline, container, false);
         final OfflineViewImpl offlineView = new OfflineViewImpl(v.findViewById(R.id.rootOffline));
-        mPresenter = new OfflinePresenter(offlineView, new OfflineModelImpl());
+        mPresenter = new OfflinePresenter(offlineView, new OfflineModelImpl(getContext()));
         offlineView.registerPresenter(mPresenter);
 
         return v;

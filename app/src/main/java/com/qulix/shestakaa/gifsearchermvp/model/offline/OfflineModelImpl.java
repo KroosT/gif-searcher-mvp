@@ -7,9 +7,16 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Loadable;
 
 public class OfflineModelImpl implements OfflineModelInterface {
 
+
+    private final Context mContext;
+
+    public OfflineModelImpl(final Context context) {
+        mContext = context;
+    }
+
     @Override
-    public Cancelable loadAvailableGifs(final Context context, final Loadable loadable) {
-        final GifLoader gifLoader = new GifLoader(context, loadable);
+    public Cancelable loadAvailableGifs(final Loadable loadable) {
+        final GifLoader gifLoader = new GifLoader(mContext, loadable);
         gifLoader.execute();
 
         return new Cancelable() {

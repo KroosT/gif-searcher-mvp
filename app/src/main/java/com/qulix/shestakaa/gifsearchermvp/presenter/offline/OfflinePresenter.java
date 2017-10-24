@@ -1,7 +1,5 @@
 package com.qulix.shestakaa.gifsearchermvp.presenter.offline;
 
-import android.content.Context;
-
 import com.qulix.shestakaa.gifsearchermvp.model.offline.OfflineModelInterface;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Loadable;
@@ -25,7 +23,7 @@ public class OfflinePresenter {
         mOfflineViewInterface = offlineView;
     }
 
-    public void onViewStarted(final Context context) {
+    public void onViewStarted() {
 
         final Loadable loadable = new Loadable() {
             @Override
@@ -34,7 +32,7 @@ public class OfflinePresenter {
             }
         };
 
-        mCancelable = mOfflineModelInterface.loadAvailableGifs(context, loadable);
+        mCancelable = mOfflineModelInterface.loadAvailableGifs(loadable);
     }
 
     public void onCancelLoading() {

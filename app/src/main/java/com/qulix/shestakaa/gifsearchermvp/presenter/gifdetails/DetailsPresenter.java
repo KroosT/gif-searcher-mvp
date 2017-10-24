@@ -1,7 +1,5 @@
 package com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails;
 
-import android.content.Context;
-
 import com.qulix.shestakaa.gifsearchermvp.model.gifdetails.DetailsModelInterface;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Downloadable;
@@ -31,7 +29,7 @@ public class DetailsPresenter {
         mView.showGif(url);
     }
 
-    public void onSaveGif(final Context context, final String url) {
+    public void onSaveGif(final String url) {
         Validator.isArgNotNull(url, "url");
 
         final Downloadable downloadable = new Downloadable() {
@@ -45,7 +43,7 @@ public class DetailsPresenter {
             }
         };
 
-        mCancelable = mModel.saveGifByUrl(context, url, downloadable);
+        mCancelable = mModel.saveGifByUrl(url, downloadable);
     }
 
     public void onCancelSaving() {

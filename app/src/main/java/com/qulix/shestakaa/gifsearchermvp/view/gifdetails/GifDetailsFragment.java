@@ -30,8 +30,7 @@ public class GifDetailsFragment extends Fragment {
         final DetailsViewImpl viewImpl = new DetailsViewImpl(view.findViewById(
                                                                             R.id.rootDetails),
                                                                             arg);
-        mPresenter = new DetailsPresenter(new DetailsModelImpl(),
-                                                                       viewImpl);
+        mPresenter = new DetailsPresenter(new DetailsModelImpl(getContext()), viewImpl);
         viewImpl.registerPresenter(mPresenter);
 
         return view;

@@ -33,7 +33,7 @@ public class OfflineViewImpl implements OfflineViewInterface{
     }
 
     private void afterPresenterRegistered() {
-        mOfflinePresenter.onViewStarted(mView.getContext());
+        mOfflinePresenter.onViewStarted();
     }
 
 
