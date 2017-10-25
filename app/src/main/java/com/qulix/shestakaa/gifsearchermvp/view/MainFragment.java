@@ -53,6 +53,12 @@ public class MainFragment extends Fragment implements Observer {
     }
 
     @Override
+    public void onDestroy() {
+        mPresenter.onViewUnbind();
+        super.onDestroy();
+    }
+
+    @Override
     public void update(final Observable o, final Object arg) {
         if (((NetworkObservable) o).getConnectionStatus() == ConnectionStatus.CONNECTED) {
             mView.dismissOfflineModeSuggestion();

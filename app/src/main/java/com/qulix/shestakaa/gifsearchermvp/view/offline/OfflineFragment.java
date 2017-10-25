@@ -38,6 +38,12 @@ public class OfflineFragment extends Fragment {
         mPresenter.onCancelLoading();
     }
 
+    @Override
+    public void onDestroy() {
+        mPresenter.onViewUnbind();
+        super.onDestroy();
+    }
+
     public static OfflineFragment newInstance() {
         return new OfflineFragment();
     }

@@ -204,16 +204,9 @@ public class ViewImpl implements View {
             }
 
             @Override
-            public void beforeTextChanged(final CharSequence s,
-                                          final int start,
-                                          final int count,
-                                          final int after) { /*ignored*/ }
-
+            public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) { /*ignored*/ }
             @Override
-            public void onTextChanged(final CharSequence s,
-                                      final int start,
-                                      final int before,
-                                      final int count) { /*ignored*/ }
+            public void onTextChanged(final CharSequence s, final int start, final int before, final int count) { /*ignored*/ }
         };
     }
 
