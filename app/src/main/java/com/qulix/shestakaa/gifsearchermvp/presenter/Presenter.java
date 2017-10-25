@@ -16,6 +16,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.qulix.shestakaa.gifsearchermvp.presenter.RequestType.*;
+
 @ParametersAreNonnullByDefault
 public class Presenter {
 
@@ -24,6 +26,10 @@ public class Presenter {
     private final Router mRouter;
     private Cancelable mRequest;
     private View mView;
+    private RequestType mPreviousRequest = TRENDING;
+    private String mPreviousSearchQuery = "";
+    private int mPreviousOffset = 0;
+    private boolean mIsDataEnded = false;
 
     public Presenter(final Model model, final Router router){
         Validator.isArgNotNull(model, "model");
@@ -43,13 +49,19 @@ public class Presenter {
                                    final Response<Feed> response) {
                 final Feed body = response.body();
                 List<Data> data = new ArrayList<>();
+                int totalCount = 0;
                 if (body != null) {
-                     data = body.getData();
+                    data = body.getData();
+                    totalCount = body.getPagination().getTotalCount();
                 }
                 if (data.isEmpty()) {
                     mView.showNoGifsError();
                 }
-                mView.updateData(data);
+                if (totalCount == data.size()) {
+                    mIsDataEnded = true;
+                }
+                mPreviousOffset = data.size();
+                mView.updateData(data, totalCount);
             }
 
             @Override
@@ -73,12 +85,17 @@ public class Presenter {
     public void onMainScreenSet() {
         onStopRequest();
         mRequest = mModel.getTrending(mCallback);
+        mPreviousRequest = TRENDING;
+        mIsDataEnded = false;
     }
 
     public void onTextInputChanged(final String request) {
         Validator.isArgNotNull(request, "request");
         onStopRequest();
         mRequest = mModel.getByRequest(mCallback, request);
+        mPreviousRequest = SEARCH;
+        mPreviousSearchQuery = request;
+        mIsDataEnded = false;
     }
 
     public void onGifClicked(final String url) {
@@ -96,4 +113,19 @@ public class Presenter {
         mRouter.goToOfflineScreen();
     }
 
+    public void onLoadMoreClicked() {
+        if (!mIsDataEnded) {
+            switch (mPreviousRequest) {
+                case SEARCH:
+                    mRequest = mModel.loadMoreSearch(mCallback, mPreviousSearchQuery,
+                                                     mPreviousOffset);
+                    break;
+                case TRENDING:
+                default:
+                    mRequest = mModel.loadMoreTrending(mCallback, mPreviousOffset);
+            }
+        } else {
+            mView.showGifsEndedInfo();
+        }
+    }
 }

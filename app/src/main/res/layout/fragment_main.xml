@@ -20,12 +20,12 @@
 
         <ImageButton
             android:id="@+id/offlineModeButton"
-            android:src="@mipmap/ic_offline"
-            android:layout_marginStart="10dp"
-            android:background="@color/colorTransparent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:background="@color/colorTransparent"
+            android:src="@mipmap/ic_offline"/>
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -35,7 +35,7 @@
             android:fontFamily="monospace"
             android:text="@string/app_name"
             android:textColor="@android:color/white"
-            android:textSize="25sp"/>
+            android:textSize="@dimen/defaultTextSize"/>
 
     </com.yalantis.jellytoolbar.widget.JellyToolbar>
 
@@ -46,20 +46,16 @@
         android:layout_height="wrap_content"
         android:background="@color/colorTransparent"
         android:fontFamily="monospace"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
+        android:paddingBottom="@dimen/defaultMargin"
+        android:paddingTop="@dimen/defaultMargin"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
-        android:textSize="25sp"/>
+        android:textSize="@dimen/defaultTextSize"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
 </LinearLayout>

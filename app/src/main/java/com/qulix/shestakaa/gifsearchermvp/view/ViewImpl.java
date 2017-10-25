@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
-import com.qulix.shestakaa.gifsearchermvp.utils.AnswerProvider;
+import com.qulix.shestakaa.gifsearchermvp.utils.MainScreenListener;
 import com.qulix.shestakaa.gifsearchermvp.utils.CancelableTextWatcher;
 import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
@@ -34,6 +34,7 @@ public class ViewImpl implements View {
 
     private static final String CONNECTION_ERROR = "Something went wrong. Check your Internet connection";
     private static final String NO_GIFS_ERROR = "No gifs for such request found.";
+    private static final String GIFS_ENDED = "All gifs are already loaded.";
 
     private final android.view.View mView;
     private final TextView mToolbarTextView;
@@ -90,9 +91,15 @@ public class ViewImpl implements View {
         recyclerView.setLayoutManager(new LinearLayoutManager(mView.getContext()));
 
         final List<Data> dataList = new ArrayList<>();
-        final AnswerProvider answerProvider = new AnswerProvider() {
+        final MainScreenListener mainScreenListener = new MainScreenListener() {
+
             @Override
-            public void onStringProvided(final String arg) {
+            public void onLoadMoreButtonClicked() {
+                mPresenter.onLoadMoreClicked();
+            }
+
+            @Override
+            public void onGifClicked(final String arg) {
                 Validator.isArgNotNull(arg, "arg");
                 Validator.isArgNotNull(mPresenter, "mPresenter");
 
@@ -100,15 +107,15 @@ public class ViewImpl implements View {
             }
         };
 
-        mAdapter = new RecyclerAdapter(mView.getContext(), dataList, answerProvider);
+        mAdapter = new RecyclerAdapter(mView.getContext(), dataList, mainScreenListener);
         recyclerView.setAdapter(mAdapter);
 
     }
 
     @Override
-    public void updateData(@Nonnull final List<Data> data) {
+    public void updateData(final List<Data> data, final int totalCount) {
         Validator.isArgNotNull(data, "data");
-        mAdapter.updateData(data);
+        mAdapter.updateData(data, totalCount);
     }
 
     @Override
@@ -120,6 +127,11 @@ public class ViewImpl implements View {
     @Override
     public void showNoGifsError() {
         Toast.makeText(mView.getContext(), NO_GIFS_ERROR, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showGifsEndedInfo() {
+        Toast.makeText(mView.getContext(), GIFS_ENDED, Toast.LENGTH_SHORT).show();
     }
 
     private JellyListener createJellyListener() {
@@ -193,7 +205,7 @@ public class ViewImpl implements View {
         final String title = StringUtils.isNotNullOrBlank(request) ? searchText
                                                                    : trendingText;
         final int iconResId = StringUtils.isNotNullOrBlank(request) ? R.mipmap.ic_done
-                                                                   : R.mipmap.ic_close;
+                                                                    : R.mipmap.ic_close;
 
         mTitleTextView.setText(title);
         mJellyToolbar.setCancelIconRes(iconResId);

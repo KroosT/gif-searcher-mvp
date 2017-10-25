@@ -17,6 +17,7 @@ public class ModelImpl implements Model {
 
     private final ApiInterface mApiInterface;
     private static final String API_KEY = "fWieUtS84ZkjIWupFAQvqpUapoYj1k29";
+    private static final int DEFAULT_LIMIT = 25;
 
     public ModelImpl() {
         mApiInterface = ApiService.getClient().create(ApiInterface.class);
@@ -25,7 +26,7 @@ public class ModelImpl implements Model {
     @Override
     public Cancelable getTrending(final Callback<Feed> callback) {
         Validator.isArgNotNull(callback, "callback");
-        final Call<Feed> call = mApiInterface.getTrendingNow(API_KEY);
+        final Call<Feed> call = mApiInterface.getTrendingNow(API_KEY, DEFAULT_LIMIT);
         call.enqueue(callback);
         return createEventListener(call);
     }
@@ -34,7 +35,25 @@ public class ModelImpl implements Model {
     public Cancelable getByRequest(final Callback<Feed> callback,
                                    final String req) {
         Validator.isArgNotNull(callback, "callback");
-        final Call<Feed> call = mApiInterface.getSearch(req, API_KEY);
+        final Call<Feed> call = mApiInterface.getSearch(req, API_KEY, DEFAULT_LIMIT);
+        call.enqueue(callback);
+        return createEventListener(call);
+    }
+
+    @Override
+    public Cancelable loadMoreTrending(final Callback<Feed> callback, final int offset) {
+        Validator.isArgNotNull(callback, "callback");
+        final Call<Feed> call = mApiInterface.getTrendingNow(API_KEY, DEFAULT_LIMIT + offset);
+        call.enqueue(callback);
+        return createEventListener(call);
+    }
+
+    @Override
+    public Cancelable loadMoreSearch(final Callback<Feed> callback,
+                                     final String req,
+                                     final int offset) {
+        Validator.isArgNotNull(callback, "callback");
+        final Call<Feed> call = mApiInterface.getSearch(req, API_KEY, DEFAULT_LIMIT + offset);
         call.enqueue(callback);
         return createEventListener(call);
     }

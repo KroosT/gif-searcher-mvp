@@ -4,4 +4,5 @@
     <string name="trending">Trending now</string>
     <string name="save">Save</string>
     <string name="saved_gifs">Saved gifs</string>
+    <string name="load_more">Load more</string>
 </resources>

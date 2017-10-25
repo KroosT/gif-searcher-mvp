@@ -7,9 +7,11 @@ import retrofit2.http.Query;
 public interface ApiInterface {
 
     @GET("search")
-    Call<Feed> getSearch(@Query("q") String request, @Query("api_key") String api_key);
+    Call<Feed> getSearch(@Query("q") String request,
+                         @Query("api_key") String api_key,
+                         @Query("limit") int limit);
 
     @GET("trending")
-    Call<Feed> getTrendingNow(@Query("api_key") String api_key);
+    Call<Feed> getTrendingNow(@Query("api_key") String api_key, @Query("limit") int limit);
 
 }
