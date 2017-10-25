@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.gifdetails.DetailsModelImpl;
+import com.qulix.shestakaa.gifsearchermvp.presenter.Router;
 import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsPresenter;
+import com.qulix.shestakaa.gifsearchermvp.utils.ConnectionStatus;
+import com.qulix.shestakaa.gifsearchermvp.utils.NetworkObservable;
 import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
@@ -30,7 +33,9 @@ public class GifDetailsFragment extends Fragment implements Observer {
                              final Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_gif_details, container, false);
-        mPresenter = new DetailsPresenter(new DetailsModelImpl(getContext()));
+        mPresenter = new DetailsPresenter(new DetailsModelImpl(getContext()),
+                                          new Router(getFragmentManager()));
+
         mView = new DetailsViewImpl(view.findViewById(R.id.rootDetails),
                                                              extractArgument(GIF_URL),
                                                              mPresenter);
@@ -73,6 +78,10 @@ public class GifDetailsFragment extends Fragment implements Observer {
 
     @Override
     public void update(final Observable o, final Object arg) {
-        mView.showError();
+        if (((NetworkObservable) o).getConnectionStatus() == ConnectionStatus.CONNECTED) {
+            mView.dismissOfflineModeSuggestion();
+        } else {
+            mView.showOfflineModeSuggestion();
+        }
     }
 }

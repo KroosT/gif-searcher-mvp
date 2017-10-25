@@ -3,11 +3,13 @@ package com.qulix.shestakaa.gifsearchermvp.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.view.LayoutInflater;
+import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,8 +17,8 @@ import android.widget.Toast;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
-import com.qulix.shestakaa.gifsearchermvp.utils.MainScreenListener;
 import com.qulix.shestakaa.gifsearchermvp.utils.CancelableTextWatcher;
+import com.qulix.shestakaa.gifsearchermvp.utils.MainScreenListener;
 import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.ViewUtils;
@@ -26,15 +28,15 @@ import com.yalantis.jellytoolbar.widget.JellyToolbar;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.CONNECTION_ERROR;
+import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.GIFS_ENDED;
+import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.GO_OFFLINE;
+import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.NO_GIFS_ERROR;
 
 @ParametersAreNonnullByDefault
 public class ViewImpl implements View {
-
-    private static final String CONNECTION_ERROR = "Something went wrong. Check your Internet connection";
-    private static final String NO_GIFS_ERROR = "No gifs for such request found.";
-    private static final String GIFS_ENDED = "All gifs are already loaded.";
 
     private final android.view.View mView;
     private final TextView mToolbarTextView;
@@ -45,6 +47,7 @@ public class ViewImpl implements View {
     private final RecyclerAdapter mAdapter;
     private final CancelableTextWatcher mWatcher;
     private final Presenter mPresenter;
+    private final Snackbar mSnackbar;
 
 
     public ViewImpl(final android.view.View view, final Presenter presenter) {
@@ -59,7 +62,7 @@ public class ViewImpl implements View {
         mTitleTextView.setText(R.string.trending);
 
         mToolbarTextView = view.findViewById(R.id.toolbar_title);
-        mToolbarTextView.setOnClickListener(new android.view.View.OnClickListener() {
+        mToolbarTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final android.view.View v) {
                 mPresenter.onMainScreenSet();
@@ -68,7 +71,7 @@ public class ViewImpl implements View {
         });
 
         mOffline = view.findViewById(R.id.offlineModeButton);
-        mOffline.setOnClickListener(new android.view.View.OnClickListener() {
+        mOffline.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final android.view.View v) {
                 mPresenter.onSwitchToOffline();
@@ -110,6 +113,15 @@ public class ViewImpl implements View {
         mAdapter = new RecyclerAdapter(mView.getContext(), dataList, mainScreenListener);
         recyclerView.setAdapter(mAdapter);
 
+        final OnClickListener onSnackBarClick = new OnClickListener() {
+            @Override
+            public void onClick(final android.view.View v) {
+                mPresenter.onSwitchToOffline();
+            }
+        };
+        mSnackbar = Snackbar.make(mView, CONNECTION_ERROR, Snackbar.LENGTH_INDEFINITE)
+                            .setAction(GO_OFFLINE, onSnackBarClick);
+
     }
 
     @Override
@@ -132,6 +144,14 @@ public class ViewImpl implements View {
     @Override
     public void showGifsEndedInfo() {
         Toast.makeText(mView.getContext(), GIFS_ENDED, Toast.LENGTH_SHORT).show();
+    }
+
+    public void showOfflineModeSuggestion() {
+        mSnackbar.show();
+    }
+
+    public void dismissOfflineModeSuggestion() {
+        mSnackbar.dismiss();
     }
 
     private JellyListener createJellyListener() {
@@ -183,8 +203,17 @@ public class ViewImpl implements View {
                 mHandler.removeCallbacksAndMessages(null);
             }
 
-            @Override public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) { /*ignored*/ }
-            @Override public void onTextChanged(final CharSequence s, final int start, final int before, final int count) { /*ignored*/ }
+            @Override
+            public void beforeTextChanged(final CharSequence s,
+                                          final int start,
+                                          final int count,
+                                          final int after) { /*ignored*/ }
+
+            @Override
+            public void onTextChanged(final CharSequence s,
+                                      final int start,
+                                      final int before,
+                                      final int count) { /*ignored*/ }
         };
     }
 

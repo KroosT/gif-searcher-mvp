@@ -1,63 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootDetails"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.yalantis.jellytoolbar.widget.JellyToolbar
-        android:id="@+id/details_toolbar"
+    <LinearLayout
+        android:id="@+id/rootDetails"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/details_toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="monospace"
-            android:text="@string/app_name"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/defaultTextSize"/>
-
-    </com.yalantis.jellytoolbar.widget.JellyToolbar>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
+        <com.yalantis.jellytoolbar.widget.JellyToolbar
+            android:id="@+id/details_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/colorPrimary">
 
-            <ImageView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/detailsImageView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/defaultMargin"
-                android:layout_marginBottom="@dimen/defaultMargin"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/app_name"
-                android:scaleType="fitCenter"/>
-
-            <Button
-                android:id="@+id/buttonSave"
+            <TextView
+                android:id="@+id/details_toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_style"
+                android:layout_gravity="center"
                 android:fontFamily="monospace"
-                android:text="@string/save"
+                android:text="@string/app_name"
                 android:textColor="@android:color/white"
-                android:textSize="17sp"
-                android:layout_marginBottom="@dimen/defaultMargin"/>
+                android:textSize="@dimen/defaultTextSize"/>
 
-        </LinearLayout>
+        </com.yalantis.jellytoolbar.widget.JellyToolbar>
 
-    </ScrollView>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-</LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/detailsImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/defaultMargin"
+                    android:layout_marginTop="@dimen/defaultMargin"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/app_name"
+                    android:scaleType="fitCenter"/>
+
+                <Button
+                    android:id="@+id/buttonSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/defaultMargin"
+                    android:background="@drawable/button_style"
+                    android:fontFamily="monospace"
+                    android:text="@string/save"
+                    android:textColor="@android:color/white"
+                    android:textSize="17sp"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

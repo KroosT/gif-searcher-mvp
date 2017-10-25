@@ -11,6 +11,8 @@ import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.ModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Router;
+import com.qulix.shestakaa.gifsearchermvp.utils.ConnectionStatus;
+import com.qulix.shestakaa.gifsearchermvp.utils.NetworkObservable;
 import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 
 import java.util.Observable;
@@ -52,6 +54,10 @@ public class MainFragment extends Fragment implements Observer {
 
     @Override
     public void update(final Observable o, final Object arg) {
-        mView.showError();
+        if (((NetworkObservable) o).getConnectionStatus() == ConnectionStatus.CONNECTED) {
+            mView.dismissOfflineModeSuggestion();
+        } else {
+            mView.showOfflineModeSuggestion();
+        }
     }
 }

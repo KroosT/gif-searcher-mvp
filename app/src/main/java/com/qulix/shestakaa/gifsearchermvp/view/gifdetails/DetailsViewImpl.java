@@ -1,5 +1,6 @@
 package com.qulix.shestakaa.gifsearchermvp.view.gifdetails;
 
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,14 +14,18 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.CONNECTION_ERROR;
+import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.ERROR_MESSAGE;
+import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.GO_OFFLINE;
+import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.SUCCESS_MESSAGE;
+
 @ParametersAreNonnullByDefault
 public class DetailsViewImpl implements DetailsView {
 
-    private static final String SUCCESS_MESSAGE = "Success";
-    private static final String ERROR_MESSAGE = "Something went wrong. Cannot save gif.";
     private final View mView;
     private final String mUrl;
     private final DetailsPresenter mDetailsPresenter;
+    private final Snackbar mSnackbar;
 
     public DetailsViewImpl(final View view, final String url, final DetailsPresenter presenter) {
         Validator.isArgNotNull(view, "view");
@@ -41,6 +46,15 @@ public class DetailsViewImpl implements DetailsView {
                 mDetailsPresenter.onSaveGif(mUrl);
             }
         });
+
+        final View.OnClickListener onSnackBarClick = new View.OnClickListener() {
+            @Override
+            public void onClick(final android.view.View v) {
+                mDetailsPresenter.onSwitchToOffline();
+            }
+        };
+        mSnackbar = Snackbar.make(mView, CONNECTION_ERROR, Snackbar.LENGTH_INDEFINITE)
+                            .setAction(GO_OFFLINE, onSnackBarClick);
     }
 
     @Override
@@ -61,6 +75,14 @@ public class DetailsViewImpl implements DetailsView {
     @Override
     public void showError() {
         Toast.makeText(mView.getContext(), ERROR_MESSAGE,
-                Toast.LENGTH_SHORT).show();
+                       Toast.LENGTH_SHORT).show();
+    }
+
+    public void showOfflineModeSuggestion() {
+        mSnackbar.show();
+    }
+
+    public void dismissOfflineModeSuggestion() {
+        mSnackbar.dismiss();
     }
 }

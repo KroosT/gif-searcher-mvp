@@ -16,6 +16,8 @@ public class NetworkStateReceiver extends BroadcastReceiver {
         //should check null because in airplane mode it will be null
         if (netInfo == null || !netInfo.isConnected()) {
             getObservable().connectionDown();
+        } else {
+            getObservable().connectionUp();
         }
     }
 
