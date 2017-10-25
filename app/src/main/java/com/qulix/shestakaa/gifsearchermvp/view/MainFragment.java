@@ -11,8 +11,12 @@ import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.ModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Router;
+import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 
-public class MainFragment extends Fragment {
+import java.util.Observable;
+import java.util.Observer;
+
+public class MainFragment extends Fragment implements Observer {
 
     private Presenter mPresenter;
     private ViewImpl mView;
@@ -33,9 +37,21 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
+    public void onResume() {
+        NetworkStateReceiver.getObservable().addObserver(this);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
         mPresenter.onStopRequest();
         mView.onStopWatcher();
-        super.onStop();
+        NetworkStateReceiver.getObservable().deleteObserver(this);
+        super.onPause();
+    }
+
+    @Override
+    public void update(final Observable o, final Object arg) {
+        mView.showError();
     }
 }

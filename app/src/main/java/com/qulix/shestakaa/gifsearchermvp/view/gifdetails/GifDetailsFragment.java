@@ -9,12 +9,17 @@ import android.view.ViewGroup;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.gifdetails.DetailsModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsPresenter;
+import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
-public class GifDetailsFragment extends Fragment {
+import java.util.Observable;
+import java.util.Observer;
+
+public class GifDetailsFragment extends Fragment implements Observer {
 
     public static final String GIF_URL = "gifUrl";
     private DetailsPresenter mPresenter;
+    private DetailsViewImpl mView;
 
     public GifDetailsFragment() {
 
@@ -26,7 +31,7 @@ public class GifDetailsFragment extends Fragment {
 
         final View view = inflater.inflate(R.layout.fragment_gif_details, container, false);
         mPresenter = new DetailsPresenter(new DetailsModelImpl(getContext()));
-        final DetailsViewImpl viewImpl = new DetailsViewImpl(view.findViewById(R.id.rootDetails),
+        mView = new DetailsViewImpl(view.findViewById(R.id.rootDetails),
                                                              extractArgument(GIF_URL),
                                                              mPresenter);
 
@@ -34,9 +39,16 @@ public class GifDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onResume() {
+        super.onResume();
+        NetworkStateReceiver.getObservable().addObserver(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         mPresenter.onCancelSaving();
+        NetworkStateReceiver.getObservable().deleteObserver(this);
     }
 
     public static GifDetailsFragment newInstance(final String url) {
@@ -57,5 +69,10 @@ public class GifDetailsFragment extends Fragment {
         Validator.isArgNotNull(arg, "arg");
 
         return arg;
+    }
+
+    @Override
+    public void update(final Observable o, final Object arg) {
+        mView.showError();
     }
 }
