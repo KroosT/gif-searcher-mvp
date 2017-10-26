@@ -20,16 +20,16 @@ public class DetailsModelImpl implements DetailsModel {
 
     @Override
     public Cancelable saveGifByUrl(final String url,
-                                   final Downloadable downloadable) {
+                                   final Downloadable requestController) {
         Validator.isArgNotNull(url, "url");
-        Validator.isArgNotNull(downloadable, "downloadable");
+        Validator.isArgNotNull(requestController, "downloadable");
 
-        final GifDownloader gifDownloader = new GifDownloader(mContext, downloadable);
+        final GifDownloader gifDownloader = new GifDownloader(mContext, requestController);
         gifDownloader.execute(url);
 
         return new Cancelable() {
             @Override
-            public void onCancel() {
+            public void onCancelRequest() {
                 gifDownloader.cancel(true);
             }
         };

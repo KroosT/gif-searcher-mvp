@@ -15,7 +15,7 @@ public class DetailsPresenter {
     private final DetailsModel mModel;
     private final Router mRouter;
     private DetailsView mView;
-    private Cancelable mRequest;
+    private Cancelable mRequestController;
 
     public DetailsPresenter(final DetailsModel model, final Router router) {
         Validator.isArgNotNull(model, "model");
@@ -43,7 +43,7 @@ public class DetailsPresenter {
 
         final Downloadable downloadable = new Downloadable() {
             @Override
-            public void onDownload(final boolean result) {
+            public void onDataDownloaded(final boolean result) {
                 if (result) {
                     mView.showSuccess();
                 } else {
@@ -52,12 +52,12 @@ public class DetailsPresenter {
             }
         };
 
-        mRequest = mModel.saveGifByUrl(url, downloadable);
+        mRequestController = mModel.saveGifByUrl(url, downloadable);
     }
 
     public void onCancelSaving() {
-        if (mRequest != null) {
-            mRequest.onCancel();
+        if (mRequestController != null) {
+            mRequestController.onCancelRequest();
         }
     }
 

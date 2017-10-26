@@ -55,6 +55,6 @@ class GifLoader extends AsyncTask<Void, Void, List<byte[]>> {
 
     @Override
     protected void onPostExecute(final List<byte[]> result) {
-        mRequest.onLoad(result);
+        mRequest.onDataLoaded(result);
     }
 }

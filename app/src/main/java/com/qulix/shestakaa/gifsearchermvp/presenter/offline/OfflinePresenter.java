@@ -14,7 +14,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class OfflinePresenter {
 
     private final OfflineModel mOfflineModel;
-    private Cancelable mRequest;
+    private Cancelable mRequestController;
     private OfflineView mView;
 
     public OfflinePresenter(final OfflineModel offlineModel) {
@@ -35,17 +35,17 @@ public class OfflinePresenter {
 
         final Loadable loadable = new Loadable() {
             @Override
-            public void onLoad(final List<byte[]> data) {
+            public void onDataLoaded(final List<byte[]> data) {
                 mView.showAvailableGifs(data);
             }
         };
 
-        mRequest = mOfflineModel.loadAvailableGifs(loadable);
+        mRequestController = mOfflineModel.loadAvailableGifs(loadable);
     }
 
     public void onCancelLoading() {
-        if (mRequest != null) {
-            mRequest.onCancel();
+        if (mRequestController != null) {
+            mRequestController.onCancelRequest();
         }
     }
 

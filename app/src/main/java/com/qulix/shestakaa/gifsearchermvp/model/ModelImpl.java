@@ -62,7 +62,7 @@ public class ModelImpl implements Model {
         Validator.isArgNotNull(call, "call");
         return new Cancelable() {
             @Override
-            public void onCancel() {
+            public void onCancelRequest() {
                 call.cancel();
             }
         };

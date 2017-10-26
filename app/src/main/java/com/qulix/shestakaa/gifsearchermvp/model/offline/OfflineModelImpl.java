@@ -19,15 +19,15 @@ public class OfflineModelImpl implements OfflineModel {
     }
 
     @Override
-    public Cancelable loadAvailableGifs(final Loadable loadable) {
-        Validator.isArgNotNull(loadable, "loadable");
+    public Cancelable loadAvailableGifs(final Loadable requestController) {
+        Validator.isArgNotNull(requestController, "loadable");
 
-        final GifLoader gifLoader = new GifLoader(mContext, loadable);
+        final GifLoader gifLoader = new GifLoader(mContext, requestController);
         gifLoader.execute();
 
         return new Cancelable() {
             @Override
-            public void onCancel() {
+            public void onCancelRequest() {
                 gifLoader.cancel(true);
             }
         };

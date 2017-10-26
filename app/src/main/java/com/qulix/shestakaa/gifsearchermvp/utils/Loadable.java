@@ -3,5 +3,5 @@ package com.qulix.shestakaa.gifsearchermvp.utils;
 import java.util.List;
 
 public interface Loadable {
-    void onLoad(final List<byte[]> data);
+    void onDataLoaded(final List<byte[]> data);
 }

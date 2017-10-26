@@ -24,7 +24,7 @@ public class Presenter {
     private final Model mModel;
     private final Callback<Feed> mCallback;
     private final Router mRouter;
-    private Cancelable mRequest;
+    private Cancelable mRequestController;
     private View mView;
     private RequestType mPreviousRequest = TRENDING;
     private String mPreviousSearchQuery = "";
@@ -84,7 +84,7 @@ public class Presenter {
 
     public void onMainScreenSet() {
         onStopRequest();
-        mRequest = mModel.getTrending(mCallback);
+        mRequestController = mModel.getTrending(mCallback);
         mPreviousRequest = TRENDING;
         mIsDataEnded = false;
     }
@@ -92,7 +92,7 @@ public class Presenter {
     public void onTextInputChanged(final String request) {
         Validator.isArgNotNull(request, "request");
         onStopRequest();
-        mRequest = mModel.getByRequest(mCallback, request);
+        mRequestController = mModel.getByRequest(mCallback, request);
         mPreviousRequest = SEARCH;
         mPreviousSearchQuery = request;
         mIsDataEnded = false;
@@ -104,8 +104,8 @@ public class Presenter {
     }
 
     public void onStopRequest() {
-        if (mRequest != null) {
-            mRequest.onCancel();
+        if (mRequestController != null) {
+            mRequestController.onCancelRequest();
         }
     }
 
@@ -117,12 +117,12 @@ public class Presenter {
         if (!mIsDataEnded) {
             switch (mPreviousRequest) {
                 case SEARCH:
-                    mRequest = mModel.loadMoreSearch(mCallback, mPreviousSearchQuery,
-                                                     mPreviousOffset);
+                    mRequestController = mModel.loadMoreSearch(mCallback, mPreviousSearchQuery,
+                                                               mPreviousOffset);
                     break;
                 case TRENDING:
                 default:
-                    mRequest = mModel.loadMoreTrending(mCallback, mPreviousOffset);
+                    mRequestController = mModel.loadMoreTrending(mCallback, mPreviousOffset);
             }
         } else {
             mView.showGifsEndedInfo();
