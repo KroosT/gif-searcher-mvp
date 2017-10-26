@@ -66,7 +66,6 @@ public class OfflineAdapter extends RecyclerView.Adapter<OfflineAdapter.MyViewHo
         Validator.isArgNotNull(bytes, "bytes");
         mBytes.clear();
         mBytes.addAll(bytes);
-        System.out.println(mBytes);
         notifyDataSetChanged();
     }
 }

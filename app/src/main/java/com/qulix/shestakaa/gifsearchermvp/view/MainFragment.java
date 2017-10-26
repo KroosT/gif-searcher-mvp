@@ -66,4 +66,8 @@ public class MainFragment extends Fragment implements Observer {
             mView.showOfflineModeSuggestion();
         }
     }
+
+    public static MainFragment newInstance() {
+        return new MainFragment();
+    }
 }

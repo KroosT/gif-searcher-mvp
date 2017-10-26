@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.gifdetails.DetailsModelImpl;
-import com.qulix.shestakaa.gifsearchermvp.presenter.Router;
 import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsPresenter;
+import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsRouter;
 import com.qulix.shestakaa.gifsearchermvp.utils.ConnectionStatus;
 import com.qulix.shestakaa.gifsearchermvp.utils.NetworkObservable;
 import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
@@ -34,7 +34,7 @@ public class GifDetailsFragment extends Fragment implements Observer {
 
         final View view = inflater.inflate(R.layout.fragment_gif_details, container, false);
         mPresenter = new DetailsPresenter(new DetailsModelImpl(getContext()),
-                                          new Router(getFragmentManager()));
+                                          new DetailsRouter(getFragmentManager()));
 
         mView = new DetailsViewImpl(view.findViewById(R.id.rootDetails),
                                                              extractArgument(GIF_URL),

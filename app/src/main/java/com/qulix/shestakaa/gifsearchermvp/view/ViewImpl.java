@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +19,9 @@ import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.utils.CancelableTextWatcher;
+import com.qulix.shestakaa.gifsearchermvp.utils.ConnectionStatus;
 import com.qulix.shestakaa.gifsearchermvp.utils.MainScreenListener;
+import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.ViewUtils;
@@ -119,8 +122,17 @@ public class ViewImpl implements View {
                 mPresenter.onSwitchToOffline();
             }
         };
+
+        final Context context = mView.getContext();
         mSnackbar = Snackbar.make(mView, CONNECTION_ERROR, Snackbar.LENGTH_INDEFINITE)
-                            .setAction(GO_OFFLINE, onSnackBarClick);
+                            .setAction(GO_OFFLINE, onSnackBarClick)
+                            .setActionTextColor(ContextCompat.getColor(context,
+                                                                       R.color.colorPrimary));
+        final ConnectionStatus connectionStatus = NetworkStateReceiver.getObservable()
+                                                                      .getConnectionStatus();
+        if (connectionStatus == ConnectionStatus.NO_CONNECTION) {
+            mSnackbar.show();
+        }
 
     }
 
@@ -132,7 +144,9 @@ public class ViewImpl implements View {
 
     @Override
     public void showError() {
-        Toast.makeText(mView.getContext(), CONNECTION_ERROR, Toast.LENGTH_SHORT).show();
+        if (!mSnackbar.isShown()) {
+            Toast.makeText(mView.getContext(), CONNECTION_ERROR, Toast.LENGTH_SHORT).show();
+        }
 
     }
 

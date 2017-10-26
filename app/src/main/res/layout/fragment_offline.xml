@@ -1,44 +1,50 @@
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootOffline"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.yalantis.jellytoolbar.widget.JellyToolbar
-        android:id="@+id/offline_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
-
-        <TextView
-            android:id="@+id/offline_toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="monospace"
-            android:text="@string/app_name"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/defaultTextSize"/>
-
-    </com.yalantis.jellytoolbar.widget.JellyToolbar>
-
-    <TextView
-        android:id="@+id/offline_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorTransparent"
-        android:fontFamily="monospace"
-        android:paddingBottom="@dimen/defaultMargin"
-        android:paddingTop="@dimen/defaultMargin"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/defaultTextSize"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/offline_recycler_view"
+    <LinearLayout
+        android:id="@+id/rootOffline"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black"/>
+        android:orientation="vertical">
 
-</LinearLayout>
+        <com.yalantis.jellytoolbar.widget.JellyToolbar
+            android:id="@+id/offline_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary">
+
+            <TextView
+                android:id="@+id/offline_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="monospace"
+                android:text="@string/app_name"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/defaultTextSize"/>
+
+        </com.yalantis.jellytoolbar.widget.JellyToolbar>
+
+        <TextView
+            android:id="@+id/offline_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorTransparent"
+            android:fontFamily="monospace"
+            android:paddingBottom="@dimen/defaultMargin"
+            android:paddingTop="@dimen/defaultMargin"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/defaultTextSize"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/offline_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"/>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

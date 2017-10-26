@@ -1,6 +1,8 @@
 package com.qulix.shestakaa.gifsearchermvp.view.gifdetails;
 
+import android.content.Context;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -10,6 +12,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsPresenter;
+import com.qulix.shestakaa.gifsearchermvp.utils.ConnectionStatus;
+import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -53,8 +57,18 @@ public class DetailsViewImpl implements DetailsView {
                 mDetailsPresenter.onSwitchToOffline();
             }
         };
+
+        final Context context = mView.getContext();
         mSnackbar = Snackbar.make(mView, CONNECTION_ERROR, Snackbar.LENGTH_INDEFINITE)
-                            .setAction(GO_OFFLINE, onSnackBarClick);
+                            .setAction(GO_OFFLINE, onSnackBarClick)
+                            .setActionTextColor(ContextCompat.getColor(context,
+                                                                       R.color.colorPrimary));
+
+        final ConnectionStatus connectionStatus = NetworkStateReceiver.getObservable()
+                                                                      .getConnectionStatus();
+        if (connectionStatus == ConnectionStatus.NO_CONNECTION) {
+            mSnackbar.show();
+        }
     }
 
     @Override

@@ -1,29 +1,29 @@
-package com.qulix.shestakaa.gifsearchermvp.presenter;
+package com.qulix.shestakaa.gifsearchermvp.presenter.offline;
 
 import android.support.v4.app.FragmentManager;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
+import com.qulix.shestakaa.gifsearchermvp.view.MainFragment;
 import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.GifDetailsFragment;
-import com.qulix.shestakaa.gifsearchermvp.view.offline.OfflineFragment;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class Router {
+public class OfflineRouter {
 
     private final FragmentManager mFragmentManager;
     private final static String TAG = "fragment";
 
-    public Router(final FragmentManager fragmentManager) {
+    public OfflineRouter(final FragmentManager fragmentManager) {
         Validator.isArgNotNull(fragmentManager, "fragmentManager");
         mFragmentManager = fragmentManager;
     }
 
 
-    public void goToOfflineScreen() {
+    public void goToMainScreen() {
         mFragmentManager.beginTransaction()
-                        .replace(R.id.fragment, OfflineFragment.newInstance())
+                        .replace(R.id.fragment, MainFragment.newInstance())
                         .addToBackStack(TAG)
                         .commit();
     }

@@ -16,10 +16,14 @@ public class OfflinePresenter {
     private final OfflineModel mOfflineModel;
     private Cancelable mRequestController;
     private OfflineView mView;
+    private final OfflineRouter mRouter;
 
-    public OfflinePresenter(final OfflineModel offlineModel) {
+    public OfflinePresenter(final OfflineModel offlineModel, final OfflineRouter router) {
         Validator.isArgNotNull(offlineModel, "offlineModel");
+        Validator.isArgNotNull(router, "router");
+
         mOfflineModel = offlineModel;
+        mRouter = router;
     }
 
     public void onViewBind(final OfflineView view) {
@@ -49,4 +53,7 @@ public class OfflinePresenter {
         }
     }
 
+    public void onSwitchToOnline() {
+        mRouter.goToMainScreen();
+    }
 }

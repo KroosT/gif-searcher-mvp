@@ -1,7 +1,6 @@
 package com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails;
 
 import com.qulix.shestakaa.gifsearchermvp.model.gifdetails.DetailsModel;
-import com.qulix.shestakaa.gifsearchermvp.presenter.Router;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Downloadable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
@@ -13,11 +12,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class DetailsPresenter {
 
     private final DetailsModel mModel;
-    private final Router mRouter;
+    private final DetailsRouter mRouter;
     private DetailsView mView;
     private Cancelable mRequestController;
 
-    public DetailsPresenter(final DetailsModel model, final Router router) {
+    public DetailsPresenter(final DetailsModel model, final DetailsRouter router) {
         Validator.isArgNotNull(model, "model");
         Validator.isArgNotNull(router, "router");
         mModel = model;

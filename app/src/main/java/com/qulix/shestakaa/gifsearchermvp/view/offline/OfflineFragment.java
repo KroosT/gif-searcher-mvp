@@ -9,11 +9,19 @@ import android.view.ViewGroup;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.offline.OfflineModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.offline.OfflinePresenter;
+import com.qulix.shestakaa.gifsearchermvp.presenter.offline.OfflineRouter;
+import com.qulix.shestakaa.gifsearchermvp.utils.ConnectionStatus;
+import com.qulix.shestakaa.gifsearchermvp.utils.NetworkObservable;
+import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 
-public class OfflineFragment extends Fragment {
+import java.util.Observable;
+import java.util.Observer;
+
+public class OfflineFragment extends Fragment implements Observer {
 
 
     private OfflinePresenter mPresenter;
+    private OfflineViewImpl mView;
 
     public OfflineFragment() {
 
@@ -25,17 +33,25 @@ public class OfflineFragment extends Fragment {
                              final Bundle savedInstanceState) {
 
         final View v = inflater.inflate(R.layout.fragment_offline, container, false);
-        mPresenter = new OfflinePresenter(new OfflineModelImpl(getContext()));
-        final OfflineViewImpl offlineView = new OfflineViewImpl(v.findViewById(R.id.rootOffline),
-                                                                mPresenter);
+        mPresenter = new OfflinePresenter(new OfflineModelImpl(getContext()),
+                                          new OfflineRouter(getFragmentManager()));
+
+        mView = new OfflineViewImpl(v.findViewById(R.id.rootOffline), mPresenter);
 
         return v;
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onResume() {
+        NetworkStateReceiver.getObservable().addObserver(this);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
         mPresenter.onCancelLoading();
+        NetworkStateReceiver.getObservable().deleteObserver(this);
+        super.onPause();
     }
 
     @Override
@@ -44,7 +60,17 @@ public class OfflineFragment extends Fragment {
         super.onDestroy();
     }
 
+    @Override
+    public void update(final Observable o, final Object arg) {
+        if (((NetworkObservable) o).getConnectionStatus() == ConnectionStatus.CONNECTED) {
+            mView.showOnlineModeAvailable();
+        } else {
+            mView.dismissOnlineModeAvailable();
+        }
+    }
+
     public static OfflineFragment newInstance() {
         return new OfflineFragment();
     }
+
 }
