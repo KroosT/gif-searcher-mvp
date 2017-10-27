@@ -53,7 +53,7 @@ public class OfflinePresenter {
         }
     }
 
-    public void onSwitchToOnline() {
+    public void onSwitchToMainScreen() {
         mRouter.goToMainScreen();
     }
 }

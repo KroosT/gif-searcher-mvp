@@ -8,4 +8,5 @@ public interface DetailsView {
     void showGif(final String url);
     void showSuccess();
     void showError();
+    void showDownloading();
 }

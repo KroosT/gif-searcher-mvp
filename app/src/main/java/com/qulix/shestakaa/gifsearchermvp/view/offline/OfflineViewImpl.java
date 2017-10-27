@@ -52,7 +52,7 @@ public class OfflineViewImpl implements OfflineView {
         final View.OnClickListener onSnackBarClick = new View.OnClickListener() {
             @Override
             public void onClick(final android.view.View v) {
-                mOfflinePresenter.onSwitchToOnline();
+                mOfflinePresenter.onSwitchToMainScreen();
             }
         };
 

@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +34,10 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.CONNECTION_ERROR;
+import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.DOWNLOADING_STATUS;
 import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.GIFS_ENDED;
 import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.GO_OFFLINE;
 import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.NO_GIFS_ERROR;
@@ -42,10 +46,8 @@ import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.NO_GIFS_E
 public class ViewImpl implements View {
 
     private final android.view.View mView;
-    private final TextView mToolbarTextView;
     private final JellyToolbar mJellyToolbar;
     private final TextView mTitleTextView;
-    private final ImageButton mOffline;
     private final AppCompatEditText mEditText;
     private final RecyclerAdapter mAdapter;
     private final CancelableTextWatcher mWatcher;
@@ -64,28 +66,14 @@ public class ViewImpl implements View {
         mTitleTextView = view.findViewById(R.id.title);
         mTitleTextView.setText(R.string.trending);
 
-        mToolbarTextView = view.findViewById(R.id.toolbar_title);
-        mToolbarTextView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(final android.view.View v) {
-                mPresenter.onMainScreenSet();
-                mTitleTextView.setText(R.string.trending);
-            }
-        });
-
-        mOffline = view.findViewById(R.id.offlineModeButton);
-        mOffline.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(final android.view.View v) {
-                mPresenter.onSwitchToOffline();
-            }
-        });
-
         mJellyToolbar = view.findViewById(R.id.toolbar);
         mJellyToolbar.setJellyListener(createJellyListener());
 
         mEditText = (AppCompatEditText) LayoutInflater.from(view.getContext())
-                                                      .inflate(R.layout.edit_text, null);
+                                                      .inflate(R.layout.edit_text,
+                                                               new LinearLayout(mView.getContext()),
+                                                               false);
+
         mEditText.setBackgroundResource(R.color.colorTransparent);
         mEditText.setTextColor(Color.WHITE);
         mWatcher = initTextWatcher();
@@ -179,16 +167,14 @@ public class ViewImpl implements View {
             @Override
             public void onToolbarExpandingStarted() {
                 super.onToolbarExpandingStarted();
+                mTitleTextView.setVisibility(INVISIBLE);
                 ViewUtils.showSoftKeyboard(mEditText);
-                mToolbarTextView.setVisibility(android.view.View.INVISIBLE);
-                mOffline.setVisibility(android.view.View.INVISIBLE);
             }
 
             @Override
             public void onToolbarCollapsingStarted() {
                 super.onToolbarCollapsingStarted();
-                mToolbarTextView.setVisibility(android.view.View.VISIBLE);
-                mOffline.setVisibility(android.view.View.VISIBLE);
+                mTitleTextView.setVisibility(VISIBLE);
             }
         };
     }
@@ -238,11 +224,10 @@ public class ViewImpl implements View {
         final String searchText = context.getString(R.string.gifs_for, request);
         final String trendingText = context.getString(R.string.trending);
 
-        final String title = StringUtils.isNotNullOrBlank(request) ? searchText
+        final String title = StringUtils.isNotNullOrBlank(request) ? searchText.trim()
                                                                    : trendingText;
         final int iconResId = StringUtils.isNotNullOrBlank(request) ? R.mipmap.ic_done
                                                                     : R.mipmap.ic_close;
-
         mTitleTextView.setText(title);
         mJellyToolbar.setCancelIconRes(iconResId);
     }

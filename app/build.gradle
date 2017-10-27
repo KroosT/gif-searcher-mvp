@@ -27,6 +27,7 @@ dependencies {
     //retrofit
     //Jelly ToolBar
     //Glide
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
@@ -42,7 +43,6 @@ dependencies {
     testCompile 'org.json:json:20140107'
     testCompile 'org.assertj:assertj-core:1.7.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
-    compile group: 'commons-io', name: 'commons-io', version: '2.5'
 }
 
 allprojects {
@@ -54,5 +54,6 @@ allprojects {
         }
     }
 }
+
 
 

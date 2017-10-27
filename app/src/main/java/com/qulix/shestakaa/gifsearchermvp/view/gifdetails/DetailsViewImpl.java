@@ -19,6 +19,7 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.CONNECTION_ERROR;
+import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.DOWNLOADING_STATUS;
 import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.ERROR_MESSAGE;
 import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.GO_OFFLINE;
 import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.SUCCESS_MESSAGE;
@@ -90,6 +91,11 @@ public class DetailsViewImpl implements DetailsView {
     public void showError() {
         Toast.makeText(mView.getContext(), ERROR_MESSAGE,
                        Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showDownloading() {
+        Toast.makeText(mView.getContext(), DOWNLOADING_STATUS, Toast.LENGTH_SHORT).show();
     }
 
     public void showOfflineModeSuggestion() {

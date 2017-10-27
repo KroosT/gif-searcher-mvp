@@ -9,4 +9,5 @@ public class StringConstants {
     public static final String CONNECTION_RESTORED = "Internet connection restored";
     public static final String GO_OFFLINE = "Go offline";
     public static final String GO_ONLINE = "Go online";
+    public static final String DOWNLOADING_STATUS = "Downloading...";
 }

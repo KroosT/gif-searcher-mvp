@@ -18,44 +18,24 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             app:cancelIcon="@mipmap/ic_close"
-            app:endColor="@color/colorEnd"
             app:icon="@mipmap/ic_search"
-            app:startColor="@color/colorStart"
             app:titleTextColor="@android:color/white">
 
-            <ImageButton
-                android:id="@+id/offlineModeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="10dp"
-                android:background="@color/colorTransparent"
-                android:src="@mipmap/ic_offline"/>
 
             <TextView
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
+                android:id="@+id/title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="bottom"
+                android:background="@color/colorTransparent"
                 android:fontFamily="monospace"
-                android:text="@string/app_name"
+                android:paddingBottom="@dimen/defaultMargin"
+                android:paddingTop="@dimen/defaultMargin"
+                android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/defaultTextSize"/>
 
         </com.yalantis.jellytoolbar.widget.JellyToolbar>
-
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorTransparent"
-            android:fontFamily="monospace"
-            android:paddingBottom="@dimen/defaultMargin"
-            android:paddingTop="@dimen/defaultMargin"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/defaultTextSize"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"

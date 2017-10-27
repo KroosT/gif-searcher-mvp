@@ -4,6 +4,7 @@ import android.support.v4.app.FragmentManager;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
+import com.qulix.shestakaa.gifsearchermvp.view.MainFragment;
 import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.GifDetailsFragment;
 import com.qulix.shestakaa.gifsearchermvp.view.offline.OfflineFragment;
 
@@ -24,6 +25,13 @@ public class DetailsRouter {
     public void goToOfflineScreen() {
         mFragmentManager.beginTransaction()
                         .replace(R.id.fragment, OfflineFragment.newInstance())
+                        .addToBackStack(TAG)
+                        .commit();
+    }
+
+    public void goToMainScreen() {
+        mFragmentManager.beginTransaction()
+                        .replace(R.id.fragment, MainFragment.newInstance())
                         .addToBackStack(TAG)
                         .commit();
     }

@@ -3,6 +3,9 @@ package com.qulix.shestakaa.gifsearchermvp.view.gifdetails;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -39,8 +42,25 @@ public class GifDetailsFragment extends Fragment implements Observer {
         mView = new DetailsViewImpl(view.findViewById(R.id.rootDetails),
                                                              extractArgument(GIF_URL),
                                                              mPresenter);
-
+        setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_details, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.detailsHome:
+                mPresenter.onSwitchToMainScreen();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

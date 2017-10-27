@@ -40,6 +40,7 @@ public class DetailsPresenter {
     public void onSaveGif(final String url) {
         Validator.isArgNotNull(url, "url");
 
+        mView.showDownloading();
         final Downloadable downloadable = new Downloadable() {
             @Override
             public void onDataDownloaded(final boolean result) {
@@ -63,4 +64,6 @@ public class DetailsPresenter {
     public void onSwitchToOffline() {
         mRouter.goToOfflineScreen();
     }
+
+    public void onSwitchToMainScreen() { mRouter.goToMainScreen(); }
 }

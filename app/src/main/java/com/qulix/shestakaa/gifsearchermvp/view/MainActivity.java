@@ -1,5 +1,6 @@
 package com.qulix.shestakaa.gifsearchermvp.view;
 
+import android.support.v7.app.ActionBar;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -18,6 +19,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main);
 
         registerNetworkReceiver();
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setCustomView(R.layout.custom_action_bar_title);
+        }
 
         final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
         if (fragment == null) {
