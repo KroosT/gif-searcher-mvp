@@ -1,6 +1,8 @@
 package com.qulix.shestakaa.gifsearchermvp.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,17 +24,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.LOAD_MORE_BUTTON_TYPE;
+import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.LOAD_MORE_SCROLL_TYPE;
 
 @ParametersAreNonnullByDefault
 class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
     private static final int CONTENT_TYPE = 0;
     private static final int BUTTON_TYPE = 1;
+    private static final int DEFAULT_GIF_COUNT_LIMIT = 25;
 
     private final List<Data> mData;
     private final Context mContext;
     private final MainScreenListener mMainScreenListener;
     private int mTotalCount = 0;
+    private boolean mWasEndReached = false;
 
     RecyclerAdapter(final Context context,
                     final List<Data> data,
@@ -73,7 +79,7 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        if (position >= getItemCount() - 1) {
+        if (getItemViewType(position) == BUTTON_TYPE) {
 
             if (checkButtonIsVisible(holder.mLoadMoreButton)) {
                 holder.mLoadMoreButton.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +92,16 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
             }
 
         } else {
+            final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+            final String loadMoreType = sp.getString(mContext.getResources()
+                                                             .getString(R.string.pref_key),
+                                                     LOAD_MORE_BUTTON_TYPE);
+
+            if (loadMoreType.equalsIgnoreCase(LOAD_MORE_SCROLL_TYPE)
+                    && position == mData.size() - DEFAULT_GIF_COUNT_LIMIT / 2
+                    && !mWasEndReached) {
+                mMainScreenListener.onLoadMoreButtonClicked();
+            }
 
             final String gifUrl = mData.get(position).getImages().getOriginal().getUrl();
             Glide.with(mContext)
@@ -115,7 +131,7 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
 
         int visibility = loadMoreButton.getVisibility();
         boolean isVisible = visibility == VISIBLE;
-        if (mData.size() == mTotalCount) {
+        if (wasEndReached()) {
             if (visibility == VISIBLE) {
                 visibility = INVISIBLE;
                 isVisible = false;
@@ -130,11 +146,21 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>
         return isVisible;
     }
 
+    private boolean wasEndReached() {
+        return mData.size() == mTotalCount;
+    }
+
     public void updateData(final List<Data> data, final int totalCount) {
         Validator.isArgNotNull(data, "data");
-        mTotalCount = totalCount;
+        if (mTotalCount != totalCount) {
+            mWasEndReached = false;
+            mTotalCount = totalCount;
+        }
         mData.clear();
         mData.addAll(data);
+        if (mTotalCount == mData.size()) {
+            mWasEndReached = true;
+        }
         notifyDataSetChanged();
     }
 

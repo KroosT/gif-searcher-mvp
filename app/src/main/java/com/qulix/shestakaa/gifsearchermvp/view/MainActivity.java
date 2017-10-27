@@ -13,6 +13,8 @@ import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 
 public class MainActivity extends AppCompatActivity {
 
+    private NetworkStateReceiver mReceiver;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +45,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mReceiver);
+        super.onDestroy();
+    }
+
     private void registerNetworkReceiver() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(new NetworkStateReceiver(), intentFilter);
+        mReceiver = new NetworkStateReceiver();
+        registerReceiver(mReceiver, intentFilter);
     }
 }

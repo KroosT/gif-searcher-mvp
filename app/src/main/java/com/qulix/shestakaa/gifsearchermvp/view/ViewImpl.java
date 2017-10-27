@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,8 +36,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.CONNECTION_ERROR;
-import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.DOWNLOADING_STATUS;
-import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.GIFS_ENDED;
 import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.GO_OFFLINE;
 import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.NO_GIFS_ERROR;
 
@@ -141,11 +138,6 @@ public class ViewImpl implements View {
     @Override
     public void showNoGifsError() {
         Toast.makeText(mView.getContext(), NO_GIFS_ERROR, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showGifsEndedInfo() {
-        Toast.makeText(mView.getContext(), GIFS_ENDED, Toast.LENGTH_SHORT).show();
     }
 
     public void showOfflineModeSuggestion() {

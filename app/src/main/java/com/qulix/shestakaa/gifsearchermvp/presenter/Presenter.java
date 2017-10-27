@@ -124,8 +124,6 @@ public class Presenter {
                 default:
                     mRequestController = mModel.loadMoreTrending(mCallback, mPreviousOffset);
             }
-        } else {
-            mView.showGifsEndedInfo();
         }
     }
 

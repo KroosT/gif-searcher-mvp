@@ -12,6 +12,5 @@ public interface View {
     void updateData(final List<Data> urls, final int totalCount);
     void showError();
     void showNoGifsError();
-    void showGifsEndedInfo();
 
 }
