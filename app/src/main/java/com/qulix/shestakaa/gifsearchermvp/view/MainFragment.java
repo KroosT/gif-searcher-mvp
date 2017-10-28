@@ -25,8 +25,9 @@ import java.util.Observer;
 
 public class MainFragment extends Fragment implements Observer {
 
+    private View mView;
     private Presenter mPresenter;
-    private ViewImpl mView;
+    private ViewImpl mViewImpl;
 
     public MainFragment() {
 
@@ -35,12 +36,17 @@ public class MainFragment extends Fragment implements Observer {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
+        if (mView != null) {
+            return mView;
+        }
+
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         mPresenter = new Presenter(new ModelImpl(), new Router(getFragmentManager()));
-        mView = new ViewImpl(view.findViewById(R.id.root), mPresenter);
+        mViewImpl = new ViewImpl(view.findViewById(R.id.root), mPresenter);
 
         setHasOptionsMenu(true);
+        mView = view;
         return view;
     }
 
@@ -74,7 +80,7 @@ public class MainFragment extends Fragment implements Observer {
     @Override
     public void onPause() {
         mPresenter.onStopRequest();
-        mView.onStopWatcher();
+        mViewImpl.onStopWatcher();
         NetworkStateReceiver.getObservable().deleteObserver(this);
         super.onPause();
     }
@@ -88,9 +94,9 @@ public class MainFragment extends Fragment implements Observer {
     @Override
     public void update(final Observable o, final Object arg) {
         if (((NetworkObservable) o).getConnectionStatus() == ConnectionStatus.CONNECTED) {
-            mView.dismissOfflineModeSuggestion();
+            mViewImpl.dismissOfflineModeSuggestion();
         } else {
-            mView.showOfflineModeSuggestion();
+            mViewImpl.showOfflineModeSuggestion();
         }
     }
 

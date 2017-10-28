@@ -47,6 +47,7 @@ public class ViewImpl implements View {
     private final TextView mTitleTextView;
     private final AppCompatEditText mEditText;
     private final RecyclerAdapter mAdapter;
+    private final RecyclerView mRecyclerView;
     private final CancelableTextWatcher mWatcher;
     private final Presenter mPresenter;
     private final Snackbar mSnackbar;
@@ -78,8 +79,8 @@ public class ViewImpl implements View {
 
         mJellyToolbar.setContentView(mEditText);
 
-        final RecyclerView recyclerView = mView.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mView.getContext()));
+        mRecyclerView = mView.findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mView.getContext()));
 
         final List<Data> dataList = new ArrayList<>();
         final MainScreenListener mainScreenListener = new MainScreenListener() {
@@ -99,7 +100,7 @@ public class ViewImpl implements View {
         };
 
         mAdapter = new RecyclerAdapter(mView.getContext(), dataList, mainScreenListener);
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
 
         final OnClickListener onSnackBarClick = new OnClickListener() {
             @Override
@@ -167,6 +168,7 @@ public class ViewImpl implements View {
             public void onToolbarCollapsingStarted() {
                 super.onToolbarCollapsingStarted();
                 mTitleTextView.setVisibility(VISIBLE);
+                mRecyclerView.scrollToPosition(0);
             }
         };
     }
@@ -222,6 +224,7 @@ public class ViewImpl implements View {
                                                                     : R.mipmap.ic_close;
         mTitleTextView.setText(title);
         mJellyToolbar.setCancelIconRes(iconResId);
+
     }
 
     public void onStopWatcher() {

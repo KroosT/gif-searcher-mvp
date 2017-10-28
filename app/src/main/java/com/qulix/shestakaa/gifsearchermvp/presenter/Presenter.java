@@ -126,27 +126,4 @@ public class Presenter {
             }
         }
     }
-
-    @SuppressWarnings("unused")
-    public RequestType getPreviousRequestType() {
-        return mPreviousRequest;
-    }
-
-    @SuppressWarnings("unused")
-    public String getPreviousSearchQuery() {
-        return mPreviousSearchQuery;
-    }
-
-    @SuppressWarnings("unused")
-    public void onRestorePreviousRequest(final RequestType previousRequestType,
-                                         final String previousSearchQuery) {
-        Validator.isArgNotNull(previousRequestType, "previousRequestType");
-        Validator.isArgNotNull(previousSearchQuery, "previousSearchQuery");
-
-        if (previousRequestType == SEARCH) {
-            mRequestController = mModel.getByRequest(mCallback, previousSearchQuery);
-        } else {
-            mRequestController = mModel.getTrending(mCallback);
-        }
-    }
 }
