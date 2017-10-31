@@ -13,15 +13,9 @@ import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.gifdetails.DetailsModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsPresenter;
 import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsRouter;
-import com.qulix.shestakaa.gifsearchermvp.utils.ConnectionStatus;
-import com.qulix.shestakaa.gifsearchermvp.utils.NetworkObservable;
-import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
-import java.util.Observable;
-import java.util.Observer;
-
-public class GifDetailsFragment extends Fragment implements Observer {
+public class GifDetailsFragment extends Fragment {
 
     public static final String GIF_URL = "gifUrl";
     private DetailsPresenter mPresenter;
@@ -40,9 +34,11 @@ public class GifDetailsFragment extends Fragment implements Observer {
                                           new DetailsRouter(getFragmentManager()));
 
         mView = new DetailsViewImpl(view.findViewById(R.id.rootDetails),
-                                                             extractArgument(GIF_URL),
-                                                             mPresenter);
-        setHasOptionsMenu(true);
+                                    extractArgument(GIF_URL),
+                                    mPresenter);
+        if (isSinglePaneMode()) {
+            setHasOptionsMenu(true);
+        }
         return view;
     }
 
@@ -66,14 +62,12 @@ public class GifDetailsFragment extends Fragment implements Observer {
     @Override
     public void onResume() {
         super.onResume();
-        NetworkStateReceiver.getObservable().addObserver(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mPresenter.onCancelSaving();
-        NetworkStateReceiver.getObservable().deleteObserver(this);
     }
 
     public static GifDetailsFragment newInstance(final String url) {
@@ -102,12 +96,7 @@ public class GifDetailsFragment extends Fragment implements Observer {
         super.onDestroy();
     }
 
-    @Override
-    public void update(final Observable o, final Object arg) {
-        if (((NetworkObservable) o).getConnectionStatus() == ConnectionStatus.CONNECTED) {
-            mView.dismissOfflineModeSuggestion();
-        } else {
-            mView.showOfflineModeSuggestion();
-        }
+    private boolean isSinglePaneMode() {
+        return getActivity().findViewById(R.id.fragmentDetail) == null;
     }
 }

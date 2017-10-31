@@ -1,26 +1,24 @@
-package com.qulix.shestakaa.gifsearchermvp.utils;
+package com.qulix.shestakaa.gifsearchermvp.model;
 
 import java.util.Observable;
-
-import javax.annotation.Nonnull;
 
 public class NetworkObservable extends Observable {
 
     private static NetworkObservable instance = null;
-    private ConnectionStatus mConnectionStatus = ConnectionStatus.CONNECTED;
+    private boolean mConnected = true;
 
     private NetworkObservable() {
 
     }
 
     public void connectionDown() {
-        mConnectionStatus = ConnectionStatus.NO_CONNECTION;
+        mConnected = false;
         setChanged();
         notifyObservers();
     }
 
     public void connectionUp() {
-        mConnectionStatus = ConnectionStatus.CONNECTED;
+        mConnected = true;
         setChanged();
         notifyObservers();
     }
@@ -32,8 +30,7 @@ public class NetworkObservable extends Observable {
         return instance;
     }
 
-    @Nonnull
-    public ConnectionStatus getConnectionStatus() {
-        return mConnectionStatus;
+    public boolean isConnected() {
+        return mConnected;
     }
 }

@@ -12,17 +12,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsPresenter;
-import com.qulix.shestakaa.gifsearchermvp.utils.ConnectionStatus;
-import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.CONNECTION_ERROR;
-import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.DOWNLOADING_STATUS;
-import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.ERROR_MESSAGE;
-import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.GO_OFFLINE;
-import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.SUCCESS_MESSAGE;
 
 @ParametersAreNonnullByDefault
 public class DetailsViewImpl implements DetailsView {
@@ -60,16 +52,10 @@ public class DetailsViewImpl implements DetailsView {
         };
 
         final Context context = mView.getContext();
-        mSnackbar = Snackbar.make(mView, CONNECTION_ERROR, Snackbar.LENGTH_INDEFINITE)
-                            .setAction(GO_OFFLINE, onSnackBarClick)
+        mSnackbar = Snackbar.make(mView, R.string.connection_error, Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.go_offline, onSnackBarClick)
                             .setActionTextColor(ContextCompat.getColor(context,
                                                                        R.color.colorPrimary));
-
-        final ConnectionStatus connectionStatus = NetworkStateReceiver.getObservable()
-                                                                      .getConnectionStatus();
-        if (connectionStatus == ConnectionStatus.NO_CONNECTION) {
-            mSnackbar.show();
-        }
     }
 
     @Override
@@ -84,24 +70,26 @@ public class DetailsViewImpl implements DetailsView {
 
     @Override
     public void showSuccess() {
-        Toast.makeText(mView.getContext(), SUCCESS_MESSAGE, Toast.LENGTH_SHORT).show();
+        Toast.makeText(mView.getContext(), R.string.success_message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showError() {
-        Toast.makeText(mView.getContext(), ERROR_MESSAGE,
+        Toast.makeText(mView.getContext(), R.string.error_message,
                        Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showDownloading() {
-        Toast.makeText(mView.getContext(), DOWNLOADING_STATUS, Toast.LENGTH_SHORT).show();
+        Toast.makeText(mView.getContext(), R.string.downloading, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
     public void showOfflineModeSuggestion() {
         mSnackbar.show();
     }
 
+    @Override
     public void dismissOfflineModeSuggestion() {
         mSnackbar.dismiss();
     }

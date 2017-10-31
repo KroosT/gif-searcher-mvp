@@ -9,4 +9,6 @@ public interface DetailsView {
     void showSuccess();
     void showError();
     void showDownloading();
+    void showOfflineModeSuggestion();
+    void dismissOfflineModeSuggestion();
 }

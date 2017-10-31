@@ -15,15 +15,9 @@ import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.ModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Router;
-import com.qulix.shestakaa.gifsearchermvp.utils.ConnectionStatus;
-import com.qulix.shestakaa.gifsearchermvp.utils.NetworkObservable;
-import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 import com.qulix.shestakaa.gifsearchermvp.view.preferences.PrefActivity;
 
-import java.util.Observable;
-import java.util.Observer;
-
-public class MainFragment extends Fragment implements Observer {
+public class MainFragment extends Fragment {
 
     private View mView;
     private Presenter mPresenter;
@@ -42,7 +36,7 @@ public class MainFragment extends Fragment implements Observer {
 
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mPresenter = new Presenter(new ModelImpl(), new Router(getFragmentManager()));
+        mPresenter = new Presenter(new ModelImpl(), new Router(getFragmentManager(), getActivity()));
         mViewImpl = new ViewImpl(view.findViewById(R.id.root), mPresenter);
 
         setHasOptionsMenu(true);
@@ -73,7 +67,6 @@ public class MainFragment extends Fragment implements Observer {
 
     @Override
     public void onResume() {
-        NetworkStateReceiver.getObservable().addObserver(this);
         super.onResume();
     }
 
@@ -81,7 +74,6 @@ public class MainFragment extends Fragment implements Observer {
     public void onPause() {
         mPresenter.onStopRequest();
         mViewImpl.onStopWatcher();
-        NetworkStateReceiver.getObservable().deleteObserver(this);
         super.onPause();
     }
 
@@ -89,15 +81,6 @@ public class MainFragment extends Fragment implements Observer {
     public void onDestroy() {
         mPresenter.onViewUnbind();
         super.onDestroy();
-    }
-
-    @Override
-    public void update(final Observable o, final Object arg) {
-        if (((NetworkObservable) o).getConnectionStatus() == ConnectionStatus.CONNECTED) {
-            mViewImpl.dismissOfflineModeSuggestion();
-        } else {
-            mViewImpl.showOfflineModeSuggestion();
-        }
     }
 
     public static MainFragment newInstance() {

@@ -6,8 +6,18 @@
     <string name="offline_mode">Offline mode</string>
     <string name="load_more">Load more</string>
     <string name="settings">Settings</string>
-    <string name="pref_title">Load More Method Type</string>
+    <string name="pref_title">Load More Type</string>
     <string name="pref_summary">Select the way to load more gifs.</string>
     <string name="pref_key">loadMoreType</string>
     <string name="home">Home</string>
+
+    <string name="success_message">Success</string>
+    <string name="error_message">Something went wrong. Cannot save gif</string>
+    <string name="no_gifs_error">No gifs for such request found</string>
+    <string name="data_ended">All gifs were loaded</string>
+    <string name="connection_error">Seems like you have no Internet connection</string>
+    <string name="connection_restored">Internet connection restored</string>
+    <string name="go_offline">Go offline</string>
+    <string name="go_online">Go online</string>
+    <string name="downloading">Downloading…</string>
 </resources>

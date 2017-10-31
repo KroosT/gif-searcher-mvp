@@ -17,6 +17,7 @@ public class OfflineRouter {
 
     public OfflineRouter(final FragmentManager fragmentManager) {
         Validator.isArgNotNull(fragmentManager, "fragmentManager");
+
         mFragmentManager = fragmentManager;
     }
 

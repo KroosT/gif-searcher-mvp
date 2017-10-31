@@ -1,4 +1,4 @@
-package com.qulix.shestakaa.gifsearchermvp.utils;
+package com.qulix.shestakaa.gifsearchermvp.model;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

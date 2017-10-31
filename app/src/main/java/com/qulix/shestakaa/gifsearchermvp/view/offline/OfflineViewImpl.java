@@ -10,17 +10,12 @@ import android.widget.TextView;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.presenter.offline.OfflinePresenter;
-import com.qulix.shestakaa.gifsearchermvp.utils.ConnectionStatus;
-import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.CONNECTION_RESTORED;
-import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.GO_ONLINE;
 
 @ParametersAreNonnullByDefault
 public class OfflineViewImpl implements OfflineView {
@@ -58,15 +53,10 @@ public class OfflineViewImpl implements OfflineView {
 
         final Context context = mView.getContext();
 
-        mSnackbar = Snackbar.make(mView, CONNECTION_RESTORED, Snackbar.LENGTH_LONG)
-                            .setAction(GO_ONLINE, onSnackBarClick)
+        mSnackbar = Snackbar.make(mView, R.string.connection_restored, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.go_online, onSnackBarClick)
                             .setActionTextColor(ContextCompat.getColor(context,
                                                                        R.color.colorPrimary));
-        final ConnectionStatus connectionStatus = NetworkStateReceiver.getObservable()
-                                                                      .getConnectionStatus();
-        if (connectionStatus == ConnectionStatus.CONNECTED) {
-            mSnackbar.show();
-        }
     }
 
     @Override
@@ -75,10 +65,12 @@ public class OfflineViewImpl implements OfflineView {
         mOfflineAdapter.updateDate(bytes);
     }
 
+    @Override
     public void showOnlineModeAvailable() {
         mSnackbar.show();
     }
 
+    @Override
     public void dismissOnlineModeAvailable() {
         mSnackbar.dismiss();
     }

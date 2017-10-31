@@ -1,37 +1,62 @@
 package com.qulix.shestakaa.gifsearchermvp.view;
 
-import android.support.v7.app.ActionBar;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
-import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 
 public class MainActivity extends AppCompatActivity {
 
-    private NetworkStateReceiver mReceiver;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        registerNetworkReceiver();
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
             actionBar.setCustomView(R.layout.custom_action_bar_title);
         }
 
-        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
-        if (fragment == null) {
-            getSupportFragmentManager().beginTransaction()
-                                       .add(R.id.fragment, new MainFragment())
-                                       .commit();
+        setupFragments();
+    }
+
+    private void setupFragments() {
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        final Fragment fragment = fragmentManager.findFragmentById(R.id.fragment);
+        final Fragment fragmentMaster = fragmentManager.findFragmentById(R.id.fragmentMaster);
+        final Fragment fragmentDetail = fragmentManager.findFragmentById(R.id.fragmentDetail);
+
+        if (findViewById(R.id.dual_pane) == null) {
+            if (fragmentMaster != null) {
+                fragmentManager.beginTransaction().remove(fragmentMaster).commit();
+            }
+            if (fragmentDetail != null) {
+                fragmentManager.beginTransaction().remove(fragmentDetail).commit();
+            }
+            if (fragment == null) {
+                fragmentManager.beginTransaction()
+                               .add(R.id.fragment, MainFragment.newInstance())
+                               .commit();
+            }
+        } else {
+            if (fragment != null) {
+                fragmentManager.beginTransaction().remove(fragment).commit();
+            }
+            if (fragmentMaster == null) {
+                fragmentManager.beginTransaction()
+                               .add(R.id.fragmentMaster, MainFragment.newInstance())
+                               .commit();
+            }
+            if (fragmentDetail == null) {
+                fragmentManager.beginTransaction()
+                               .add(R.id.fragmentDetail, new Fragment())
+                               .commit();
+            }
         }
     }
 
@@ -47,14 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(mReceiver);
         super.onDestroy();
-    }
-
-    private void registerNetworkReceiver() {
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        mReceiver = new NetworkStateReceiver();
-        registerReceiver(mReceiver, intentFilter);
     }
 }

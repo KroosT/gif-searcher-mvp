@@ -8,20 +8,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.offline.OfflineModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.offline.OfflinePresenter;
 import com.qulix.shestakaa.gifsearchermvp.presenter.offline.OfflineRouter;
-import com.qulix.shestakaa.gifsearchermvp.utils.ConnectionStatus;
-import com.qulix.shestakaa.gifsearchermvp.utils.NetworkObservable;
-import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 
-import java.util.Observable;
-import java.util.Observer;
-
-public class OfflineFragment extends Fragment implements Observer {
-
+public class OfflineFragment extends Fragment {
 
     private OfflinePresenter mPresenter;
     private OfflineViewImpl mView;
@@ -40,7 +34,9 @@ public class OfflineFragment extends Fragment implements Observer {
                                           new OfflineRouter(getFragmentManager()));
 
         mView = new OfflineViewImpl(v.findViewById(R.id.rootOffline), mPresenter);
-        setHasOptionsMenu(true);
+        if (isSinglePaneMode()) {
+            setHasOptionsMenu(true);
+        }
         return v;
     }
 
@@ -63,14 +59,12 @@ public class OfflineFragment extends Fragment implements Observer {
 
     @Override
     public void onResume() {
-        NetworkStateReceiver.getObservable().addObserver(this);
         super.onResume();
     }
 
     @Override
     public void onPause() {
         mPresenter.onCancelLoading();
-        NetworkStateReceiver.getObservable().deleteObserver(this);
         super.onPause();
     }
 
@@ -80,17 +74,15 @@ public class OfflineFragment extends Fragment implements Observer {
         super.onDestroy();
     }
 
-    @Override
-    public void update(final Observable o, final Object arg) {
-        if (((NetworkObservable) o).getConnectionStatus() == ConnectionStatus.CONNECTED) {
-            mView.showOnlineModeAvailable();
-        } else {
-            mView.dismissOnlineModeAvailable();
-        }
-    }
-
     public static OfflineFragment newInstance() {
         return new OfflineFragment();
+    }
+
+    private boolean isSinglePaneMode() {
+        final View mainView = LayoutInflater.from(getContext())
+                                            .inflate(R.layout.main, new LinearLayout(getContext()),
+                                                     false);
+        return mainView.findViewById(R.id.fragment) != null;
     }
 
 }

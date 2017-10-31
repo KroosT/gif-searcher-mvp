@@ -1,10 +1,14 @@
 package com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails;
 
+import com.qulix.shestakaa.gifsearchermvp.model.NetworkObservable;
 import com.qulix.shestakaa.gifsearchermvp.model.gifdetails.DetailsModel;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Downloadable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.DetailsView;
+
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -20,7 +24,23 @@ public class DetailsPresenter {
         Validator.isArgNotNull(model, "model");
         Validator.isArgNotNull(router, "router");
         mModel = model;
+        mModel.setObserver(createConnectivityObserver());
         mRouter = router;
+    }
+
+    private Observer createConnectivityObserver() {
+        return new Observer() {
+            @Override
+            public void update(final Observable o, final Object arg) {
+                if (mView != null) {
+                    if (((NetworkObservable) o).isConnected()) {
+                        mView.dismissOfflineModeSuggestion();
+                    } else {
+                        mView.showOfflineModeSuggestion();
+                    }
+                }
+            }
+        };
     }
 
     public void onViewBind(final DetailsView view) {

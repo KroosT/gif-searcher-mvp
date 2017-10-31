@@ -1,5 +1,10 @@
 package com.qulix.shestakaa.gifsearchermvp.model;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.API.ApiInterface;
 import com.qulix.shestakaa.gifsearchermvp.model.API.ApiService;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
@@ -7,10 +12,15 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 
 
+import java.util.Observable;
+import java.util.Observer;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+
+import static com.qulix.shestakaa.gifsearchermvp.model.LoadMoreType.BUTTON;
 
 @ParametersAreNonnullByDefault
 public class ModelImpl implements Model {
@@ -56,6 +66,35 @@ public class ModelImpl implements Model {
         final Call<Feed> call = mApiInterface.getSearch(req, API_KEY, DEFAULT_LIMIT + offset);
         call.enqueue(callback);
         return createEventListener(call);
+    }
+
+    @Override
+    public void setObserver(final Observer observer) {
+        Validator.isArgNotNull(observer, "observer");
+        NetworkStateReceiver.getObservable().addObserver(observer);
+    }
+
+    @Override
+    public void removeObserver(final Observer observer) {
+        Validator.isArgNotNull(observer, "observer");
+        NetworkStateReceiver.getObservable().deleteObserver(observer);
+    }
+
+    @Override
+    public LoadMoreType getLoadMoreType(final Context context) {
+        Validator.isArgNotNull(context, "context");
+
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        final String type = preferences.getString(context.getResources()
+                                                         .getString(R.string.pref_key), null);
+        Validator.isArgNotNull(type, "type");
+
+        for (final LoadMoreType loadMoreType : LoadMoreType.values()) {
+            if (type.equalsIgnoreCase(loadMoreType.getValue())) {
+                return loadMoreType;
+            }
+        }
+        return BUTTON;
     }
 
     private <T> Cancelable createEventListener(final Call<T> call) {

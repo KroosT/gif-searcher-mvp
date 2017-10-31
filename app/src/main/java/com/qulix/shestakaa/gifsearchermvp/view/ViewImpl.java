@@ -16,28 +16,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
-import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
+import com.qulix.shestakaa.gifsearchermvp.utils.AdapterData;
 import com.qulix.shestakaa.gifsearchermvp.utils.CancelableTextWatcher;
-import com.qulix.shestakaa.gifsearchermvp.utils.ConnectionStatus;
 import com.qulix.shestakaa.gifsearchermvp.utils.MainScreenListener;
-import com.qulix.shestakaa.gifsearchermvp.utils.NetworkStateReceiver;
 import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.ViewUtils;
 import com.yalantis.jellytoolbar.listener.JellyListener;
 import com.yalantis.jellytoolbar.widget.JellyToolbar;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.CONNECTION_ERROR;
-import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.GO_OFFLINE;
-import static com.qulix.shestakaa.gifsearchermvp.utils.StringConstants.NO_GIFS_ERROR;
 
 @ParametersAreNonnullByDefault
 public class ViewImpl implements View {
@@ -51,6 +43,7 @@ public class ViewImpl implements View {
     private final CancelableTextWatcher mWatcher;
     private final Presenter mPresenter;
     private final Snackbar mSnackbar;
+    private AdapterData mAdapterData;
 
 
     public ViewImpl(final android.view.View view, final Presenter presenter) {
@@ -61,28 +54,29 @@ public class ViewImpl implements View {
         mPresenter = presenter;
         mPresenter.onViewBind(this);
 
+        final Context context = view.getContext();
         mTitleTextView = view.findViewById(R.id.title);
         mTitleTextView.setText(R.string.trending);
 
         mJellyToolbar = view.findViewById(R.id.toolbar);
         mJellyToolbar.setJellyListener(createJellyListener());
 
-        mEditText = (AppCompatEditText) LayoutInflater.from(view.getContext())
+        mEditText = (AppCompatEditText) LayoutInflater.from(context)
                                                       .inflate(R.layout.edit_text,
-                                                               new LinearLayout(mView.getContext()),
+                                                               new LinearLayout(context),
                                                                false);
 
         mEditText.setBackgroundResource(R.color.colorTransparent);
         mEditText.setTextColor(Color.WHITE);
         mWatcher = initTextWatcher();
-        mEditText.addTextChangedListener(mWatcher);
 
         mJellyToolbar.setContentView(mEditText);
 
         mRecyclerView = mView.findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mView.getContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mRecyclerView.addOnScrollListener(mPresenter.createOnScrollListener(context));
 
-        final List<Data> dataList = new ArrayList<>();
+        mAdapterData = new AdapterData();
         final MainScreenListener mainScreenListener = new MainScreenListener() {
 
             @Override
@@ -99,7 +93,7 @@ public class ViewImpl implements View {
             }
         };
 
-        mAdapter = new RecyclerAdapter(mView.getContext(), dataList, mainScreenListener);
+        mAdapter = new RecyclerAdapter(context, mAdapterData, mainScreenListener);
         mRecyclerView.setAdapter(mAdapter);
 
         final OnClickListener onSnackBarClick = new OnClickListener() {
@@ -109,44 +103,72 @@ public class ViewImpl implements View {
             }
         };
 
-        final Context context = mView.getContext();
-        mSnackbar = Snackbar.make(mView, CONNECTION_ERROR, Snackbar.LENGTH_INDEFINITE)
-                            .setAction(GO_OFFLINE, onSnackBarClick)
+        mSnackbar = Snackbar.make(mView, R.string.connection_error, Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.go_offline, onSnackBarClick)
                             .setActionTextColor(ContextCompat.getColor(context,
                                                                        R.color.colorPrimary));
-        final ConnectionStatus connectionStatus = NetworkStateReceiver.getObservable()
-                                                                      .getConnectionStatus();
-        if (connectionStatus == ConnectionStatus.NO_CONNECTION) {
-            mSnackbar.show();
-        }
 
     }
 
     @Override
-    public void updateData(final List<Data> data, final int totalCount) {
+    public void updateData(final AdapterData data) {
         Validator.isArgNotNull(data, "data");
-        mAdapter.updateData(data, totalCount);
+        mAdapterData = new AdapterData(data);
+        mAdapter.updateData(data);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void showError() {
         if (!mSnackbar.isShown()) {
-            Toast.makeText(mView.getContext(), CONNECTION_ERROR, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mView.getContext(), R.string.connection_error, Toast.LENGTH_SHORT)
+                 .show();
         }
 
     }
 
     @Override
     public void showNoGifsError() {
-        Toast.makeText(mView.getContext(), NO_GIFS_ERROR, Toast.LENGTH_SHORT).show();
+        Toast.makeText(mView.getContext(), R.string.no_gifs_error, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
     public void showOfflineModeSuggestion() {
         mSnackbar.show();
     }
 
+    @Override
     public void dismissOfflineModeSuggestion() {
         mSnackbar.dismiss();
+    }
+
+    @Override
+    public void showButton() {
+        mAdapterData.setProgressBarPresents(false);
+        mAdapterData.setButtonPresents(true);
+        mAdapter.updateData(mAdapterData);
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyItemChanged(mAdapterData.size());
+            }
+        });
+    }
+
+    @Override
+    public void showProgressBar() {
+        mAdapterData.setButtonPresents(false);
+        mAdapterData.setProgressBarPresents(true);
+        mAdapter.updateData(mAdapterData);
+        mAdapter.notifyItemChanged(mAdapterData.size());
+    }
+
+    @Override
+    public void showDataEnded() {
+        mAdapterData.setButtonPresents(false);
+        mAdapter.updateData(mAdapterData);
+        mAdapter.notifyItemChanged(mAdapterData.size());
+        Toast.makeText(mView.getContext(), R.string.data_ended, Toast.LENGTH_SHORT).show();
     }
 
     private JellyListener createJellyListener() {
@@ -161,6 +183,7 @@ public class ViewImpl implements View {
             public void onToolbarExpandingStarted() {
                 super.onToolbarExpandingStarted();
                 mTitleTextView.setVisibility(INVISIBLE);
+                mEditText.addTextChangedListener(mWatcher);
                 ViewUtils.showSoftKeyboard(mEditText);
             }
 
@@ -169,6 +192,8 @@ public class ViewImpl implements View {
                 super.onToolbarCollapsingStarted();
                 mTitleTextView.setVisibility(VISIBLE);
                 mRecyclerView.scrollToPosition(0);
+                mEditText.removeTextChangedListener(mWatcher);
+                mEditText.getText().clear();
             }
         };
     }
@@ -181,6 +206,7 @@ public class ViewImpl implements View {
 
             @Override
             public void afterTextChanged(final Editable s) {
+                onCancelCallbacks();
                 final String request = s.toString();
                 mHandler.postDelayed(new Runnable() {
                     @Override
