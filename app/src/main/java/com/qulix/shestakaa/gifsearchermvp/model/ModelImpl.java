@@ -4,15 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.qulix.shestakaa.gifsearchermvp.GSApplication;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.API.ApiInterface;
 import com.qulix.shestakaa.gifsearchermvp.model.API.ApiService;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
-import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
-
-
-import java.util.Observer;
+import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
+import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -68,15 +67,15 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public void setObserver(final Observer observer) {
+    public void addConnectivityObserver(final ConnectivityObserver observer) {
         Validator.isArgNotNull(observer, "observer");
-        NetworkStateReceiver.getObservable().addObserver(observer);
+        GSApplication.getInstance().getNetworkStateManager().addObserver(observer);
     }
 
     @Override
-    public void removeObserver(final Observer observer) {
+    public void removeConnectivityObserver(final ConnectivityObserver observer) {
         Validator.isArgNotNull(observer, "observer");
-        NetworkStateReceiver.getObservable().deleteObserver(observer);
+        GSApplication.getInstance().getNetworkStateManager().removeObserver(observer);
     }
 
     @Override

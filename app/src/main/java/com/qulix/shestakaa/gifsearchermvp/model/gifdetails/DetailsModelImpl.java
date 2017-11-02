@@ -2,12 +2,11 @@ package com.qulix.shestakaa.gifsearchermvp.model.gifdetails;
 
 import android.content.Context;
 
-import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateReceiver;
+import com.qulix.shestakaa.gifsearchermvp.GSApplication;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
+import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
 import com.qulix.shestakaa.gifsearchermvp.utils.Downloadable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
-
-import java.util.Observer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -39,14 +38,14 @@ public class DetailsModelImpl implements DetailsModel {
     }
 
     @Override
-    public void setObserver(final Observer observer) {
+    public void addConnectivityObserver(final ConnectivityObserver observer) {
         Validator.isArgNotNull(observer, "observer");
-        NetworkStateReceiver.getObservable().addObserver(observer);
+        GSApplication.getInstance().getNetworkStateManager().addObserver(observer);
     }
 
     @Override
-    public void removeObserver(final Observer observer) {
+    public void removeConnectivityObserver(final ConnectivityObserver observer) {
         Validator.isArgNotNull(observer, "observer");
-        NetworkStateReceiver.getObservable().deleteObserver(observer);
+        GSApplication.getInstance().getNetworkStateManager().removeObserver(observer);
     }
 }

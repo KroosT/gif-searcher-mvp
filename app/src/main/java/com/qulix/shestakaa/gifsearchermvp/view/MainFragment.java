@@ -11,9 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.qulix.shestakaa.gifsearchermvp.GSApplication;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.ModelImpl;
-import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateReceiver;
+import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Router;
 import com.qulix.shestakaa.gifsearchermvp.view.preferences.PrefActivity;
@@ -70,7 +71,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         mPresenter.addObserver();
-        if (!NetworkStateReceiver.getObservable().isConnected()) {
+        if (!GSApplication.getInstance().getNetworkStateManager().isConnected()) {
             mViewImpl.showOfflineModeSuggestion();
         }
         super.onResume();

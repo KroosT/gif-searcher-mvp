@@ -1,15 +1,16 @@
 package com.qulix.shestakaa.gifsearchermvp.presenter.offline;
 
-import com.qulix.shestakaa.gifsearchermvp.model.NetworkObservable;
+import android.support.annotation.NonNull;
+
+import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
 import com.qulix.shestakaa.gifsearchermvp.model.offline.OfflineModel;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
+import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
 import com.qulix.shestakaa.gifsearchermvp.utils.Loadable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.view.offline.OfflineView;
 
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -17,7 +18,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class OfflinePresenter {
 
     private final OfflineModel mModel;
-    private final Observer mObserver;
+    @NonNull
+    private final ConnectivityObserver mObserver;
     private Cancelable mRequestController;
     private OfflineView mView;
     private final OfflineRouter mRouter;
@@ -31,12 +33,13 @@ public class OfflinePresenter {
         mRouter = router;
     }
 
-    private Observer createConnectivityObserver() {
-        return new Observer() {
+    @NonNull
+    private ConnectivityObserver createConnectivityObserver() {
+        return new ConnectivityObserver() {
             @Override
-            public void update(final Observable o, final Object arg) {
+            public void update(final NetworkStateManager manager) {
                 if (mView != null) {
-                    if (((NetworkObservable) o).isConnected()) {
+                    if (manager.isConnected()) {
                         mView.showOnlineModeAvailable();
                     } else {
                         mView.dismissOnlineModeAvailable();
@@ -79,15 +82,11 @@ public class OfflinePresenter {
     }
 
     public void addObserver() {
-        if (mObserver != null) {
-            mModel.setObserver(mObserver);
-        }
+        mModel.addConnectivityObserver(mObserver);
     }
 
     public void removeObserver() {
-        if (mObserver != null) {
-            mModel.removeObserver(mObserver);
-        }
+        mModel.removeConnectivityObserver(mObserver);
     }
 
     public void onSnackBarClicked() {

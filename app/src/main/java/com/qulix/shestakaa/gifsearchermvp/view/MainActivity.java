@@ -64,9 +64,4 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
 }

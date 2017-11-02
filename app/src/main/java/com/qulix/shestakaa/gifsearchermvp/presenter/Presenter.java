@@ -8,17 +8,16 @@ import android.support.v7.widget.RecyclerView;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
 import com.qulix.shestakaa.gifsearchermvp.model.Model;
-import com.qulix.shestakaa.gifsearchermvp.model.NetworkObservable;
+import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
 import com.qulix.shestakaa.gifsearchermvp.utils.AdapterData;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
+import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
 import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -44,7 +43,7 @@ public class Presenter {
     private String mPreviousSearchQuery = "";
     private int mPreviousOffset = 0;
     @NonNull
-    private final Observer mObserver;
+    private final ConnectivityObserver mObserver;
     private boolean mIsDataEnded = false;
 
     public Presenter(final Model model, final Router router) {
@@ -95,12 +94,12 @@ public class Presenter {
     }
 
     @NonNull
-    private Observer createConnectivityObserver() {
-        return new Observer() {
+    private ConnectivityObserver createConnectivityObserver() {
+        return new ConnectivityObserver() {
             @Override
-            public void update(final Observable o, final Object arg) {
+            public void update(final NetworkStateManager manager) {
                 if (mView != null) {
-                    if (((NetworkObservable) o).isConnected()) {
+                    if (manager.isConnected()) {
                         mView.dismissOfflineModeSuggestion();
                     } else {
                         mView.showOfflineModeSuggestion();
@@ -110,7 +109,8 @@ public class Presenter {
         };
     }
 
-    public RecyclerView.OnScrollListener createOnScrollListener(@NonNull final Context context) {
+    @NonNull
+    public RecyclerView.OnScrollListener createOnScrollListener(final Context context) {
         return new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
@@ -188,15 +188,11 @@ public class Presenter {
     }
 
     public void addObserver() {
-        if (mObserver != null) {
-            mModel.setObserver(mObserver);
-        }
+        mModel.addConnectivityObserver(mObserver);
     }
 
     public void removeObserver() {
-        if (mObserver != null) {
-            mModel.removeObserver(mObserver);
-        }
+        mModel.removeConnectivityObserver(mObserver);
     }
 
     public void switchToOffline() {

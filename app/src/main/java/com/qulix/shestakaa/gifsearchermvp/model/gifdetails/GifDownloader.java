@@ -59,4 +59,5 @@ class GifDownloader extends AsyncTask<String, Void, Boolean> {
     protected void onPostExecute(final Boolean result) {
         mRequestController.onDataDownloaded(result);
     }
+
 }
