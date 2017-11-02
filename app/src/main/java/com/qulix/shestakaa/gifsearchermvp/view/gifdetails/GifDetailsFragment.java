@@ -61,13 +61,17 @@ public class GifDetailsFragment extends Fragment {
 
     @Override
     public void onResume() {
+        if (isSinglePaneMode()) {
+            mPresenter.onAddObserver();
+        }
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        super.onPause();
         mPresenter.onCancelSaving();
+        mPresenter.onRemoveObserver();
+        super.onPause();
     }
 
     public static GifDetailsFragment newInstance(final String url) {
@@ -91,9 +95,9 @@ public class GifDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         mPresenter.onViewUnbind();
-        super.onDestroy();
+        super.onDestroyView();
     }
 
     private boolean isSinglePaneMode() {

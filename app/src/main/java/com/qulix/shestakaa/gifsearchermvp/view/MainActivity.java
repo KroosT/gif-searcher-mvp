@@ -38,23 +38,21 @@ public class MainActivity extends AppCompatActivity {
             if (fragmentDetail != null) {
                 fragmentManager.beginTransaction().remove(fragmentDetail).commit();
             }
-            if (fragment == null) {
-                fragmentManager.beginTransaction()
-                               .add(R.id.fragment, MainFragment.newInstance())
-                               .commit();
-            }
+            fragmentManager.beginTransaction()
+                           .replace(R.id.fragment, MainFragment.newInstance())
+                           .commit();
         } else {
             if (fragment != null) {
                 fragmentManager.beginTransaction().remove(fragment).commit();
             }
             if (fragmentMaster == null) {
                 fragmentManager.beginTransaction()
-                               .add(R.id.fragmentMaster, MainFragment.newInstance())
+                               .replace(R.id.fragmentMaster, MainFragment.newInstance())
                                .commit();
             }
             if (fragmentDetail == null) {
                 fragmentManager.beginTransaction()
-                               .add(R.id.fragmentDetail, new Fragment())
+                               .replace(R.id.fragmentDetail, new Fragment())
                                .commit();
             }
         }

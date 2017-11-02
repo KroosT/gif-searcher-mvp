@@ -16,5 +16,7 @@ public interface View {
     void dismissOfflineModeSuggestion();
     void showButton();
     void showProgressBar();
+    void showMainProgressBar();
     void showDataEnded();
+    void showBlankScreen();
 }

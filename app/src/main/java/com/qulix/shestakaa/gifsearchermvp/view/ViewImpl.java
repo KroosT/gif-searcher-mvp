@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import com.yalantis.jellytoolbar.widget.JellyToolbar;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
@@ -43,6 +45,9 @@ public class ViewImpl implements View {
     private final CancelableTextWatcher mWatcher;
     private final Presenter mPresenter;
     private final Snackbar mSnackbar;
+    private final TextView mEmptyTextView;
+    private final TextView mErrorTextView;
+    private final ProgressBar mMainProgressBar;
     private AdapterData mAdapterData;
 
 
@@ -52,11 +57,14 @@ public class ViewImpl implements View {
 
         mView = view;
         mPresenter = presenter;
-        mPresenter.onViewBind(this);
 
         final Context context = view.getContext();
         mTitleTextView = view.findViewById(R.id.title);
         mTitleTextView.setText(R.string.trending);
+
+        mEmptyTextView = view.findViewById(R.id.emptyTextView);
+        mErrorTextView = view.findViewById(R.id.errorTextView);
+        mMainProgressBar = view.findViewById(R.id.mainProgressBar);
 
         mJellyToolbar = view.findViewById(R.id.toolbar);
         mJellyToolbar.setJellyListener(createJellyListener());
@@ -108,11 +116,19 @@ public class ViewImpl implements View {
                             .setActionTextColor(ContextCompat.getColor(context,
                                                                        R.color.colorPrimary));
 
+        mPresenter.onViewBind(this);
     }
 
     @Override
     public void updateData(final AdapterData data) {
         Validator.isArgNotNull(data, "data");
+        if (!data.getUrls().isEmpty()) {
+            mRecyclerView.setVisibility(VISIBLE);
+            mEmptyTextView.setVisibility(GONE);
+            mErrorTextView.setVisibility(GONE);
+            mMainProgressBar.setVisibility(GONE);
+        }
+        data.setButtonPresents(mAdapterData.isButtonPresents());
         mAdapterData = new AdapterData(data);
         mAdapter.updateData(data);
         mAdapter.notifyDataSetChanged();
@@ -120,11 +136,11 @@ public class ViewImpl implements View {
 
     @Override
     public void showError() {
-        if (!mSnackbar.isShown()) {
-            Toast.makeText(mView.getContext(), R.string.connection_error, Toast.LENGTH_SHORT)
-                 .show();
+        if (mAdapterData.getUrls().isEmpty()) {
+            mRecyclerView.setVisibility(GONE);
+            mMainProgressBar.setVisibility(GONE);
+            mErrorTextView.setVisibility(VISIBLE);
         }
-
     }
 
     @Override
@@ -164,11 +180,24 @@ public class ViewImpl implements View {
     }
 
     @Override
+    public void showMainProgressBar() {
+        mRecyclerView.setVisibility(GONE);
+        mMainProgressBar.setVisibility(VISIBLE);
+    }
+
+    @Override
     public void showDataEnded() {
         mAdapterData.setButtonPresents(false);
         mAdapter.updateData(mAdapterData);
         mAdapter.notifyItemChanged(mAdapterData.size());
         Toast.makeText(mView.getContext(), R.string.data_ended, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showBlankScreen() {
+        mRecyclerView.setVisibility(GONE);
+        mMainProgressBar.setVisibility(GONE);
+        mEmptyTextView.setVisibility(VISIBLE);
     }
 
     private JellyListener createJellyListener() {
@@ -204,9 +233,7 @@ public class ViewImpl implements View {
             private final static int DELAY = 300;
             private final Handler mHandler = new Handler();
 
-            @Override
             public void afterTextChanged(final Editable s) {
-                onCancelCallbacks();
                 final String request = s.toString();
                 mHandler.postDelayed(new Runnable() {
                     @Override

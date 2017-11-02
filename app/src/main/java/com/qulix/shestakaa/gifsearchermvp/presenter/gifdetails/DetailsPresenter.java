@@ -17,6 +17,7 @@ public class DetailsPresenter {
 
     private final DetailsModel mModel;
     private final DetailsRouter mRouter;
+    private final Observer mObserver;
     private DetailsView mView;
     private Cancelable mRequestController;
 
@@ -24,7 +25,7 @@ public class DetailsPresenter {
         Validator.isArgNotNull(model, "model");
         Validator.isArgNotNull(router, "router");
         mModel = model;
-        mModel.setObserver(createConnectivityObserver());
+        mObserver = createConnectivityObserver();
         mRouter = router;
     }
 
@@ -86,4 +87,16 @@ public class DetailsPresenter {
     }
 
     public void onSwitchToMainScreen() { mRouter.goToMainScreen(); }
+
+    public void onAddObserver() {
+        if (mObserver != null) {
+            mModel.setObserver(mObserver);
+        }
+    }
+
+    public void onRemoveObserver() {
+        if (mObserver != null) {
+            mModel.removeObserver(mObserver);
+        }
+    }
 }

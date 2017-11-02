@@ -24,12 +24,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.preferences.PrefActivity"/>
-
-        <receiver android:name=".model.NetworkStateReceiver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

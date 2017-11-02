@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.ModelImpl;
+import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateReceiver;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Router;
 import com.qulix.shestakaa.gifsearchermvp.view.preferences.PrefActivity;
@@ -31,12 +32,13 @@ public class MainFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         if (mView != null) {
+            mPresenter.onViewBind(mViewImpl);
             return mView;
         }
 
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mPresenter = new Presenter(new ModelImpl(), new Router(getFragmentManager(), getActivity()));
+        mPresenter = new Presenter(new ModelImpl(), new Router(getFragmentManager(), getContext()));
         mViewImpl = new ViewImpl(view.findViewById(R.id.root), mPresenter);
 
         setHasOptionsMenu(true);
@@ -67,20 +69,25 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onResume() {
+        mPresenter.onAddObserver();
+        if (!NetworkStateReceiver.getObservable().isConnected()) {
+            mViewImpl.showOfflineModeSuggestion();
+        }
         super.onResume();
     }
 
     @Override
     public void onPause() {
         mPresenter.onStopRequest();
+        mPresenter.onRemoveObserver();
         mViewImpl.onStopWatcher();
         super.onPause();
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         mPresenter.onViewUnbind();
-        super.onDestroy();
+        super.onDestroyView();
     }
 
     public static MainFragment newInstance() {

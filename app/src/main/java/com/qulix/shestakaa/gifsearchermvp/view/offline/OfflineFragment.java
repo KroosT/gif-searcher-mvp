@@ -8,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.offline.OfflineModelImpl;
@@ -24,18 +23,20 @@ public class OfflineFragment extends Fragment {
 
     }
 
-
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
 
         final View v = inflater.inflate(R.layout.fragment_offline, container, false);
-        mPresenter = new OfflinePresenter(new OfflineModelImpl(getContext()),
-                                          new OfflineRouter(getFragmentManager()));
+        if (savedInstanceState == null) {
+            mPresenter = new OfflinePresenter(new OfflineModelImpl(getContext()),
+                                              new OfflineRouter(getFragmentManager(),
+                                                                getContext()));
 
-        mView = new OfflineViewImpl(v.findViewById(R.id.rootOffline), mPresenter);
-        if (isSinglePaneMode()) {
-            setHasOptionsMenu(true);
+            mView = new OfflineViewImpl(v.findViewById(R.id.rootOffline), mPresenter);
+            if (isSinglePaneMode()) {
+                setHasOptionsMenu(true);
+            }
         }
         return v;
     }
@@ -59,19 +60,23 @@ public class OfflineFragment extends Fragment {
 
     @Override
     public void onResume() {
+        mPresenter.onAddObserver();
         super.onResume();
     }
 
     @Override
     public void onPause() {
         mPresenter.onCancelLoading();
+        mPresenter.onRemoveObserver();
         super.onPause();
     }
 
     @Override
-    public void onDestroy() {
-        mPresenter.onViewUnbind();
-        super.onDestroy();
+    public void onDestroyView() {
+        if (mPresenter != null) {
+            mPresenter.onViewUnbind();
+        }
+        super.onDestroyView();
     }
 
     public static OfflineFragment newInstance() {
@@ -79,10 +84,7 @@ public class OfflineFragment extends Fragment {
     }
 
     private boolean isSinglePaneMode() {
-        final View mainView = LayoutInflater.from(getContext())
-                                            .inflate(R.layout.main, new LinearLayout(getContext()),
-                                                     false);
-        return mainView.findViewById(R.id.fragment) != null;
+        return getActivity().findViewById(R.id.fragmentDetail) == null;
     }
 
 }

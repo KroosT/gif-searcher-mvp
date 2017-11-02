@@ -1,7 +1,9 @@
 package com.qulix.shestakaa.gifsearchermvp.presenter;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -30,18 +32,26 @@ public class Router {
     }
 
     public void goToOfflineScreen() {
-        mFragmentManager.beginTransaction()
-                        .replace(getOfflineContainerViewId(), OfflineFragment.newInstance())
-                        .addToBackStack(TAG)
-                        .commit();
+        final FragmentTransaction transaction =
+                mFragmentManager.beginTransaction()
+                                .replace(getOfflineContainerViewId(), OfflineFragment.newInstance())
+                                .addToBackStack(TAG);
+        if (!isSinglePaneMode()) {
+            transaction.replace(R.id.fragmentDetail, new Fragment());
+        }
+        transaction.commit();
     }
 
     public void goToDetailsScreen(final String url) {
         Validator.isArgNotNull(url, "url");
-        mFragmentManager.beginTransaction()
-                        .replace(getDetailContainerViewId(), GifDetailsFragment.newInstance(url))
-                        .addToBackStack(TAG)
-                        .commit();
+        final FragmentTransaction transaction =
+                mFragmentManager.beginTransaction()
+                                .replace(getDetailContainerViewId(),
+                                         GifDetailsFragment.newInstance(url));
+        if (isSinglePaneMode()) {
+            transaction.addToBackStack(TAG);
+        }
+        transaction.commit();
     }
 
     private int getOfflineContainerViewId() {

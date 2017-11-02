@@ -17,6 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class OfflinePresenter {
 
     private final OfflineModel mModel;
+    private final Observer mObserver;
     private Cancelable mRequestController;
     private OfflineView mView;
     private final OfflineRouter mRouter;
@@ -26,7 +27,7 @@ public class OfflinePresenter {
         Validator.isArgNotNull(router, "router");
 
         mModel = model;
-        mModel.setObserver(createConnectivityObserver());
+        mObserver = createConnectivityObserver();
         mRouter = router;
     }
 
@@ -74,5 +75,17 @@ public class OfflinePresenter {
 
     public void onSwitchToMainScreen() {
         mRouter.goToMainScreen();
+    }
+
+    public void onAddObserver() {
+        if (mObserver != null) {
+            mModel.setObserver(mObserver);
+        }
+    }
+
+    public void onRemoveObserver() {
+        if (mObserver != null) {
+            mModel.removeObserver(mObserver);
+        }
     }
 }

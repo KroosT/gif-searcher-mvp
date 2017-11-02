@@ -17,12 +17,6 @@ public class GSApplication extends Application {
         registerNetworkReceiver();
     }
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        unregisterReceiver(mReceiver);
-    }
-
     private void registerNetworkReceiver() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);

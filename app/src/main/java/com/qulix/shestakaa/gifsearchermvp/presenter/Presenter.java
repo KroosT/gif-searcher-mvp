@@ -1,6 +1,7 @@
 package com.qulix.shestakaa.gifsearchermvp.presenter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -38,9 +39,11 @@ public class Presenter {
     private final Router mRouter;
     private Cancelable mRequestController;
     private View mView;
-    private RequestType mPreviousRequest = TRENDING;
+    private RequestType mPreviousRequest = null;
     private String mPreviousSearchQuery = "";
     private int mPreviousOffset = 0;
+    @NonNull
+    private final Observer mObserver;
     private boolean mIsDataEnded = false;
 
     public Presenter(final Model model, final Router router) {
@@ -48,11 +51,10 @@ public class Presenter {
         Validator.isArgNotNull(router, "router");
 
         mModel = model;
-        mModel.setObserver(createConnectivityObserver());
+        mObserver = createConnectivityObserver();
         mRouter = router;
         mCallback = createCallback();
 
-        onMainScreenSet();
     }
 
     private Callback<Feed> createCallback() {
@@ -73,6 +75,7 @@ public class Presenter {
                 }
                 if (urls.isEmpty()) {
                     mView.showNoGifsError();
+                    mView.showBlankScreen();
                 }
                 if (totalCount == urls.size()) {
                     mIsDataEnded = true;
@@ -90,6 +93,7 @@ public class Presenter {
         };
     }
 
+    @NonNull
     private Observer createConnectivityObserver() {
         return new Observer() {
             @Override
@@ -105,7 +109,7 @@ public class Presenter {
         };
     }
 
-    public RecyclerView.OnScrollListener createOnScrollListener(final Context context) {
+    public RecyclerView.OnScrollListener createOnScrollListener(@NonNull final Context context) {
         return new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
@@ -131,15 +135,28 @@ public class Presenter {
     public void onViewBind(final View view) {
         Validator.isArgNotNull(view, "view");
         mView = view;
+        mView.showMainProgressBar();
+        repeatPreviousRequest();
     }
+
 
     public void onViewUnbind() {
         onStopRequest();
         mView = null;
     }
 
-    public void onMainScreenSet() {
+    private void repeatPreviousRequest() {
         onStopRequest();
+        if (mPreviousRequest == null) {
+            onMainScreenSet();
+        } else if (mPreviousRequest == TRENDING){
+            mRequestController = mModel.getTrending(mCallback);
+        } else {
+            mRequestController = mModel.getByRequest(mCallback, mPreviousSearchQuery);
+        }
+    }
+
+    public void onMainScreenSet() {
         mRequestController = mModel.getTrending(mCallback);
         mPreviousRequest = TRENDING;
         mIsDataEnded = false;
@@ -162,6 +179,18 @@ public class Presenter {
     public void onStopRequest() {
         if (mRequestController != null) {
             mRequestController.onCancelRequest();
+        }
+    }
+
+    public void onAddObserver() {
+        if (mObserver != null) {
+            mModel.setObserver(mObserver);
+        }
+    }
+
+    public void onRemoveObserver() {
+        if (mObserver != null) {
+            mModel.removeObserver(mObserver);
         }
     }
 

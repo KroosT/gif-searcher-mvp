@@ -20,4 +20,6 @@
     <string name="go_offline">Go offline</string>
     <string name="go_online">Go online</string>
     <string name="downloading">Downloading…</string>
+    <string name="emptyText">No gifs found.</string>
+    <string name="errorText">Something went wrong. Check your Internet connection.</string>
 </resources>
