@@ -9,6 +9,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
@@ -19,7 +20,6 @@ import android.widget.Toast;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.utils.AdapterData;
-import com.qulix.shestakaa.gifsearchermvp.utils.CancelableTextWatcher;
 import com.qulix.shestakaa.gifsearchermvp.utils.MainScreenListener;
 import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
@@ -42,13 +42,15 @@ public class ViewImpl implements View {
     private final AppCompatEditText mEditText;
     private final RecyclerAdapter mAdapter;
     private final RecyclerView mRecyclerView;
-    private final CancelableTextWatcher mWatcher;
+    private final TextWatcher mWatcher;
     private final Presenter mPresenter;
     private final Snackbar mSnackbar;
     private final TextView mEmptyTextView;
     private final TextView mErrorTextView;
     private final ProgressBar mMainProgressBar;
     private AdapterData mAdapterData;
+    private final Handler mHandler;
+    private String mRequest;
 
 
     public ViewImpl(final android.view.View view, final Presenter presenter) {
@@ -57,6 +59,7 @@ public class ViewImpl implements View {
 
         mView = view;
         mPresenter = presenter;
+        mRequest = "";
 
         final Context context = view.getContext();
         mTitleTextView = view.findViewById(R.id.title);
@@ -76,7 +79,9 @@ public class ViewImpl implements View {
 
         mEditText.setBackgroundResource(R.color.colorTransparent);
         mEditText.setTextColor(Color.WHITE);
-        mWatcher = initTextWatcher();
+
+        mHandler = new Handler();
+        mWatcher = initTextWatcher(mHandler);
 
         mJellyToolbar.setContentView(mEditText);
 
@@ -129,9 +134,17 @@ public class ViewImpl implements View {
             mMainProgressBar.setVisibility(GONE);
         }
         data.setButtonPresents(mAdapterData.isButtonPresents());
-        mAdapterData = new AdapterData(data);
         mAdapter.updateData(data);
         mAdapter.notifyDataSetChanged();
+        mAdapterData = new AdapterData(data);
+
+        final Context context = mView.getContext();
+        final String searchText = context.getString(R.string.gifs_for, mRequest);
+        final String trendingText = context.getString(R.string.trending);
+
+        final String title = StringUtils.isNotNullOrBlank(mRequest) ? searchText.trim()
+                                                                    : trendingText;
+        mTitleTextView.setText(title);
     }
 
     @Override
@@ -227,27 +240,22 @@ public class ViewImpl implements View {
         };
     }
 
-    private CancelableTextWatcher initTextWatcher() {
-        return new CancelableTextWatcher() {
+    private TextWatcher initTextWatcher(final Handler handler) {
+        return new TextWatcher() {
 
             private final static int DELAY = 300;
-            private final Handler mHandler = new Handler();
 
             public void afterTextChanged(final Editable s) {
+                handler.removeCallbacksAndMessages(null);
                 final String request = s.toString();
-                mHandler.postDelayed(new Runnable() {
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         execute(request);
                     }
                 }, DELAY);
 
-                updateUI(request);
-            }
-
-            @Override
-            public void cancelCallbacks() {
-                mHandler.removeCallbacksAndMessages(null);
+                updateIcon(request);
             }
 
             @Override
@@ -259,24 +267,18 @@ public class ViewImpl implements View {
 
     private void execute(final String request) {
         mPresenter.onTextInputChanged(request);
+        mRequest = request;
     }
 
-    private void updateUI(final String request) {
+    private void updateIcon(final String request) {
 
-        final Context context = mView.getContext();
-        final String searchText = context.getString(R.string.gifs_for, request);
-        final String trendingText = context.getString(R.string.trending);
-
-        final String title = StringUtils.isNotNullOrBlank(request) ? searchText.trim()
-                                                                   : trendingText;
         final int iconResId = StringUtils.isNotNullOrBlank(request) ? R.mipmap.ic_done
                                                                     : R.mipmap.ic_close;
-        mTitleTextView.setText(title);
         mJellyToolbar.setCancelIconRes(iconResId);
 
     }
 
     public void stopWatcher() {
-        mWatcher.cancelCallbacks();
+        mHandler.removeCallbacksAndMessages(null);
     }
 }

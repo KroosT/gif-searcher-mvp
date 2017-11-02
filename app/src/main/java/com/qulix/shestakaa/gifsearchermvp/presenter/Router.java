@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
+import com.qulix.shestakaa.gifsearchermvp.view.MainFragment;
 import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.GifDetailsFragment;
 import com.qulix.shestakaa.gifsearchermvp.view.offline.OfflineFragment;
 
@@ -37,7 +38,10 @@ public class Router {
                                 .replace(getOfflineContainerViewId(), OfflineFragment.newInstance())
                                 .addToBackStack(TAG);
         if (!isSinglePaneMode()) {
-            transaction.replace(R.id.fragmentDetail, new Fragment());
+            final Fragment fragment = mFragmentManager.findFragmentById(R.id.fragmentDetail);
+            if (fragment != null) {
+                transaction.remove(fragment);
+            }
         }
         transaction.commit();
     }

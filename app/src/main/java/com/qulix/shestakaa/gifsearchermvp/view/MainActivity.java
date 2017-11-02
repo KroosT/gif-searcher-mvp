@@ -3,19 +3,23 @@ package com.qulix.shestakaa.gifsearchermvp.view;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    private FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        mFragmentManager = getSupportFragmentManager();
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -26,35 +30,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupFragments() {
-        final FragmentManager fragmentManager = getSupportFragmentManager();
-        final Fragment fragment = fragmentManager.findFragmentById(R.id.fragment);
-        final Fragment fragmentMaster = fragmentManager.findFragmentById(R.id.fragmentMaster);
-        final Fragment fragmentDetail = fragmentManager.findFragmentById(R.id.fragmentDetail);
+        final Fragment fragment = mFragmentManager.findFragmentById(R.id.fragment);
+        final Fragment fragmentMaster = mFragmentManager.findFragmentById(R.id.fragmentMaster);
+        final Fragment fragmentDetail = mFragmentManager.findFragmentById(R.id.fragmentDetail);
 
         if (findViewById(R.id.dual_pane) == null) {
             if (fragmentMaster != null) {
-                fragmentManager.beginTransaction().remove(fragmentMaster).commit();
+                mFragmentManager.beginTransaction().remove(fragmentMaster).commit();
             }
             if (fragmentDetail != null) {
-                fragmentManager.beginTransaction().remove(fragmentDetail).commit();
+                mFragmentManager.beginTransaction().remove(fragmentDetail).commit();
             }
-            fragmentManager.beginTransaction()
-                           .replace(R.id.fragment, MainFragment.newInstance())
-                           .commit();
+            mFragmentManager.beginTransaction()
+                            .replace(R.id.fragment, MainFragment.newInstance())
+                            .commit();
         } else {
             if (fragment != null) {
-                fragmentManager.beginTransaction().remove(fragment).commit();
+                mFragmentManager.beginTransaction().remove(fragment).commit();
             }
-            if (fragmentMaster == null) {
-                fragmentManager.beginTransaction()
-                               .replace(R.id.fragmentMaster, MainFragment.newInstance())
-                               .commit();
-            }
-            if (fragmentDetail == null) {
-                fragmentManager.beginTransaction()
-                               .replace(R.id.fragmentDetail, new Fragment())
-                               .commit();
-            }
+            mFragmentManager.beginTransaction()
+                            .replace(R.id.fragmentMaster, MainFragment.newInstance())
+                            .commit();
+
         }
     }
 
