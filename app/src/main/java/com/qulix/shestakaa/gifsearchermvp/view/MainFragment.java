@@ -32,7 +32,7 @@ public class MainFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         if (mView != null) {
-            mPresenter.onViewBind(mViewImpl);
+            mPresenter.bindView(mViewImpl);
             return mView;
         }
 
@@ -60,7 +60,7 @@ public class MainFragment extends Fragment {
                 startActivity(i);
                 return true;
             case R.id.offlineModeButton:
-                mPresenter.onSwitchToOffline();
+                mPresenter.switchToOffline();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -69,7 +69,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onResume() {
-        mPresenter.onAddObserver();
+        mPresenter.addObserver();
         if (!NetworkStateReceiver.getObservable().isConnected()) {
             mViewImpl.showOfflineModeSuggestion();
         }
@@ -78,15 +78,15 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onPause() {
-        mPresenter.onStopRequest();
-        mPresenter.onRemoveObserver();
-        mViewImpl.onStopWatcher();
+        mPresenter.stopRequest();
+        mPresenter.removeObserver();
+        mViewImpl.stopWatcher();
         super.onPause();
     }
 
     @Override
     public void onDestroyView() {
-        mPresenter.onViewUnbind();
+        mPresenter.unbindView();
         super.onDestroyView();
     }
 

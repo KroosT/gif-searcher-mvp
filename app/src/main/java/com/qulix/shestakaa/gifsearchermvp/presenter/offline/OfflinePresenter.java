@@ -46,16 +46,17 @@ public class OfflinePresenter {
         };
     }
 
-    public void onViewBind(final OfflineView view) {
+    public void bindView(final OfflineView view) {
         Validator.isArgNotNull(view, "view");
         mView = view;
+        setInitialScreen();
     }
 
-    public void onViewUnbind() {
+    public void unbindView() {
         mView = null;
     }
 
-    public void onScreenStarted() {
+    private void setInitialScreen() {
 
         final Loadable loadable = new Loadable() {
             @Override
@@ -67,25 +68,29 @@ public class OfflinePresenter {
         mRequestController = mModel.loadAvailableGifs(loadable);
     }
 
-    public void onCancelLoading() {
+    public void cancelLoading() {
         if (mRequestController != null) {
-            mRequestController.onCancelRequest();
+            mRequestController.cancelRequest();
         }
     }
 
-    public void onSwitchToMainScreen() {
+    public void switchToMainScreen() {
         mRouter.goToMainScreen();
     }
 
-    public void onAddObserver() {
+    public void addObserver() {
         if (mObserver != null) {
             mModel.setObserver(mObserver);
         }
     }
 
-    public void onRemoveObserver() {
+    public void removeObserver() {
         if (mObserver != null) {
             mModel.removeObserver(mObserver);
         }
+    }
+
+    public void onSnackBarClicked() {
+        switchToMainScreen();
     }
 }

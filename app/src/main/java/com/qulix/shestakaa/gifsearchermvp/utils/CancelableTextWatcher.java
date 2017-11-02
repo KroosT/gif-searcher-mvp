@@ -4,6 +4,6 @@ import android.text.TextWatcher;
 
 public interface CancelableTextWatcher extends TextWatcher {
 
-    void onCancelCallbacks();
+    void cancelCallbacks();
 
 }

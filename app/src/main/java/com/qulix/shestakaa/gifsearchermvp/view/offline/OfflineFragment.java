@@ -51,7 +51,7 @@ public class OfflineFragment extends Fragment {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.offlineHome:
-                mPresenter.onSwitchToMainScreen();
+                mPresenter.switchToMainScreen();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -60,21 +60,21 @@ public class OfflineFragment extends Fragment {
 
     @Override
     public void onResume() {
-        mPresenter.onAddObserver();
+        mPresenter.addObserver();
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        mPresenter.onCancelLoading();
-        mPresenter.onRemoveObserver();
+        mPresenter.cancelLoading();
+        mPresenter.removeObserver();
         super.onPause();
     }
 
     @Override
     public void onDestroyView() {
         if (mPresenter != null) {
-            mPresenter.onViewUnbind();
+            mPresenter.unbindView();
         }
         super.onDestroyView();
     }

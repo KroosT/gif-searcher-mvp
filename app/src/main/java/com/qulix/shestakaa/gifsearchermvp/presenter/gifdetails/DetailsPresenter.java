@@ -44,21 +44,19 @@ public class DetailsPresenter {
         };
     }
 
-    public void onViewBind(final DetailsView view) {
+    public void bindView(final DetailsView view, final String url) {
         Validator.isArgNotNull(view, "view");
-        mView = view;
-    }
-
-    public void onViewUnbind() {
-        mView = null;
-    }
-
-    public void onShowGif(final String url) {
         Validator.isArgNotNull(url, "url");
+
+        mView = view;
         mView.showGif(url);
     }
 
-    public void onSaveGif(final String url) {
+    public void unbindView() {
+        mView = null;
+    }
+
+    private void saveGif(final String url) {
         Validator.isArgNotNull(url, "url");
 
         mView.showDownloading();
@@ -76,27 +74,36 @@ public class DetailsPresenter {
         mRequestController = mModel.saveGifByUrl(url, downloadable);
     }
 
-    public void onCancelSaving() {
+    public void cancelSaving() {
         if (mRequestController != null) {
-            mRequestController.onCancelRequest();
+            mRequestController.cancelRequest();
         }
     }
 
-    public void onSwitchToOffline() {
+    private void switchToOffline() {
         mRouter.goToOfflineScreen();
     }
 
-    public void onSwitchToMainScreen() { mRouter.goToMainScreen(); }
+    public void switchToMainScreen() { mRouter.goToMainScreen(); }
 
-    public void onAddObserver() {
+    public void addObserver() {
         if (mObserver != null) {
             mModel.setObserver(mObserver);
         }
     }
 
-    public void onRemoveObserver() {
+    public void removeObserver() {
         if (mObserver != null) {
             mModel.removeObserver(mObserver);
         }
+    }
+
+    public void onSaveButtonClicked(final String url) {
+        Validator.isArgNotNull(url, "url");
+        saveGif(url);
+    }
+
+    public void onSnackBarClicked() {
+        switchToOffline();
     }
 }

@@ -107,7 +107,7 @@ public class ViewImpl implements View {
         final OnClickListener onSnackBarClick = new OnClickListener() {
             @Override
             public void onClick(final android.view.View v) {
-                mPresenter.onSwitchToOffline();
+                mPresenter.switchToOffline();
             }
         };
 
@@ -116,7 +116,7 @@ public class ViewImpl implements View {
                             .setActionTextColor(ContextCompat.getColor(context,
                                                                        R.color.colorPrimary));
 
-        mPresenter.onViewBind(this);
+        mPresenter.bindView(this);
     }
 
     @Override
@@ -246,7 +246,7 @@ public class ViewImpl implements View {
             }
 
             @Override
-            public void onCancelCallbacks() {
+            public void cancelCallbacks() {
                 mHandler.removeCallbacksAndMessages(null);
             }
 
@@ -258,11 +258,7 @@ public class ViewImpl implements View {
     }
 
     private void execute(final String request) {
-        if (StringUtils.isNotNullOrBlank(request)) {
-            mPresenter.onTextInputChanged(request);
-        } else {
-            mPresenter.onMainScreenSet();
-        }
+        mPresenter.onTextInputChanged(request);
     }
 
     private void updateUI(final String request) {
@@ -280,7 +276,7 @@ public class ViewImpl implements View {
 
     }
 
-    public void onStopWatcher() {
-        mWatcher.onCancelCallbacks();
+    public void stopWatcher() {
+        mWatcher.cancelCallbacks();
     }
 }

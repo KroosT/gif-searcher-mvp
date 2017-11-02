@@ -32,22 +32,19 @@ public class DetailsViewImpl implements DetailsView {
         mView = view;
         mUrl = url;
         mDetailsPresenter = presenter;
-        mDetailsPresenter.onViewBind(this);
-
-        mDetailsPresenter.onShowGif(mUrl);
 
         final Button buttonSave = mView.findViewById(R.id.buttonSave);
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                mDetailsPresenter.onSaveGif(mUrl);
+                mDetailsPresenter.onSaveButtonClicked(mUrl);
             }
         });
 
         final View.OnClickListener onSnackBarClick = new View.OnClickListener() {
             @Override
             public void onClick(final android.view.View v) {
-                mDetailsPresenter.onSwitchToOffline();
+                mDetailsPresenter.onSnackBarClicked();
             }
         };
 
@@ -56,6 +53,7 @@ public class DetailsViewImpl implements DetailsView {
                             .setAction(R.string.go_offline, onSnackBarClick)
                             .setActionTextColor(ContextCompat.getColor(context,
                                                                        R.color.colorPrimary));
+        mDetailsPresenter.bindView(this, url);
     }
 
     @Override

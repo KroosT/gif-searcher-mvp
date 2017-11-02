@@ -12,7 +12,6 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 
 
-import java.util.Observable;
 import java.util.Observer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -101,7 +100,7 @@ public class ModelImpl implements Model {
         Validator.isArgNotNull(call, "call");
         return new Cancelable() {
             @Override
-            public void onCancelRequest() {
+            public void cancelRequest() {
                 call.cancel();
             }
         };

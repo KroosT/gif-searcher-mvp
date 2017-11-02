@@ -52,7 +52,7 @@ public class GifDetailsFragment extends Fragment {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.detailsHome:
-                mPresenter.onSwitchToMainScreen();
+                mPresenter.switchToMainScreen();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -62,15 +62,15 @@ public class GifDetailsFragment extends Fragment {
     @Override
     public void onResume() {
         if (isSinglePaneMode()) {
-            mPresenter.onAddObserver();
+            mPresenter.addObserver();
         }
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        mPresenter.onCancelSaving();
-        mPresenter.onRemoveObserver();
+        mPresenter.cancelSaving();
+        mPresenter.removeObserver();
         super.onPause();
     }
 
@@ -96,7 +96,7 @@ public class GifDetailsFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        mPresenter.onViewUnbind();
+        mPresenter.unbindView();
         super.onDestroyView();
     }
 

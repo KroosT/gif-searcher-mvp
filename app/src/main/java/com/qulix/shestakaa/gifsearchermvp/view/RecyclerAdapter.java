@@ -106,8 +106,7 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private View inflateFromLayout(final ViewGroup parent, final int layout) {
-        return LayoutInflater.from(parent.getContext())
-                             .inflate(layout, parent, false);
+        return LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
     }
 
     private class ImageHolder extends RecyclerView.ViewHolder {

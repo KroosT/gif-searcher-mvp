@@ -11,6 +11,7 @@ import com.qulix.shestakaa.gifsearchermvp.model.Model;
 import com.qulix.shestakaa.gifsearchermvp.model.NetworkObservable;
 import com.qulix.shestakaa.gifsearchermvp.utils.AdapterData;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
+import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.view.View;
 
@@ -132,7 +133,7 @@ public class Presenter {
         };
     }
 
-    public void onViewBind(final View view) {
+    public void bindView(final View view) {
         Validator.isArgNotNull(view, "view");
         mView = view;
         mView.showMainProgressBar();
@@ -140,23 +141,23 @@ public class Presenter {
     }
 
 
-    public void onViewUnbind() {
-        onStopRequest();
+    public void unbindView() {
+        stopRequest();
         mView = null;
     }
 
     private void repeatPreviousRequest() {
-        onStopRequest();
+        stopRequest();
         if (mPreviousRequest == null) {
-            onMainScreenSet();
-        } else if (mPreviousRequest == TRENDING){
+            setTrendingScreen();
+        } else if (mPreviousRequest == TRENDING) {
             mRequestController = mModel.getTrending(mCallback);
         } else {
             mRequestController = mModel.getByRequest(mCallback, mPreviousSearchQuery);
         }
     }
 
-    public void onMainScreenSet() {
+    private void setTrendingScreen() {
         mRequestController = mModel.getTrending(mCallback);
         mPreviousRequest = TRENDING;
         mIsDataEnded = false;
@@ -164,11 +165,15 @@ public class Presenter {
 
     public void onTextInputChanged(final String request) {
         Validator.isArgNotNull(request, "request");
-        onStopRequest();
-        mRequestController = mModel.getByRequest(mCallback, request);
-        mPreviousRequest = SEARCH;
-        mPreviousSearchQuery = request;
-        mIsDataEnded = false;
+        stopRequest();
+        if (StringUtils.isNotNullOrBlank(request)) {
+            mRequestController = mModel.getByRequest(mCallback, request);
+            mPreviousRequest = SEARCH;
+            mPreviousSearchQuery = request;
+            mIsDataEnded = false;
+        } else {
+            setTrendingScreen();
+        }
     }
 
     public void onGifClicked(final String url) {
@@ -176,25 +181,25 @@ public class Presenter {
         mRouter.goToDetailsScreen(url);
     }
 
-    public void onStopRequest() {
+    public void stopRequest() {
         if (mRequestController != null) {
-            mRequestController.onCancelRequest();
+            mRequestController.cancelRequest();
         }
     }
 
-    public void onAddObserver() {
+    public void addObserver() {
         if (mObserver != null) {
             mModel.setObserver(mObserver);
         }
     }
 
-    public void onRemoveObserver() {
+    public void removeObserver() {
         if (mObserver != null) {
             mModel.removeObserver(mObserver);
         }
     }
 
-    public void onSwitchToOffline() {
+    public void switchToOffline() {
         mRouter.goToOfflineScreen();
     }
 

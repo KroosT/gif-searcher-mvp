@@ -30,7 +30,7 @@ public class OfflineModelImpl implements OfflineModel {
 
         return new Cancelable() {
             @Override
-            public void onCancelRequest() {
+            public void cancelRequest() {
                 gifLoader.cancel(true);
             }
         };

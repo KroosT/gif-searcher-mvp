@@ -32,7 +32,7 @@ public class DetailsModelImpl implements DetailsModel {
 
         return new Cancelable() {
             @Override
-            public void onCancelRequest() {
+            public void cancelRequest() {
                 gifDownloader.cancel(true);
             }
         };

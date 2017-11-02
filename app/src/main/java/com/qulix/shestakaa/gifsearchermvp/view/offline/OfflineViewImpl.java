@@ -31,32 +31,29 @@ public class OfflineViewImpl implements OfflineView {
 
         mView = view;
         mOfflinePresenter = offlinePresenter;
-        mOfflinePresenter.onViewBind(this);
 
-        mOfflineAdapter = new OfflineAdapter(mView.getContext(), new ArrayList<byte[]>());
+        final Context context = mView.getContext();
+        mOfflineAdapter = new OfflineAdapter(context, new ArrayList<byte[]>());
 
         final TextView offlineTitle = view.findViewById(R.id.offline_title);
         offlineTitle.setText(R.string.offline_mode);
 
         final RecyclerView recyclerView = mView.findViewById(R.id.offline_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mView.getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(mOfflineAdapter);
-
-        mOfflinePresenter.onScreenStarted();
 
         final View.OnClickListener onSnackBarClick = new View.OnClickListener() {
             @Override
             public void onClick(final android.view.View v) {
-                mOfflinePresenter.onSwitchToMainScreen();
+                mOfflinePresenter.onSnackBarClicked();
             }
         };
-
-        final Context context = mView.getContext();
 
         mSnackbar = Snackbar.make(mView, R.string.connection_restored, Snackbar.LENGTH_LONG)
                             .setAction(R.string.go_online, onSnackBarClick)
                             .setActionTextColor(ContextCompat.getColor(context,
                                                                        R.color.colorPrimary));
+        mOfflinePresenter.bindView(this);
     }
 
     @Override
