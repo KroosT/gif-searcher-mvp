@@ -1,8 +1,7 @@
 package com.qulix.shestakaa.gifsearchermvp.model.gifdetails;
 
-import android.content.Context;
-
-import com.qulix.shestakaa.gifsearchermvp.GSApplication;
+import com.qulix.shestakaa.gifsearchermvp.model.LoaderFactory;
+import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
 import com.qulix.shestakaa.gifsearchermvp.utils.Downloadable;
@@ -13,11 +12,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class DetailsModelImpl implements DetailsModel {
 
-    private final Context mContext;
+    private final NetworkStateManager mNetworkManager;
+    private final LoaderFactory mLoaderFactory;
 
-    public DetailsModelImpl(final Context context) {
-        Validator.isArgNotNull(context, "context");
-        mContext = context;
+    public DetailsModelImpl(final LoaderFactory loaderFactory,
+                            final NetworkStateManager networkStateManager) {
+        Validator.isArgNotNull(loaderFactory, "loaderFactory");
+        Validator.isArgNotNull(networkStateManager, "networkStateManager");
+
+        mLoaderFactory = loaderFactory;
+        mNetworkManager = networkStateManager;
     }
 
     @Override
@@ -26,7 +30,7 @@ public class DetailsModelImpl implements DetailsModel {
         Validator.isArgNotNull(url, "url");
         Validator.isArgNotNull(requestController, "downloadable");
 
-        final GifDownloader gifDownloader = new GifDownloader(mContext, requestController);
+        final GifDownloader gifDownloader = mLoaderFactory.buildGifDownloader(requestController);
         gifDownloader.execute(url);
 
         return new Cancelable() {
@@ -40,12 +44,12 @@ public class DetailsModelImpl implements DetailsModel {
     @Override
     public void addConnectivityObserver(final ConnectivityObserver observer) {
         Validator.isArgNotNull(observer, "observer");
-        GSApplication.getInstance().getNetworkStateManager().addObserver(observer);
+        mNetworkManager.addObserver(observer);
     }
 
     @Override
     public void removeConnectivityObserver(final ConnectivityObserver observer) {
         Validator.isArgNotNull(observer, "observer");
-        GSApplication.getInstance().getNetworkStateManager().removeObserver(observer);
+        mNetworkManager.removeObserver(observer);
     }
 }

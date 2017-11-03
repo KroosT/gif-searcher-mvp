@@ -1,7 +1,5 @@
 package com.qulix.shestakaa.gifsearchermvp.model;
 
-import android.content.Context;
-
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
@@ -19,6 +17,6 @@ public interface Model {
     Cancelable loadMoreSearch(final Callback<Feed> callback, final String req, final int offset);
     void addConnectivityObserver(final ConnectivityObserver observer);
     void removeConnectivityObserver(final ConnectivityObserver observer);
-    LoadMoreType getLoadMoreType(final Context context);
+    LoadMoreType getLoadMoreType();
 
 }

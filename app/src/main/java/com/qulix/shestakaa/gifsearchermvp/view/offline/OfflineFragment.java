@@ -1,5 +1,6 @@
 package com.qulix.shestakaa.gifsearchermvp.view.offline;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,7 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.qulix.shestakaa.gifsearchermvp.GSApplication;
 import com.qulix.shestakaa.gifsearchermvp.R;
+import com.qulix.shestakaa.gifsearchermvp.model.LoaderFactory;
+import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
 import com.qulix.shestakaa.gifsearchermvp.model.offline.OfflineModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.offline.OfflinePresenter;
 import com.qulix.shestakaa.gifsearchermvp.presenter.offline.OfflineRouter;
@@ -29,9 +33,13 @@ public class OfflineFragment extends Fragment {
 
         final View v = inflater.inflate(R.layout.fragment_offline, container, false);
         if (savedInstanceState == null) {
-            mPresenter = new OfflinePresenter(new OfflineModelImpl(getContext()),
+            final NetworkStateManager manager = GSApplication.getInstance().getNetworkStateManager();
+            final Context context = getContext();
+            final LoaderFactory loaderFactory = new LoaderFactory(context);
+
+            mPresenter = new OfflinePresenter(new OfflineModelImpl(loaderFactory, manager),
                                               new OfflineRouter(getFragmentManager(),
-                                                                getContext()));
+                                                                context));
 
             mView = new OfflineViewImpl(v.findViewById(R.id.rootOffline), mPresenter);
             if (isSinglePaneMode()) {

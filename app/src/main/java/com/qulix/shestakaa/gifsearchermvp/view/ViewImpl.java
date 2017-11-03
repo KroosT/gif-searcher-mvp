@@ -87,7 +87,7 @@ public class ViewImpl implements View {
 
         mRecyclerView = mView.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-        mRecyclerView.addOnScrollListener(mPresenter.createOnScrollListener(context));
+        mRecyclerView.addOnScrollListener(mPresenter.createOnScrollListener());
 
         mAdapterData = new AdapterData();
         final MainScreenListener mainScreenListener = new MainScreenListener() {

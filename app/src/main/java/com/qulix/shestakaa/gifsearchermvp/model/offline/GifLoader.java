@@ -16,7 +16,7 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-class GifLoader extends AsyncTask<Void, Void, List<byte[]>> {
+public class GifLoader extends AsyncTask<Void, Void, List<byte[]>> {
 
     private static final String SAVED_GIFS_FOLDER = "/SavedGifs/";
     private final Context mContext;

@@ -9,7 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.qulix.shestakaa.gifsearchermvp.GSApplication;
 import com.qulix.shestakaa.gifsearchermvp.R;
+import com.qulix.shestakaa.gifsearchermvp.model.LoaderFactory;
+import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
 import com.qulix.shestakaa.gifsearchermvp.model.gifdetails.DetailsModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsPresenter;
 import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsRouter;
@@ -30,7 +33,10 @@ public class GifDetailsFragment extends Fragment {
                              final Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_gif_details, container, false);
-        mPresenter = new DetailsPresenter(new DetailsModelImpl(getContext()),
+        final NetworkStateManager manager = GSApplication.getInstance().getNetworkStateManager();
+        final LoaderFactory loaderFactory = new LoaderFactory(getContext());
+
+        mPresenter = new DetailsPresenter(new DetailsModelImpl(loaderFactory, manager),
                                           new DetailsRouter(getFragmentManager()));
 
         mView = new DetailsViewImpl(view.findViewById(R.id.rootDetails),

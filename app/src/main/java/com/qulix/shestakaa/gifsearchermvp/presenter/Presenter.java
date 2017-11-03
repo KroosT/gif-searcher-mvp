@@ -110,7 +110,7 @@ public class Presenter {
     }
 
     @NonNull
-    public RecyclerView.OnScrollListener createOnScrollListener(final Context context) {
+    public RecyclerView.OnScrollListener createOnScrollListener() {
         return new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
@@ -121,7 +121,7 @@ public class Presenter {
                     final int firstVisible = layoutManager.findFirstVisibleItemPosition();
                     if (firstVisible == totalItemCount - DEFAULT_GIF_COUNT_LIMIT / 2
                             && !mIsDataEnded) {
-                        if (mModel.getLoadMoreType(context) == SCROLL) {
+                        if (mModel.getLoadMoreType() == SCROLL) {
                             onLoadMoreClicked();
                             mView.showProgressBar();
                         } else {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.qulix.shestakaa.gifsearchermvp.utils.Downloadable;
+import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import org.apache.commons.io.IOUtils;
 
@@ -16,7 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-class GifDownloader extends AsyncTask<String, Void, Boolean> {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public class GifDownloader extends AsyncTask<String, Void, Boolean> {
 
     private static final String FILENAME = "gif_";
     private static final String SAVED_GIFS_FOLDER = "/SavedGifs/";
@@ -25,7 +29,10 @@ class GifDownloader extends AsyncTask<String, Void, Boolean> {
     private final Context mContext;
 
     public GifDownloader(final Context context, final Downloadable requestController) {
-        this.mRequestController = requestController;
+        Validator.isArgNotNull(context, "context");
+        Validator.isArgNotNull(requestController, "requestController");
+
+        mRequestController = requestController;
         mContext = context;
     }
 
