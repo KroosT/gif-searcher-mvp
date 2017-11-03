@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 
@@ -33,26 +32,23 @@ public class MainActivity extends AppCompatActivity {
         final Fragment fragment = mFragmentManager.findFragmentById(R.id.fragment);
         final Fragment fragmentMaster = mFragmentManager.findFragmentById(R.id.fragmentMaster);
         final Fragment fragmentDetail = mFragmentManager.findFragmentById(R.id.fragmentDetail);
+        final FragmentTransaction transaction = mFragmentManager.beginTransaction();
 
         if (findViewById(R.id.dual_pane) == null) {
             if (fragmentMaster != null) {
-                mFragmentManager.beginTransaction().remove(fragmentMaster).commit();
+                transaction.remove(fragmentMaster);
             }
             if (fragmentDetail != null) {
-                mFragmentManager.beginTransaction().remove(fragmentDetail).commit();
+                transaction.remove(fragmentDetail);
             }
-            mFragmentManager.beginTransaction()
-                            .replace(R.id.fragment, MainFragment.newInstance())
-                            .commit();
+            transaction.replace(R.id.fragment, MainFragment.newInstance());
         } else {
             if (fragment != null) {
-                mFragmentManager.beginTransaction().remove(fragment).commit();
+                transaction.remove(fragment);
             }
-            mFragmentManager.beginTransaction()
-                            .replace(R.id.fragmentMaster, MainFragment.newInstance())
-                            .commit();
-
+            transaction.replace(R.id.fragmentMaster, MainFragment.newInstance());
         }
+        transaction.commit();
     }
 
     @Override
