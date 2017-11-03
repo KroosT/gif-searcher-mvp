@@ -14,8 +14,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class LoaderFactory {
 
     private final Context mContext;
-    private GifDownloader mGifDownloader;
-    private GifLoader mGifLoader;
 
     public LoaderFactory(final Context context) {
         Validator.isArgNotNull(context, "context");
@@ -24,10 +22,13 @@ public class LoaderFactory {
     }
 
     public GifDownloader buildGifDownloader(final Downloadable downloadable) {
+        Validator.isArgNotNull(downloadable, "downloadable");
+
         return new GifDownloader(mContext, downloadable);
     }
 
     public GifLoader buildGifLoader(final Loadable loadable) {
+        Validator.isArgNotNull(loadable, "loadable");
         return new GifLoader(mContext, loadable);
     }
 

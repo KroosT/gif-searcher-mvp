@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -46,8 +47,8 @@ public class ViewImpl implements View {
     private final Presenter mPresenter;
     private final Snackbar mSnackbar;
     private final TextView mEmptyTextView;
-    private final TextView mErrorTextView;
     private final ProgressBar mMainProgressBar;
+    private final LinearLayout mErrorView;
     private AdapterData mAdapterData;
     private final Handler mHandler;
     private String mRequest;
@@ -66,8 +67,16 @@ public class ViewImpl implements View {
         mTitleTextView.setText(R.string.trending);
 
         mEmptyTextView = view.findViewById(R.id.emptyTextView);
-        mErrorTextView = view.findViewById(R.id.errorTextView);
         mMainProgressBar = view.findViewById(R.id.mainProgressBar);
+        mErrorView = view.findViewById(R.id.errorView);
+
+        final Button tryAgainButton = view.findViewById(R.id.repeat);
+        tryAgainButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(final android.view.View v) {
+                mPresenter.repeatPreviousRequest();
+            }
+        });
 
         mJellyToolbar = view.findViewById(R.id.toolbar);
         mJellyToolbar.setJellyListener(createJellyListener());
@@ -130,21 +139,14 @@ public class ViewImpl implements View {
         if (!data.getUrls().isEmpty()) {
             mRecyclerView.setVisibility(VISIBLE);
             mEmptyTextView.setVisibility(GONE);
-            mErrorTextView.setVisibility(GONE);
+            mErrorView.setVisibility(GONE);
             mMainProgressBar.setVisibility(GONE);
         }
         data.setButtonPresents(mAdapterData.isButtonPresents());
         mAdapter.updateData(data);
         mAdapter.notifyDataSetChanged();
         mAdapterData = new AdapterData(data);
-
-        final Context context = mView.getContext();
-        final String searchText = context.getString(R.string.gifs_for, mRequest);
-        final String trendingText = context.getString(R.string.trending);
-
-        final String title = StringUtils.isNotNullOrBlank(mRequest) ? searchText.trim()
-                                                                    : trendingText;
-        mTitleTextView.setText(title);
+        replaceTitle();
     }
 
     @Override
@@ -152,7 +154,7 @@ public class ViewImpl implements View {
         if (mAdapterData.getUrls().isEmpty()) {
             mRecyclerView.setVisibility(GONE);
             mMainProgressBar.setVisibility(GONE);
-            mErrorTextView.setVisibility(VISIBLE);
+            mErrorView.setVisibility(VISIBLE);
         }
     }
 
@@ -195,6 +197,7 @@ public class ViewImpl implements View {
     @Override
     public void showMainProgressBar() {
         mRecyclerView.setVisibility(GONE);
+        mErrorView.setVisibility(GONE);
         mMainProgressBar.setVisibility(VISIBLE);
     }
 
@@ -238,6 +241,16 @@ public class ViewImpl implements View {
                 mEditText.getText().clear();
             }
         };
+    }
+
+    private void replaceTitle() {
+        final Context context = mView.getContext();
+        final String searchText = context.getString(R.string.gifs_for, mRequest);
+        final String trendingText = context.getString(R.string.trending);
+
+        final String title = StringUtils.isNotNullOrBlank(mRequest) ? searchText.trim()
+                                                                    : trendingText;
+        mTitleTextView.setText(title);
     }
 
     private TextWatcher initTextWatcher(final Handler handler) {

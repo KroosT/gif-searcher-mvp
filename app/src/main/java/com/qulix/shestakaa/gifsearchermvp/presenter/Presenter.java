@@ -1,6 +1,5 @@
 package com.qulix.shestakaa.gifsearchermvp.presenter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -136,7 +135,6 @@ public class Presenter {
     public void bindView(final View view) {
         Validator.isArgNotNull(view, "view");
         mView = view;
-        mView.showMainProgressBar();
         repeatPreviousRequest();
     }
 
@@ -146,8 +144,9 @@ public class Presenter {
         mView = null;
     }
 
-    private void repeatPreviousRequest() {
+    public void repeatPreviousRequest() {
         stopRequest();
+        mView.showMainProgressBar();
         if (mPreviousRequest == null) {
             setTrendingScreen();
         } else if (mPreviousRequest == TRENDING) {
