@@ -20,7 +20,7 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 public class GifDetailsFragment extends Fragment {
 
-    public static final String GIF_URL = "gifUrl";
+    private static final String GIF_URL = "gifUrl";
     private DetailsPresenter mPresenter;
     private DetailsViewImpl mView;
 
@@ -34,7 +34,8 @@ public class GifDetailsFragment extends Fragment {
 
         final View view = inflater.inflate(R.layout.fragment_gif_details, container, false);
         final NetworkStateManager manager = GSApplication.getInstance().getNetworkStateManager();
-        final LoaderFactory loaderFactory = new LoaderFactory(getContext());
+        final LoaderFactory loaderFactory = new LoaderFactory(getActivity()
+                                                                      .getApplicationContext());
 
         mPresenter = new DetailsPresenter(new DetailsModelImpl(loaderFactory, manager),
                                           new DetailsRouter(getFragmentManager()));

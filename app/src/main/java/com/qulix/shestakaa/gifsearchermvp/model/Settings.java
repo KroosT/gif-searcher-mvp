@@ -9,21 +9,20 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import static com.qulix.shestakaa.gifsearchermvp.model.LoadMoreType.BUTTON;
 
-public class PreferenceHelper {
+public class Settings {
 
-    private final Context mContext;
     private final SharedPreferences mPreferences;
+    private final String mKey;
 
-    public PreferenceHelper(final Context context) {
+    public Settings(final Context context) {
         Validator.isArgNotNull(context, "context");
 
-        mContext = context;
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mKey = context.getResources().getString(R.string.pref_key);
     }
 
     public LoadMoreType getLoadMoreType() {
-        final String type = mPreferences.getString(
-                mContext.getResources().getString(R.string.pref_key), null);
+        final String type = mPreferences.getString(mKey, null);
 
         Validator.isArgNotNull(type, "type");
 

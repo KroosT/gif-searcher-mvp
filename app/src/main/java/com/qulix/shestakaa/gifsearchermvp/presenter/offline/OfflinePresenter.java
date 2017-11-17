@@ -20,7 +20,7 @@ public class OfflinePresenter {
     private final OfflineModel mModel;
     @NonNull
     private final ConnectivityObserver mObserver;
-    private Cancelable mRequestController;
+    private Cancelable mRequestHandler;
     private OfflineView mView;
     private final OfflineRouter mRouter;
 
@@ -68,12 +68,12 @@ public class OfflinePresenter {
             }
         };
 
-        mRequestController = mModel.loadAvailableGifs(loadable);
+        mRequestHandler = mModel.loadAvailableGifs(loadable);
     }
 
     public void cancelLoading() {
-        if (mRequestController != null) {
-            mRequestController.cancelRequest();
+        if (mRequestHandler != null) {
+            mRequestHandler.cancelRequest();
         }
     }
 

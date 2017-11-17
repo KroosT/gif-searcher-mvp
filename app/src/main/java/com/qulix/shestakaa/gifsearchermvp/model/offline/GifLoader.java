@@ -20,14 +20,14 @@ public class GifLoader extends AsyncTask<Void, Void, List<byte[]>> {
 
     private static final String SAVED_GIFS_FOLDER = "/SavedGifs/";
     private final Context mContext;
-    private final Loadable mRequest;
+    private final Loadable mRequestHandler;
 
     public GifLoader(final Context context, final Loadable loadable) {
         Validator.isArgNotNull(context, "context");
         Validator.isArgNotNull(loadable, "loadable");
 
         mContext = context;
-        mRequest = loadable;
+        mRequestHandler = loadable;
     }
 
     @Override
@@ -55,6 +55,6 @@ public class GifLoader extends AsyncTask<Void, Void, List<byte[]>> {
 
     @Override
     protected void onPostExecute(final List<byte[]> result) {
-        mRequest.onDataLoaded(result);
+        mRequestHandler.onDataLoaded(result);
     }
 }

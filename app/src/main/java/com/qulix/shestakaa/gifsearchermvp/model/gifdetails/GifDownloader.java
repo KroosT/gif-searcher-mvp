@@ -25,14 +25,14 @@ public class GifDownloader extends AsyncTask<String, Void, Boolean> {
     private static final String FILENAME = "gif_";
     private static final String SAVED_GIFS_FOLDER = "/SavedGifs/";
     private static final String EXTENSION = ".gif";
-    private final Downloadable mRequestController;
+    private final Downloadable mRequestHandler;
     private final Context mContext;
 
-    public GifDownloader(final Context context, final Downloadable requestController) {
+    public GifDownloader(final Context context, final Downloadable requestHandler) {
         Validator.isArgNotNull(context, "context");
-        Validator.isArgNotNull(requestController, "requestController");
+        Validator.isArgNotNull(requestHandler, "requestHandler");
 
-        mRequestController = requestController;
+        mRequestHandler = requestHandler;
         mContext = context;
     }
 
@@ -64,7 +64,7 @@ public class GifDownloader extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(final Boolean result) {
-        mRequestController.onDataDownloaded(result);
+        mRequestHandler.onDataDownloaded(result);
     }
 
 }

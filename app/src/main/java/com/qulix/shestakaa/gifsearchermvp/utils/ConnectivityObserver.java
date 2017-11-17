@@ -2,6 +2,8 @@ package com.qulix.shestakaa.gifsearchermvp.utils;
 
 import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
 
+import javax.annotation.Nonnull;
+
 public interface ConnectivityObserver {
-    void update(final NetworkStateManager manager);
+    void update(@Nonnull final NetworkStateManager manager);
 }

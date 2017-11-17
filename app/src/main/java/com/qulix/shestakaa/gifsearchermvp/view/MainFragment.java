@@ -3,9 +3,7 @@ package com.qulix.shestakaa.gifsearchermvp.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,7 +16,7 @@ import com.qulix.shestakaa.gifsearchermvp.GSApplication;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.ModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
-import com.qulix.shestakaa.gifsearchermvp.model.PreferenceHelper;
+import com.qulix.shestakaa.gifsearchermvp.model.Settings;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Router;
 import com.qulix.shestakaa.gifsearchermvp.view.preferences.PrefActivity;
@@ -45,7 +43,7 @@ public class MainFragment extends Fragment {
 
         final NetworkStateManager manager = GSApplication.getInstance().getNetworkStateManager();
         final Context context = getContext();
-        final PreferenceHelper helper = new PreferenceHelper(context);
+        final Settings helper = new Settings(context);
 
         mPresenter = new Presenter(new ModelImpl(manager, helper),
                                    new Router(getFragmentManager(), context));

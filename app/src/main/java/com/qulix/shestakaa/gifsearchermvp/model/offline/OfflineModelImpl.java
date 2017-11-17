@@ -15,7 +15,9 @@ public class OfflineModelImpl implements OfflineModel {
     private final NetworkStateManager mNetworkManager;
     private final LoaderFactory mLoaderFactory;
 
-    public OfflineModelImpl(final LoaderFactory loaderFactory, final NetworkStateManager networkStateManager) {
+    public OfflineModelImpl(final LoaderFactory loaderFactory,
+                            final NetworkStateManager networkStateManager) {
+
         Validator.isArgNotNull(loaderFactory, "mLoaderFactory");
         Validator.isArgNotNull(networkStateManager, "networkStateManager");
 
@@ -24,10 +26,10 @@ public class OfflineModelImpl implements OfflineModel {
     }
 
     @Override
-    public Cancelable loadAvailableGifs(final Loadable requestController) {
-        Validator.isArgNotNull(requestController, "loadable");
+    public Cancelable loadAvailableGifs(final Loadable requestHandler) {
+        Validator.isArgNotNull(requestHandler, "loadable");
 
-        final GifLoader gifLoader = mLoaderFactory.buildGifLoader(requestController);
+        final GifLoader gifLoader = mLoaderFactory.buildGifLoader(requestHandler);
         gifLoader.execute();
 
         return new Cancelable() {

@@ -11,7 +11,6 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -29,8 +28,8 @@ public class NetworkStateManager extends BroadcastReceiver {
     public void onReceive(final Context context, final Intent intent) {
         final ConnectivityManager cm = (ConnectivityManager) context
                                             .getSystemService(Context.CONNECTIVITY_SERVICE);
-        final NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        //should check null because in airplane mode it will be null
+        final NetworkInfo netInfo = cm != null ? cm.getActiveNetworkInfo() : null;
+
         mConnected = !(netInfo == null || !netInfo.isConnected());
         notifyObservers();
     }

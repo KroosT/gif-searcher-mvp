@@ -20,7 +20,7 @@ public class DetailsPresenter {
     @NonNull
     private final ConnectivityObserver mObserver;
     private DetailsView mView;
-    private Cancelable mRequestController;
+    private Cancelable mRequestHandler;
 
     public DetailsPresenter(final DetailsModel model, final DetailsRouter router) {
         Validator.isArgNotNull(model, "model");
@@ -35,12 +35,15 @@ public class DetailsPresenter {
         return new ConnectivityObserver() {
             @Override
             public void update(final NetworkStateManager manager) {
-                if (mView != null) {
-                    if (manager.isConnected()) {
-                        mView.dismissOfflineModeSuggestion();
-                    } else {
-                        mView.showOfflineModeSuggestion();
-                    }
+                Validator.isArgNotNull(manager, "manager");
+
+                if (mView == null) return;
+
+
+                if (manager.isConnected()) {
+                    mView.dismissOfflineModeSuggestion();
+                } else {
+                    mView.showOfflineModeSuggestion();
                 }
             }
         };
@@ -73,12 +76,12 @@ public class DetailsPresenter {
             }
         };
 
-        mRequestController = mModel.saveGifByUrl(url, downloadable);
+        mRequestHandler = mModel.saveGifByUrl(url, downloadable);
     }
 
     public void cancelSaving() {
-        if (mRequestController != null) {
-            mRequestController.cancelRequest();
+        if (mRequestHandler != null) {
+            mRequestHandler.cancelRequest();
         }
     }
 

@@ -43,6 +43,8 @@ dependencies {
     testCompile 'org.json:json:20140107'
     testCompile 'org.assertj:assertj-core:1.7.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 }
 
 allprojects {

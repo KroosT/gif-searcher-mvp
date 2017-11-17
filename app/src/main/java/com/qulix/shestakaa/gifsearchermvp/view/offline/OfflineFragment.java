@@ -33,9 +33,11 @@ public class OfflineFragment extends Fragment {
 
         final View v = inflater.inflate(R.layout.fragment_offline, container, false);
         if (savedInstanceState == null) {
-            final NetworkStateManager manager = GSApplication.getInstance().getNetworkStateManager();
+            final NetworkStateManager manager = GSApplication.getInstance()
+                                                             .getNetworkStateManager();
             final Context context = getContext();
-            final LoaderFactory loaderFactory = new LoaderFactory(context);
+            final LoaderFactory loaderFactory = new LoaderFactory(getActivity()
+                                                                          .getApplicationContext());
 
             mPresenter = new OfflinePresenter(new OfflineModelImpl(loaderFactory, manager),
                                               new OfflineRouter(getFragmentManager(),

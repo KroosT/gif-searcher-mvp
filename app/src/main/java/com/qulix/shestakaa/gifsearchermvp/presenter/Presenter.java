@@ -36,7 +36,7 @@ public class Presenter {
     private final Model mModel;
     private final Callback<Feed> mCallback;
     private final Router mRouter;
-    private Cancelable mRequestController;
+    private Cancelable mRequestHandler;
     private View mView;
     private RequestType mPreviousRequest = null;
     private String mPreviousSearchQuery = "";
@@ -150,14 +150,14 @@ public class Presenter {
         if (mPreviousRequest == null) {
             setTrendingScreen();
         } else if (mPreviousRequest == TRENDING) {
-            mRequestController = mModel.getTrending(mCallback);
+            mRequestHandler = mModel.getTrending(mCallback);
         } else {
-            mRequestController = mModel.getByRequest(mCallback, mPreviousSearchQuery);
+            mRequestHandler = mModel.getByRequest(mCallback, mPreviousSearchQuery);
         }
     }
 
     private void setTrendingScreen() {
-        mRequestController = mModel.getTrending(mCallback);
+        mRequestHandler = mModel.getTrending(mCallback);
         mPreviousRequest = TRENDING;
         mIsDataEnded = false;
     }
@@ -166,7 +166,7 @@ public class Presenter {
         Validator.isArgNotNull(request, "request");
         stopRequest();
         if (StringUtils.isNotNullOrBlank(request)) {
-            mRequestController = mModel.getByRequest(mCallback, request);
+            mRequestHandler = mModel.getByRequest(mCallback, request);
             mPreviousRequest = SEARCH;
             mPreviousSearchQuery = request;
             mIsDataEnded = false;
@@ -181,8 +181,8 @@ public class Presenter {
     }
 
     public void stopRequest() {
-        if (mRequestController != null) {
-            mRequestController.cancelRequest();
+        if (mRequestHandler != null) {
+            mRequestHandler.cancelRequest();
         }
     }
 
@@ -203,13 +203,13 @@ public class Presenter {
             mView.showProgressBar();
             switch (mPreviousRequest) {
                 case SEARCH:
-                    mRequestController = mModel.loadMoreSearch(mCallback,
-                                                               mPreviousSearchQuery,
-                                                               mPreviousOffset);
+                    mRequestHandler = mModel.loadMoreSearch(mCallback,
+                                                            mPreviousSearchQuery,
+                                                            mPreviousOffset);
                     break;
                 case TRENDING:
                 default:
-                    mRequestController = mModel.loadMoreTrending(mCallback, mPreviousOffset);
+                    mRequestHandler = mModel.loadMoreTrending(mCallback, mPreviousOffset);
             }
         } else {
             mView.showDataEnded();

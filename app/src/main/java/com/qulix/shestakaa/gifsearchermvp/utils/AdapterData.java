@@ -23,7 +23,7 @@ public class AdapterData {
     public AdapterData(final AdapterData data) {
         Validator.isArgNotNull(data, "data");
 
-        mUrls = new ArrayList<>(data.getUrls());
+        mUrls = data.getUrls();
         mIsButtonPresents = data.isButtonPresents();
         mIsProgressBarPresents = data.isProgressBarPresents();
     }
