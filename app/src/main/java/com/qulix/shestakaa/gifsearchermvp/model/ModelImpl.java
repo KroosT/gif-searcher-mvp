@@ -19,15 +19,15 @@ public class ModelImpl implements Model {
     private static final String API_KEY = "fWieUtS84ZkjIWupFAQvqpUapoYj1k29";
     private static final int DEFAULT_LIMIT = 25;
     private final NetworkStateManager mNetworkManager;
-    private final Settings mSettings;
+    private final ApplicationSettings mApplicationSettings;
 
-    public ModelImpl(final NetworkStateManager networkStateManager, final Settings helper) {
+    public ModelImpl(final NetworkStateManager networkStateManager, final ApplicationSettings helper) {
         Validator.isArgNotNull(networkStateManager, "networkStateManager");
         Validator.isArgNotNull(helper, "helper");
 
         mApiInterface = ApiService.getClient().create(ApiInterface.class);
         mNetworkManager = networkStateManager;
-        mSettings = helper;
+        mApplicationSettings = helper;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ModelImpl implements Model {
 
     @Override
     public LoadMoreType getLoadMoreType() {
-        return mSettings.getLoadMoreType();
+        return mApplicationSettings.getLoadMoreType();
     }
 
     private <T> Cancelable createEventListener(final Call<T> call) {

@@ -16,7 +16,7 @@ import com.qulix.shestakaa.gifsearchermvp.GSApplication;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.model.ModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
-import com.qulix.shestakaa.gifsearchermvp.model.Settings;
+import com.qulix.shestakaa.gifsearchermvp.model.ApplicationSettings;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.presenter.Router;
 import com.qulix.shestakaa.gifsearchermvp.view.preferences.PrefActivity;
@@ -43,7 +43,7 @@ public class MainFragment extends Fragment {
 
         final NetworkStateManager manager = GSApplication.getInstance().getNetworkStateManager();
         final Context context = getContext();
-        final Settings helper = new Settings(context);
+        final ApplicationSettings helper = new ApplicationSettings(context);
 
         mPresenter = new Presenter(new ModelImpl(manager, helper),
                                    new Router(getFragmentManager(), context));

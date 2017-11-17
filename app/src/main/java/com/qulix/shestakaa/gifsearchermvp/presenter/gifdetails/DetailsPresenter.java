@@ -68,6 +68,8 @@ public class DetailsPresenter {
         final Downloadable downloadable = new Downloadable() {
             @Override
             public void onDataDownloaded(final boolean result) {
+                if (mView == null) return;
+
                 if (result) {
                     mView.showSuccess();
                 } else {

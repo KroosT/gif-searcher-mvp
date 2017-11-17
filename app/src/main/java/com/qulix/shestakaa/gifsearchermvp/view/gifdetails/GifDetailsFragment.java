@@ -20,7 +20,7 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 public class GifDetailsFragment extends Fragment {
 
-    private static final String GIF_URL = "gifUrl";
+    public static final String GIF_URL = "gifUrl";
     private DetailsPresenter mPresenter;
     private DetailsViewImpl mView;
 

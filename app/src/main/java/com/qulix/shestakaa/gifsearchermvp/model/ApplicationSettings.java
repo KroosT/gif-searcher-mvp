@@ -9,12 +9,12 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import static com.qulix.shestakaa.gifsearchermvp.model.LoadMoreType.BUTTON;
 
-public class Settings {
+public class ApplicationSettings {
 
     private final SharedPreferences mPreferences;
     private final String mKey;
 
-    public Settings(final Context context) {
+    public ApplicationSettings(final Context context) {
         Validator.isArgNotNull(context, "context");
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);

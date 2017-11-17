@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">GifSearcher</string>
     <string name="gifs_for">Gifs for: %1$s</string>
     <string name="trending">Trending now</string>
     <string name="save">Save</string>
