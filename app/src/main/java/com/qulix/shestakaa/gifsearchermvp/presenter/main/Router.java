@@ -1,4 +1,4 @@
-package com.qulix.shestakaa.gifsearchermvp.presenter;
+package com.qulix.shestakaa.gifsearchermvp.presenter.main;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -10,11 +10,11 @@ import android.widget.LinearLayout;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
-import com.qulix.shestakaa.gifsearchermvp.view.MainFragment;
 import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.GifDetailsFragment;
 import com.qulix.shestakaa.gifsearchermvp.view.offline.OfflineFragment;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.inject.Inject;
 
 @ParametersAreNonnullByDefault
 public class Router {
@@ -23,6 +23,7 @@ public class Router {
     private final View mView;
     private final static String TAG = "fragment";
 
+    @Inject
     public Router(final FragmentManager fragmentManager, final Context context) {
         Validator.isArgNotNull(fragmentManager, "fragmentManager");
         Validator.isArgNotNull(context, "context");

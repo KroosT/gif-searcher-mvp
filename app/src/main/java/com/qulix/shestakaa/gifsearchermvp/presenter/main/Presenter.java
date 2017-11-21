@@ -1,4 +1,4 @@
-package com.qulix.shestakaa.gifsearchermvp.presenter;
+package com.qulix.shestakaa.gifsearchermvp.presenter.main;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -6,14 +6,15 @@ import android.support.v7.widget.RecyclerView;
 
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
-import com.qulix.shestakaa.gifsearchermvp.model.Model;
+import com.qulix.shestakaa.gifsearchermvp.model.main.Model;
 import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
+import com.qulix.shestakaa.gifsearchermvp.presenter.RequestType;
 import com.qulix.shestakaa.gifsearchermvp.utils.AdapterData;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
 import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
-import com.qulix.shestakaa.gifsearchermvp.view.View;
+import com.qulix.shestakaa.gifsearchermvp.view.main.View;
 
 import java.util.ArrayList;
 import java.util.List;

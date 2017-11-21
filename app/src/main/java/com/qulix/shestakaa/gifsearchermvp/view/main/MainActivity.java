@@ -1,4 +1,4 @@
-package com.qulix.shestakaa.gifsearchermvp.view;
+package com.qulix.shestakaa.gifsearchermvp.view.main;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

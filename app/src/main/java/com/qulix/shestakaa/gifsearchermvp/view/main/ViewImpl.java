@@ -1,4 +1,4 @@
-package com.qulix.shestakaa.gifsearchermvp.view;
+package com.qulix.shestakaa.gifsearchermvp.view.main;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
-import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
+import com.qulix.shestakaa.gifsearchermvp.presenter.main.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.utils.AdapterData;
 import com.qulix.shestakaa.gifsearchermvp.utils.MainScreenListener;
 import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;

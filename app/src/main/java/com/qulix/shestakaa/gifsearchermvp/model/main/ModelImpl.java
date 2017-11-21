@@ -1,13 +1,17 @@
-package com.qulix.shestakaa.gifsearchermvp.model;
+package com.qulix.shestakaa.gifsearchermvp.model.main;
 
 import com.qulix.shestakaa.gifsearchermvp.model.API.ApiInterface;
 import com.qulix.shestakaa.gifsearchermvp.model.API.ApiService;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
+import com.qulix.shestakaa.gifsearchermvp.model.ApplicationSettings;
+import com.qulix.shestakaa.gifsearchermvp.model.LoadMoreType;
+import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,6 +25,7 @@ public class ModelImpl implements Model {
     private final NetworkStateManager mNetworkManager;
     private final ApplicationSettings mApplicationSettings;
 
+    @Inject
     public ModelImpl(final NetworkStateManager networkStateManager, final ApplicationSettings helper) {
         Validator.isArgNotNull(networkStateManager, "networkStateManager");
         Validator.isArgNotNull(helper, "helper");

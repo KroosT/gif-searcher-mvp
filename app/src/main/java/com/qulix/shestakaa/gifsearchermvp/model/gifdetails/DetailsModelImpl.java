@@ -8,6 +8,7 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Downloadable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.inject.Inject;
 
 @ParametersAreNonnullByDefault
 public class DetailsModelImpl implements DetailsModel {
@@ -15,6 +16,7 @@ public class DetailsModelImpl implements DetailsModel {
     private final NetworkStateManager mNetworkManager;
     private final LoaderFactory mLoaderFactory;
 
+    @Inject
     public DetailsModelImpl(final LoaderFactory loaderFactory,
                             final NetworkStateManager networkStateManager) {
         Validator.isArgNotNull(loaderFactory, "loaderFactory");

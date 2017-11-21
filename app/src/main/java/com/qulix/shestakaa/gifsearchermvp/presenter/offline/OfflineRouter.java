@@ -11,6 +11,7 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.GifDetailsFragment;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.inject.Inject;
 
 @ParametersAreNonnullByDefault
 public class OfflineRouter {
@@ -19,6 +20,7 @@ public class OfflineRouter {
     private final View mView;
     private final static String TAG = "fragment";
 
+    @Inject
     public OfflineRouter(final FragmentManager fragmentManager, final Context context) {
         Validator.isArgNotNull(fragmentManager, "fragmentManager");
         Validator.isArgNotNull(context, "context");

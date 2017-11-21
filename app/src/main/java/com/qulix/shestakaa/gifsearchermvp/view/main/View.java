@@ -1,4 +1,4 @@
-package com.qulix.shestakaa.gifsearchermvp.view;
+package com.qulix.shestakaa.gifsearchermvp.view.main;
 
 import com.qulix.shestakaa.gifsearchermvp.utils.AdapterData;
 

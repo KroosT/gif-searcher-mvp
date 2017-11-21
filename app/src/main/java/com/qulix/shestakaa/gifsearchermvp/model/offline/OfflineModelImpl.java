@@ -8,6 +8,7 @@ import com.qulix.shestakaa.gifsearchermvp.utils.Loadable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.inject.Inject;
 
 @ParametersAreNonnullByDefault
 public class OfflineModelImpl implements OfflineModel {
@@ -15,6 +16,7 @@ public class OfflineModelImpl implements OfflineModel {
     private final NetworkStateManager mNetworkManager;
     private final LoaderFactory mLoaderFactory;
 
+    @Inject
     public OfflineModelImpl(final LoaderFactory loaderFactory,
                             final NetworkStateManager networkStateManager) {
 

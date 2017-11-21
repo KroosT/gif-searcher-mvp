@@ -11,17 +11,17 @@ import android.view.ViewGroup;
 
 import com.qulix.shestakaa.gifsearchermvp.GSApplication;
 import com.qulix.shestakaa.gifsearchermvp.R;
-import com.qulix.shestakaa.gifsearchermvp.model.LoaderFactory;
-import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
-import com.qulix.shestakaa.gifsearchermvp.model.gifdetails.DetailsModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsPresenter;
-import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsRouter;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
+import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.module.GifDetailsModule;
+
+import javax.inject.Inject;
 
 public class GifDetailsFragment extends Fragment {
 
     public static final String GIF_URL = "gifUrl";
-    private DetailsPresenter mPresenter;
+    @Inject
+    DetailsPresenter mPresenter;
     private DetailsViewImpl mView;
 
     public GifDetailsFragment() {
@@ -33,12 +33,8 @@ public class GifDetailsFragment extends Fragment {
                              final Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_gif_details, container, false);
-        final NetworkStateManager manager = GSApplication.getInstance().getNetworkStateManager();
-        final LoaderFactory loaderFactory = new LoaderFactory(getActivity()
-                                                                      .getApplicationContext());
 
-        mPresenter = new DetailsPresenter(new DetailsModelImpl(loaderFactory, manager),
-                                          new DetailsRouter(getFragmentManager()));
+        GSApplication.getComponent().plus(new GifDetailsModule(this)).inject(this);
 
         mView = new DetailsViewImpl(view.findViewById(R.id.rootDetails),
                                     extractArgument(GIF_URL),

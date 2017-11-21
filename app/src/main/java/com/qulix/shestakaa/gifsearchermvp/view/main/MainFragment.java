@@ -1,7 +1,6 @@
-package com.qulix.shestakaa.gifsearchermvp.view;
+package com.qulix.shestakaa.gifsearchermvp.view.main;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,17 +13,17 @@ import android.view.ViewGroup;
 
 import com.qulix.shestakaa.gifsearchermvp.GSApplication;
 import com.qulix.shestakaa.gifsearchermvp.R;
-import com.qulix.shestakaa.gifsearchermvp.model.ModelImpl;
-import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
-import com.qulix.shestakaa.gifsearchermvp.model.ApplicationSettings;
-import com.qulix.shestakaa.gifsearchermvp.presenter.Presenter;
-import com.qulix.shestakaa.gifsearchermvp.presenter.Router;
+import com.qulix.shestakaa.gifsearchermvp.presenter.main.Presenter;
+import com.qulix.shestakaa.gifsearchermvp.view.main.module.MainFragmentModule;
 import com.qulix.shestakaa.gifsearchermvp.view.preferences.PrefActivity;
+
+import javax.inject.Inject;
 
 public class MainFragment extends Fragment {
 
     private View mView;
-    private Presenter mPresenter;
+    @Inject
+    Presenter mPresenter;
     private ViewImpl mViewImpl;
 
     public MainFragment() {
@@ -39,14 +38,11 @@ public class MainFragment extends Fragment {
             return mView;
         }
 
+        GSApplication.getComponent()
+                     .plus(new MainFragmentModule(this))
+                     .inject(this);
+
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
-
-        final NetworkStateManager manager = GSApplication.getInstance().getNetworkStateManager();
-        final Context context = getContext();
-        final ApplicationSettings helper = new ApplicationSettings(context);
-
-        mPresenter = new Presenter(new ModelImpl(manager, helper),
-                                   new Router(getFragmentManager(), context));
         mViewImpl = new ViewImpl(view.findViewById(R.id.root), mPresenter);
 
         setHasOptionsMenu(true);

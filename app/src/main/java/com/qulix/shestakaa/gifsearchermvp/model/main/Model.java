@@ -1,6 +1,7 @@
-package com.qulix.shestakaa.gifsearchermvp.model;
+package com.qulix.shestakaa.gifsearchermvp.model.main;
 
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
+import com.qulix.shestakaa.gifsearchermvp.model.LoadMoreType;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
 

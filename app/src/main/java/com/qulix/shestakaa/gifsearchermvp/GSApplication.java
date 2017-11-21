@@ -11,6 +11,7 @@ import com.squareup.leakcanary.LeakCanary;
 public class GSApplication extends Application {
 
     private static GSApplication sApplication = null;
+    private static AppComponent sComponent;
     private final NetworkStateManager mManager = new NetworkStateManager();
 
     @Override
@@ -24,6 +25,7 @@ public class GSApplication extends Application {
         LeakCanary.install(this);
         registerNetworkReceiver();
         sApplication = this;
+        initAppComponent();
     }
 
     private void registerNetworkReceiver() {
@@ -38,5 +40,15 @@ public class GSApplication extends Application {
 
     public static GSApplication getInstance() {
         return sApplication;
+    }
+
+    public static AppComponent getComponent() {
+        return sComponent;
+    }
+
+    private void initAppComponent() {
+        sComponent = DaggerAppComponent.builder()
+                                       .appModule(new AppModule(this))
+                                       .build();
     }
 }
