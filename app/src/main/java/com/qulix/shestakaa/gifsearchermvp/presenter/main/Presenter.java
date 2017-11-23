@@ -6,24 +6,21 @@ import android.support.v7.widget.RecyclerView;
 
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
-import com.qulix.shestakaa.gifsearchermvp.model.main.Model;
-import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
+import com.qulix.shestakaa.gifsearchermvp.model.main.MainModel;
 import com.qulix.shestakaa.gifsearchermvp.presenter.RequestType;
 import com.qulix.shestakaa.gifsearchermvp.utils.AdapterData;
-import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
 import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
-import com.qulix.shestakaa.gifsearchermvp.view.main.View;
+import com.qulix.shestakaa.gifsearchermvp.view.main.MainView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static com.qulix.shestakaa.gifsearchermvp.model.LoadMoreType.SCROLL;
 import static com.qulix.shestakaa.gifsearchermvp.presenter.RequestType.SEARCH;
@@ -34,76 +31,35 @@ public class Presenter {
 
     private static final int DEFAULT_GIF_COUNT_LIMIT = 25;
 
-    private final Model mModel;
-    private final Callback<Feed> mCallback;
+    private final MainModel mModel;
     private final Router mRouter;
-    private Cancelable mRequestHandler;
-    private View mView;
+    private final CompositeDisposable mDisposables;
+    private MainView mView;
     private RequestType mPreviousRequest = null;
     private String mPreviousSearchQuery = "";
     private int mPreviousOffset = 0;
     @NonNull
-    private final ConnectivityObserver mObserver;
+    private final ConnectivityObserver mConnectivityObserver;
     private boolean mIsDataEnded = false;
 
-    public Presenter(final Model model, final Router router) {
+    public Presenter(final MainModel model, final Router router) {
         Validator.isArgNotNull(model, "model");
         Validator.isArgNotNull(router, "router");
 
         mModel = model;
-        mObserver = createConnectivityObserver();
+        mConnectivityObserver = createConnectivityObserver();
         mRouter = router;
-        mCallback = createCallback();
-
-    }
-
-    private Callback<Feed> createCallback() {
-        return new Callback<Feed>() {
-            @Override
-            public void onResponse(final Call<Feed> call,
-                                   final Response<Feed> response) {
-                final Feed body = response.body();
-                final AdapterData adapterData = new AdapterData();
-                final List<String> urls = new ArrayList<>();
-                int totalCount = 0;
-                if (body != null) {
-                    for (final Data data : body.getData()) {
-                        urls.add(data.getImages().getOriginal().getUrl());
-                    }
-                    adapterData.setUrls(urls);
-                    totalCount = body.getPagination().getTotalCount();
-                }
-                if (urls.isEmpty()) {
-                    mView.showNoGifsError();
-                    mView.showBlankScreen();
-                }
-                if (totalCount == urls.size()) {
-                    mIsDataEnded = true;
-                }
-                mPreviousOffset = urls.size();
-                mView.updateData(adapterData);
-            }
-
-            @Override
-            public void onFailure(final Call<Feed> call, final Throwable t) {
-                if (!call.isCanceled()) {
-                    mView.showError();
-                }
-            }
-        };
+        mDisposables = new CompositeDisposable();
     }
 
     @NonNull
     private ConnectivityObserver createConnectivityObserver() {
-        return new ConnectivityObserver() {
-            @Override
-            public void update(final NetworkStateManager manager) {
-                if (mView != null) {
-                    if (manager.isConnected()) {
-                        mView.dismissOfflineModeSuggestion();
-                    } else {
-                        mView.showOfflineModeSuggestion();
-                    }
+        return manager -> {
+            if (mView != null) {
+                if (manager.isConnected()) {
+                    mView.dismissOfflineModeSuggestion();
+                } else {
+                    mView.showOfflineModeSuggestion();
                 }
             }
         };
@@ -133,7 +89,7 @@ public class Presenter {
         };
     }
 
-    public void bindView(final View view) {
+    public void bindView(final MainView view) {
         Validator.isArgNotNull(view, "view");
         mView = view;
         repeatPreviousRequest();
@@ -141,33 +97,31 @@ public class Presenter {
 
 
     public void unbindView() {
-        stopRequest();
+        clearDisposables();
         mView = null;
     }
 
     public void repeatPreviousRequest() {
-        stopRequest();
         mView.showMainProgressBar();
         if (mPreviousRequest == null) {
             setTrendingScreen();
         } else if (mPreviousRequest == TRENDING) {
-            mRequestHandler = mModel.getTrending(mCallback);
+            processObservable(mModel.getTrending());
         } else {
-            mRequestHandler = mModel.getByRequest(mCallback, mPreviousSearchQuery);
+            processObservable(mModel.getByRequest(mPreviousSearchQuery));
         }
     }
 
     private void setTrendingScreen() {
-        mRequestHandler = mModel.getTrending(mCallback);
+        processObservable(mModel.getTrending());
         mPreviousRequest = TRENDING;
         mIsDataEnded = false;
     }
 
     public void onTextInputChanged(final String request) {
         Validator.isArgNotNull(request, "request");
-        stopRequest();
         if (StringUtils.isNotNullOrBlank(request)) {
-            mRequestHandler = mModel.getByRequest(mCallback, request);
+            processObservable(mModel.getByRequest(request));
             mPreviousRequest = SEARCH;
             mPreviousSearchQuery = request;
             mIsDataEnded = false;
@@ -181,18 +135,18 @@ public class Presenter {
         mRouter.goToDetailsScreen(url);
     }
 
-    public void stopRequest() {
-        if (mRequestHandler != null) {
-            mRequestHandler.cancelRequest();
+    private void clearDisposables() {
+        if (mDisposables != null && !mDisposables.isDisposed()) {
+            mDisposables.clear();
         }
     }
 
     public void addObserver() {
-        mModel.addConnectivityObserver(mObserver);
+        mModel.addConnectivityObserver(mConnectivityObserver);
     }
 
     public void removeObserver() {
-        mModel.removeConnectivityObserver(mObserver);
+        mModel.removeConnectivityObserver(mConnectivityObserver);
     }
 
     public void switchToOffline() {
@@ -204,17 +158,44 @@ public class Presenter {
             mView.showProgressBar();
             switch (mPreviousRequest) {
                 case SEARCH:
-                    mRequestHandler = mModel.loadMoreSearch(mCallback,
-                                                            mPreviousSearchQuery,
-                                                            mPreviousOffset);
+                    processObservable(mModel.loadMoreSearch(mPreviousSearchQuery,
+                                                            mPreviousOffset));
                     break;
                 case TRENDING:
                 default:
-                    mRequestHandler = mModel.loadMoreTrending(mCallback, mPreviousOffset);
+                    processObservable(mModel.loadMoreTrending(mPreviousOffset));
             }
         } else {
             mView.showDataEnded();
         }
+    }
+
+    private void processObservable(final Observable<Feed> observable) {
+        Validator.isArgNotNull(observable, "observable");
+        mDisposables.add(observable.subscribe(this::processResponse, throwable -> mView.showError()));
+    }
+
+    private void processResponse(final Feed response) {
+        Validator.isArgNotNull(response, "response");
+
+        final AdapterData adapterData = new AdapterData();
+        final List<String> urls = new ArrayList<>();
+        final int totalCount;
+        for (final Data data : response.getData()) {
+            urls.add(data.getImages().getOriginal().getUrl());
+        }
+        adapterData.setUrls(urls);
+        totalCount = response.getPagination().getTotalCount();
+
+        if (urls.isEmpty()) {
+            mView.showNoGifsError();
+            mView.showBlankScreen();
+        }
+        if (totalCount == urls.size()) {
+            mIsDataEnded = true;
+        }
+        mPreviousOffset = urls.size();
+        mView.updateData(adapterData);
     }
 
 }

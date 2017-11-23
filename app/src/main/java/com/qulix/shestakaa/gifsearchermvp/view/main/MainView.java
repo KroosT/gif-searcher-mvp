@@ -7,7 +7,7 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public interface View {
+public interface MainView {
 
     void updateData(final AdapterData urls);
     void showError();

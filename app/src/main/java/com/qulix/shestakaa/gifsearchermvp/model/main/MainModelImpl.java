@@ -6,18 +6,19 @@ import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
 import com.qulix.shestakaa.gifsearchermvp.model.ApplicationSettings;
 import com.qulix.shestakaa.gifsearchermvp.model.LoadMoreType;
 import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
-import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
 import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.inject.Inject;
 
-import retrofit2.Call;
-import retrofit2.Callback;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 @ParametersAreNonnullByDefault
-public class ModelImpl implements Model {
+public class MainModelImpl implements MainModel {
 
     private final ApiInterface mApiInterface;
     private static final String API_KEY = "fWieUtS84ZkjIWupFAQvqpUapoYj1k29";
@@ -26,7 +27,7 @@ public class ModelImpl implements Model {
     private final ApplicationSettings mApplicationSettings;
 
     @Inject
-    public ModelImpl(final NetworkStateManager networkStateManager, final ApplicationSettings helper) {
+    public MainModelImpl(final NetworkStateManager networkStateManager, final ApplicationSettings helper) {
         Validator.isArgNotNull(networkStateManager, "networkStateManager");
         Validator.isArgNotNull(helper, "helper");
 
@@ -36,40 +37,25 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public Cancelable getTrending(final Callback<Feed> callback) {
-        Validator.isArgNotNull(callback, "callback");
-        final Call<Feed> call = mApiInterface.getTrendingNow(API_KEY, DEFAULT_LIMIT);
-        call.enqueue(callback);
-        return createEventListener(call);
+    public Observable<Feed> getTrending() {
+        return processObservable(mApiInterface.getTrendingNow(API_KEY, DEFAULT_LIMIT));
     }
 
     @Override
-    public Cancelable getByRequest(final Callback<Feed> callback,
-                                   final String req) {
-        Validator.isArgNotNull(callback, "callback");
-        final Call<Feed> call = mApiInterface.getSearch(req, API_KEY, DEFAULT_LIMIT);
-        call.enqueue(callback);
-        return createEventListener(call);
+    public Observable<Feed> getByRequest(final String req) {
+        return processObservable(mApiInterface.getSearch(req, API_KEY, DEFAULT_LIMIT));
+
     }
 
     @Override
-    public Cancelable loadMoreTrending(final Callback<Feed> callback, final int offset) {
-        Validator.isArgNotNull(callback, "callback");
-
-        final Call<Feed> call = mApiInterface.getTrendingNow(API_KEY, DEFAULT_LIMIT + offset);
-        call.enqueue(callback);
-        return createEventListener(call);
+    public Observable<Feed> loadMoreTrending(final int offset) {
+        return processObservable(mApiInterface.getTrendingNow(API_KEY, DEFAULT_LIMIT + offset));
     }
 
     @Override
-    public Cancelable loadMoreSearch(final Callback<Feed> callback,
-                                     final String req,
+    public Observable<Feed> loadMoreSearch(final String req,
                                      final int offset) {
-        Validator.isArgNotNull(callback, "callback");
-
-        final Call<Feed> call = mApiInterface.getSearch(req, API_KEY, DEFAULT_LIMIT + offset);
-        call.enqueue(callback);
-        return createEventListener(call);
+        return processObservable(mApiInterface.getSearch(req, API_KEY, DEFAULT_LIMIT + offset));
     }
 
     @Override
@@ -89,13 +75,10 @@ public class ModelImpl implements Model {
         return mApplicationSettings.getLoadMoreType();
     }
 
-    private <T> Cancelable createEventListener(final Call<T> call) {
-        Validator.isArgNotNull(call, "call");
-        return new Cancelable() {
-            @Override
-            public void cancelRequest() {
-                call.cancel();
-            }
-        };
+    private Observable<Feed> processObservable(final Observable<Feed> observable) {
+        Validator.isArgNotNull(observable, "observable");
+
+        return observable.subscribeOn(Schedulers.io())
+                         .observeOn(AndroidSchedulers.mainThread());
     }
 }

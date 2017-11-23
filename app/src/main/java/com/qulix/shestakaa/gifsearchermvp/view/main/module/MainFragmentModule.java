@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
 
-import com.qulix.shestakaa.gifsearchermvp.model.main.ModelImpl;
+import com.qulix.shestakaa.gifsearchermvp.model.main.MainModelImpl;
 import com.qulix.shestakaa.gifsearchermvp.presenter.main.Presenter;
 import com.qulix.shestakaa.gifsearchermvp.presenter.main.Router;
 
@@ -21,7 +21,7 @@ public class MainFragmentModule {
     }
 
     @Provides
-    Presenter providePresenter(final ModelImpl model, final Router router) {
+    Presenter providePresenter(final MainModelImpl model, final Router router) {
         return new Presenter(model, router);
     }
 

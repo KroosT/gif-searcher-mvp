@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -35,9 +36,9 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
 @ParametersAreNonnullByDefault
-public class ViewImpl implements View {
+public class MainViewImpl implements MainView {
 
-    private final android.view.View mView;
+    private final View mView;
     private final JellyToolbar mJellyToolbar;
     private final TextView mTitleTextView;
     private final AppCompatEditText mEditText;
@@ -54,7 +55,7 @@ public class ViewImpl implements View {
     private String mRequest;
 
 
-    public ViewImpl(final android.view.View view, final Presenter presenter) {
+    public MainViewImpl(final View view, final Presenter presenter) {
         Validator.isArgNotNull(view, "view");
         Validator.isArgNotNull(presenter, "presenter");
 
@@ -71,12 +72,7 @@ public class ViewImpl implements View {
         mErrorView = view.findViewById(R.id.errorView);
 
         final Button tryAgainButton = view.findViewById(R.id.repeat);
-        tryAgainButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(final android.view.View v) {
-                mPresenter.repeatPreviousRequest();
-            }
-        });
+        tryAgainButton.setOnClickListener(v -> mPresenter.repeatPreviousRequest());
 
         mJellyToolbar = view.findViewById(R.id.toolbar);
         mJellyToolbar.setJellyListener(createJellyListener());
@@ -118,12 +114,7 @@ public class ViewImpl implements View {
         mAdapter = new RecyclerAdapter(context, mAdapterData, mainScreenListener);
         mRecyclerView.setAdapter(mAdapter);
 
-        final OnClickListener onSnackBarClick = new OnClickListener() {
-            @Override
-            public void onClick(final android.view.View v) {
-                mPresenter.switchToOffline();
-            }
-        };
+        final OnClickListener onSnackBarClick = v -> mPresenter.switchToOffline();
 
         mSnackbar = Snackbar.make(mView, R.string.connection_error, Snackbar.LENGTH_INDEFINITE)
                             .setAction(R.string.go_offline, onSnackBarClick)
@@ -178,12 +169,7 @@ public class ViewImpl implements View {
         mAdapterData.setProgressBarPresents(false);
         mAdapterData.setButtonPresents(true);
         mAdapter.updateData(mAdapterData);
-        mRecyclerView.post(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.notifyItemChanged(mAdapterData.size());
-            }
-        });
+        mRecyclerView.post(() -> mAdapter.notifyItemChanged(mAdapterData.size()));
     }
 
     @Override
@@ -261,12 +247,7 @@ public class ViewImpl implements View {
             public void afterTextChanged(final Editable s) {
                 handler.removeCallbacksAndMessages(null);
                 final String request = s.toString();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        execute(request);
-                    }
-                }, DELAY);
+                handler.postDelayed(() -> execute(request), DELAY);
 
                 updateIcon(request);
             }

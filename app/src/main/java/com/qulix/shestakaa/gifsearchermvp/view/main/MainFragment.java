@@ -24,17 +24,18 @@ public class MainFragment extends Fragment {
     private View mView;
     @Inject
     Presenter mPresenter;
-    private ViewImpl mViewImpl;
+    private MainViewImpl mMainViewImpl;
 
     public MainFragment() {
 
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater,
+                             final ViewGroup container,
                              final Bundle savedInstanceState) {
         if (mView != null) {
-            mPresenter.bindView(mViewImpl);
+            mPresenter.bindView(mMainViewImpl);
             return mView;
         }
 
@@ -43,7 +44,7 @@ public class MainFragment extends Fragment {
                      .inject(this);
 
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
-        mViewImpl = new ViewImpl(view.findViewById(R.id.root), mPresenter);
+        mMainViewImpl = new MainViewImpl(view.findViewById(R.id.root), mPresenter);
 
         setHasOptionsMenu(true);
         mView = view;
@@ -75,16 +76,15 @@ public class MainFragment extends Fragment {
     public void onResume() {
         mPresenter.addObserver();
         if (!GSApplication.getInstance().getNetworkStateManager().isConnected()) {
-            mViewImpl.showOfflineModeSuggestion();
+            mMainViewImpl.showOfflineModeSuggestion();
         }
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        mPresenter.stopRequest();
         mPresenter.removeObserver();
-        mViewImpl.stopWatcher();
+        mMainViewImpl.stopWatcher();
         super.onPause();
     }
 
