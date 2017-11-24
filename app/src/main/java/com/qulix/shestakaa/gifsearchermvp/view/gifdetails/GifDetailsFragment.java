@@ -11,9 +11,10 @@ import android.view.ViewGroup;
 
 import com.qulix.shestakaa.gifsearchermvp.GSApplication;
 import com.qulix.shestakaa.gifsearchermvp.R;
+import com.qulix.shestakaa.gifsearchermvp.model.LoaderFactory;
 import com.qulix.shestakaa.gifsearchermvp.presenter.gifdetails.DetailsPresenter;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
-import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.module.GifDetailsModule;
+import com.qulix.shestakaa.gifsearchermvp.view.gifdetails.module.GifDetailsFragmentModule;
 
 import javax.inject.Inject;
 
@@ -24,17 +25,14 @@ public class GifDetailsFragment extends Fragment {
     DetailsPresenter mPresenter;
     private DetailsViewImpl mView;
 
-    public GifDetailsFragment() {
-
-    }
-
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater,
+                             final ViewGroup container,
                              final Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_gif_details, container, false);
 
-        GSApplication.getComponent().plus(new GifDetailsModule(this)).inject(this);
+        GSApplication.getComponent().plus(new GifDetailsFragmentModule(this)).inject(this);
 
         mView = new DetailsViewImpl(view.findViewById(R.id.rootDetails),
                                     extractArgument(GIF_URL),
@@ -64,16 +62,12 @@ public class GifDetailsFragment extends Fragment {
 
     @Override
     public void onResume() {
-        if (isSinglePaneMode()) {
-            mPresenter.addObserver();
-        }
         super.onResume();
     }
 
     @Override
     public void onPause() {
         mPresenter.cancelSaving();
-        mPresenter.removeObserver();
         super.onPause();
     }
 

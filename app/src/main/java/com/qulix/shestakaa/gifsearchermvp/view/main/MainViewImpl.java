@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
-import com.qulix.shestakaa.gifsearchermvp.presenter.main.Presenter;
+import com.qulix.shestakaa.gifsearchermvp.presenter.main.MainPresenter;
 import com.qulix.shestakaa.gifsearchermvp.utils.AdapterData;
 import com.qulix.shestakaa.gifsearchermvp.utils.MainScreenListener;
 import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;
@@ -45,7 +45,7 @@ public class MainViewImpl implements MainView {
     private final RecyclerAdapter mAdapter;
     private final RecyclerView mRecyclerView;
     private final TextWatcher mWatcher;
-    private final Presenter mPresenter;
+    private final MainPresenter mPresenter;
     private final Snackbar mSnackbar;
     private final TextView mEmptyTextView;
     private final ProgressBar mMainProgressBar;
@@ -55,7 +55,7 @@ public class MainViewImpl implements MainView {
     private String mRequest;
 
 
-    public MainViewImpl(final View view, final Presenter presenter) {
+    public MainViewImpl(final View view, final MainPresenter presenter) {
         Validator.isArgNotNull(view, "view");
         Validator.isArgNotNull(presenter, "presenter");
 

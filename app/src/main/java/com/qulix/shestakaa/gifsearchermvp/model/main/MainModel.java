@@ -15,8 +15,6 @@ public interface MainModel {
     Observable<Feed> getByRequest(final String req);
     Observable<Feed> loadMoreTrending(final int offset);
     Observable<Feed> loadMoreSearch(final String req, final int offset);
-    void addConnectivityObserver(final ConnectivityObserver observer);
-    void removeConnectivityObserver(final ConnectivityObserver observer);
     LoadMoreType getLoadMoreType();
 
 }

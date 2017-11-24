@@ -3,26 +3,21 @@ package com.qulix.shestakaa.gifsearchermvp.view.offline.module;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
 
+import com.qulix.shestakaa.gifsearchermvp.model.offline.OfflineModel;
 import com.qulix.shestakaa.gifsearchermvp.model.offline.OfflineModelImpl;
-import com.qulix.shestakaa.gifsearchermvp.presenter.offline.OfflinePresenter;
-import com.qulix.shestakaa.gifsearchermvp.presenter.offline.OfflineRouter;
 import com.qulix.shestakaa.gifsearchermvp.view.offline.OfflineFragment;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
-public class OfflineModule {
+@Module(includes = OfflineFragmentModule.Declarations.class)
+public class OfflineFragmentModule {
 
     private final OfflineFragment mFragment;
 
-    public OfflineModule(final OfflineFragment fragment) {
+    public OfflineFragmentModule(final OfflineFragment fragment) {
         mFragment = fragment;
-    }
-
-    @Provides
-    OfflinePresenter provideOfflinePresenter(final OfflineModelImpl model, final OfflineRouter router) {
-        return new OfflinePresenter(model, router);
     }
 
     @Provides
@@ -33,5 +28,11 @@ public class OfflineModule {
     @Provides
     Context provideContext() {
         return mFragment.getContext();
+    }
+
+    @Module
+    public interface Declarations {
+        @Binds
+        OfflineModel bindsMainModel(OfflineModelImpl model);
     }
 }

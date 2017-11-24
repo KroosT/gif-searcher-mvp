@@ -13,18 +13,14 @@ import javax.inject.Inject;
 @ParametersAreNonnullByDefault
 public class OfflineModelImpl implements OfflineModel {
 
-    private final NetworkStateManager mNetworkManager;
     private final LoaderFactory mLoaderFactory;
 
     @Inject
-    public OfflineModelImpl(final LoaderFactory loaderFactory,
-                            final NetworkStateManager networkStateManager) {
+    public OfflineModelImpl(final LoaderFactory loaderFactory) {
 
         Validator.isArgNotNull(loaderFactory, "mLoaderFactory");
-        Validator.isArgNotNull(networkStateManager, "networkStateManager");
 
         mLoaderFactory = loaderFactory;
-        mNetworkManager = networkStateManager;
     }
 
     @Override
@@ -34,25 +30,7 @@ public class OfflineModelImpl implements OfflineModel {
         final GifLoader gifLoader = mLoaderFactory.buildGifLoader(requestHandler);
         gifLoader.execute();
 
-        return new Cancelable() {
-            @Override
-            public void cancelRequest() {
-                gifLoader.cancel(true);
-            }
-        };
+        return () -> gifLoader.cancel(true);
     }
-
-    @Override
-    public void addConnectivityObserver(final ConnectivityObserver observer) {
-        Validator.isArgNotNull(observer, "observer");
-        mNetworkManager.addObserver(observer);
-    }
-
-    @Override
-    public void removeConnectivityObserver(final ConnectivityObserver observer) {
-        Validator.isArgNotNull(observer, "observer");
-        mNetworkManager.removeObserver(observer);
-    }
-
 
 }

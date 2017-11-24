@@ -7,12 +7,14 @@ import android.net.ConnectivityManager;
 import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
 import com.squareup.leakcanary.LeakCanary;
 
+import javax.inject.Inject;
+
 
 public class GSApplication extends Application {
 
-    private static GSApplication sApplication = null;
     private static AppComponent sComponent;
-    private final NetworkStateManager mManager = new NetworkStateManager();
+    @Inject
+    NetworkStateManager mManager;
 
     @Override
     public void onCreate() {
@@ -23,9 +25,9 @@ public class GSApplication extends Application {
             return;
         }
         LeakCanary.install(this);
-        registerNetworkReceiver();
-        sApplication = this;
         initAppComponent();
+        sComponent.inject(this);
+        registerNetworkReceiver();
     }
 
     private void registerNetworkReceiver() {
@@ -34,21 +36,11 @@ public class GSApplication extends Application {
         registerReceiver(mManager, intentFilter);
     }
 
-    public NetworkStateManager getNetworkStateManager() {
-        return mManager;
-    }
-
-    public static GSApplication getInstance() {
-        return sApplication;
-    }
-
     public static AppComponent getComponent() {
         return sComponent;
     }
 
     private void initAppComponent() {
-        sComponent = DaggerAppComponent.builder()
-                                       .appModule(new AppModule(this))
-                                       .build();
+        sComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
     }
 }

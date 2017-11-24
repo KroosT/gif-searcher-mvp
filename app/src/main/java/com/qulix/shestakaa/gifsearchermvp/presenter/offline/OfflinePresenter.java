@@ -1,72 +1,55 @@
 package com.qulix.shestakaa.gifsearchermvp.presenter.offline;
 
-import android.support.annotation.NonNull;
-
 import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
 import com.qulix.shestakaa.gifsearchermvp.model.offline.OfflineModel;
 import com.qulix.shestakaa.gifsearchermvp.utils.Cancelable;
-import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
 import com.qulix.shestakaa.gifsearchermvp.utils.Loadable;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.view.offline.OfflineView;
 
-import java.util.List;
-
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.inject.Inject;
+
+import io.reactivex.disposables.CompositeDisposable;
 
 @ParametersAreNonnullByDefault
 public class OfflinePresenter {
 
     private final OfflineModel mModel;
-    @NonNull
-    private final ConnectivityObserver mObserver;
     private Cancelable mRequestHandler;
     private OfflineView mView;
     private final OfflineRouter mRouter;
+    private final CompositeDisposable mDisposables;
+    @Inject
+    NetworkStateManager mNetworkStateManager;
 
+    @Inject
     public OfflinePresenter(final OfflineModel model, final OfflineRouter router) {
         Validator.isArgNotNull(model, "model");
         Validator.isArgNotNull(router, "router");
 
         mModel = model;
-        mObserver = createConnectivityObserver();
         mRouter = router;
-    }
-
-    @NonNull
-    private ConnectivityObserver createConnectivityObserver() {
-        return new ConnectivityObserver() {
-            @Override
-            public void update(final NetworkStateManager manager) {
-                if (mView != null) {
-                    if (manager.isConnected()) {
-                        mView.showOnlineModeAvailable();
-                    } else {
-                        mView.dismissOnlineModeAvailable();
-                    }
-                }
-            }
-        };
+        mDisposables = new CompositeDisposable();
     }
 
     public void bindView(final OfflineView view) {
         Validator.isArgNotNull(view, "view");
         mView = view;
+        mDisposables.add(mNetworkStateManager.getObservable().subscribe(this::processStatusChange));
         setInitialScreen();
     }
 
     public void unbindView() {
         mView = null;
+        if (mDisposables != null && !mDisposables.isDisposed()) {
+            mDisposables.clear();
+        }
     }
 
     private void setInitialScreen() {
 
-        final Loadable loadable = new Loadable() {
-            @Override
-            public void onDataLoaded(final List<byte[]> data) {
-                mView.showAvailableGifs(data);
-            }
-        };
+        final Loadable loadable = data -> mView.showAvailableGifs(data);
 
         mRequestHandler = mModel.loadAvailableGifs(loadable);
     }
@@ -81,15 +64,15 @@ public class OfflinePresenter {
         mRouter.goToMainScreen();
     }
 
-    public void addObserver() {
-        mModel.addConnectivityObserver(mObserver);
-    }
-
-    public void removeObserver() {
-        mModel.removeConnectivityObserver(mObserver);
-    }
-
     public void onSnackBarClicked() {
         switchToMainScreen();
+    }
+
+    private void processStatusChange(final Boolean status) {
+        if (status) {
+            mView.showOnlineModeAvailable();
+        } else {
+            mView.dismissOnlineModeAvailable();
+        }
     }
 }

@@ -9,6 +9,4 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public interface OfflineModel {
     Cancelable loadAvailableGifs(final Loadable loadable);
-    void addConnectivityObserver(final ConnectivityObserver observer);
-    void removeConnectivityObserver(final ConnectivityObserver observer);
 }

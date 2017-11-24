@@ -10,7 +10,4 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface DetailsModel {
 
     Cancelable saveGifByUrl(final String url, final Downloadable downloadable);
-    void addConnectivityObserver(final ConnectivityObserver observer);
-    void removeConnectivityObserver(final ConnectivityObserver observer);
-
 }

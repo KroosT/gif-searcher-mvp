@@ -1,28 +1,23 @@
 package com.qulix.shestakaa.gifsearchermvp.view.main.module;
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
+import com.qulix.shestakaa.gifsearchermvp.model.main.MainModel;
 import com.qulix.shestakaa.gifsearchermvp.model.main.MainModelImpl;
-import com.qulix.shestakaa.gifsearchermvp.presenter.main.Presenter;
-import com.qulix.shestakaa.gifsearchermvp.presenter.main.Router;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
+@Module(includes = MainFragmentModule.Declarations.class)
 public class MainFragmentModule {
 
     private final Fragment mFragment;
 
     public MainFragmentModule(final Fragment fragment) {
         mFragment = fragment;
-    }
-
-    @Provides
-    Presenter providePresenter(final MainModelImpl model, final Router router) {
-        return new Presenter(model, router);
     }
 
     @Provides
@@ -35,4 +30,9 @@ public class MainFragmentModule {
         return mFragment.getContext();
     }
 
+    @Module
+    public interface Declarations {
+        @Binds
+        MainModel bindsMainModel(MainModelImpl model);
+    }
 }

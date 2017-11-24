@@ -6,20 +6,23 @@ import android.support.v7.widget.RecyclerView;
 
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
+import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
 import com.qulix.shestakaa.gifsearchermvp.model.main.MainModel;
 import com.qulix.shestakaa.gifsearchermvp.presenter.RequestType;
 import com.qulix.shestakaa.gifsearchermvp.utils.AdapterData;
-import com.qulix.shestakaa.gifsearchermvp.utils.ConnectivityObserver;
 import com.qulix.shestakaa.gifsearchermvp.utils.StringUtils;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 import com.qulix.shestakaa.gifsearchermvp.view.main.MainView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
 import static com.qulix.shestakaa.gifsearchermvp.model.LoadMoreType.SCROLL;
@@ -27,7 +30,7 @@ import static com.qulix.shestakaa.gifsearchermvp.presenter.RequestType.SEARCH;
 import static com.qulix.shestakaa.gifsearchermvp.presenter.RequestType.TRENDING;
 
 @ParametersAreNonnullByDefault
-public class Presenter {
+public class MainPresenter {
 
     private static final int DEFAULT_GIF_COUNT_LIMIT = 25;
 
@@ -38,31 +41,18 @@ public class Presenter {
     private RequestType mPreviousRequest = null;
     private String mPreviousSearchQuery = "";
     private int mPreviousOffset = 0;
-    @NonNull
-    private final ConnectivityObserver mConnectivityObserver;
     private boolean mIsDataEnded = false;
+    @Inject
+    NetworkStateManager mNetworkStateManager;
 
-    public Presenter(final MainModel model, final Router router) {
+    @Inject
+    public MainPresenter(final MainModel model, final Router router) {
         Validator.isArgNotNull(model, "model");
         Validator.isArgNotNull(router, "router");
 
         mModel = model;
-        mConnectivityObserver = createConnectivityObserver();
         mRouter = router;
         mDisposables = new CompositeDisposable();
-    }
-
-    @NonNull
-    private ConnectivityObserver createConnectivityObserver() {
-        return manager -> {
-            if (mView != null) {
-                if (manager.isConnected()) {
-                    mView.dismissOfflineModeSuggestion();
-                } else {
-                    mView.showOfflineModeSuggestion();
-                }
-            }
-        };
     }
 
     @NonNull
@@ -91,7 +81,9 @@ public class Presenter {
 
     public void bindView(final MainView view) {
         Validator.isArgNotNull(view, "view");
+
         mView = view;
+        mDisposables.add(mNetworkStateManager.getObservable().subscribe(this::processStatusChange));
         repeatPreviousRequest();
     }
 
@@ -141,14 +133,6 @@ public class Presenter {
         }
     }
 
-    public void addObserver() {
-        mModel.addConnectivityObserver(mConnectivityObserver);
-    }
-
-    public void removeObserver() {
-        mModel.removeConnectivityObserver(mConnectivityObserver);
-    }
-
     public void switchToOffline() {
         mRouter.goToOfflineScreen();
     }
@@ -172,7 +156,8 @@ public class Presenter {
 
     private void processObservable(final Observable<Feed> observable) {
         Validator.isArgNotNull(observable, "observable");
-        mDisposables.add(observable.subscribe(this::processResponse, throwable -> mView.showError()));
+        mDisposables.add(observable.timeout(5000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                                   .subscribe(this::processResponse, throwable -> mView.showError()));
     }
 
     private void processResponse(final Feed response) {
@@ -196,6 +181,14 @@ public class Presenter {
         }
         mPreviousOffset = urls.size();
         mView.updateData(adapterData);
+    }
+
+    private void processStatusChange(final Boolean status) {
+        if (status) {
+            mView.dismissOfflineModeSuggestion();
+        } else {
+            mView.showOfflineModeSuggestion();
+        }
     }
 
 }

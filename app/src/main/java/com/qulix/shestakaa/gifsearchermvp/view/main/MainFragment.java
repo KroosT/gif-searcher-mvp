@@ -13,7 +13,8 @@ import android.view.ViewGroup;
 
 import com.qulix.shestakaa.gifsearchermvp.GSApplication;
 import com.qulix.shestakaa.gifsearchermvp.R;
-import com.qulix.shestakaa.gifsearchermvp.presenter.main.Presenter;
+import com.qulix.shestakaa.gifsearchermvp.model.NetworkStateManager;
+import com.qulix.shestakaa.gifsearchermvp.presenter.main.MainPresenter;
 import com.qulix.shestakaa.gifsearchermvp.view.main.module.MainFragmentModule;
 import com.qulix.shestakaa.gifsearchermvp.view.preferences.PrefActivity;
 
@@ -23,12 +24,10 @@ public class MainFragment extends Fragment {
 
     private View mView;
     @Inject
-    Presenter mPresenter;
+    MainPresenter mPresenter;
+    @Inject
+    NetworkStateManager mNetworkStateManager;
     private MainViewImpl mMainViewImpl;
-
-    public MainFragment() {
-
-    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater,
@@ -74,8 +73,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onResume() {
-        mPresenter.addObserver();
-        if (!GSApplication.getInstance().getNetworkStateManager().isConnected()) {
+        if (!mNetworkStateManager.isConnected()) {
             mMainViewImpl.showOfflineModeSuggestion();
         }
         super.onResume();
@@ -83,7 +81,6 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onPause() {
-        mPresenter.removeObserver();
         mMainViewImpl.stopWatcher();
         super.onPause();
     }

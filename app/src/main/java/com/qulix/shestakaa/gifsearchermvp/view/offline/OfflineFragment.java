@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.qulix.shestakaa.gifsearchermvp.GSApplication;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.presenter.offline.OfflinePresenter;
-import com.qulix.shestakaa.gifsearchermvp.view.offline.module.OfflineModule;
+import com.qulix.shestakaa.gifsearchermvp.view.offline.module.OfflineFragmentModule;
 
 import javax.inject.Inject;
 
@@ -22,17 +22,13 @@ public class OfflineFragment extends Fragment {
     OfflinePresenter mPresenter;
     private OfflineViewImpl mView;
 
-    public OfflineFragment() {
-
-    }
-
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
 
         final View v = inflater.inflate(R.layout.fragment_offline, container, false);
         if (savedInstanceState == null) {
-            GSApplication.getComponent().plus(new OfflineModule(this)).inject(this);
+            GSApplication.getComponent().plus(new OfflineFragmentModule(this)).inject(this);
 
             mView = new OfflineViewImpl(v.findViewById(R.id.rootOffline), mPresenter);
             if (isSinglePaneMode()) {
@@ -61,14 +57,12 @@ public class OfflineFragment extends Fragment {
 
     @Override
     public void onResume() {
-        mPresenter.addObserver();
         super.onResume();
     }
 
     @Override
     public void onPause() {
         mPresenter.cancelLoading();
-        mPresenter.removeObserver();
         super.onPause();
     }
 

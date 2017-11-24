@@ -1,24 +1,29 @@
 package com.qulix.shestakaa.gifsearchermvp.model;
 
-import android.content.Context;
+import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.utils.Validator;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import static com.qulix.shestakaa.gifsearchermvp.model.LoadMoreType.BUTTON;
 
+@Singleton
 public class ApplicationSettings {
 
     private final SharedPreferences mPreferences;
     private final String mKey;
 
-    public ApplicationSettings(final Context context) {
-        Validator.isArgNotNull(context, "context");
+    @Inject
+    public ApplicationSettings(final Application application) {
+        Validator.isArgNotNull(application, "application");
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        mKey = context.getResources().getString(R.string.pref_key);
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(application);
+        mKey = application.getResources().getString(R.string.pref_key);
     }
 
     public LoadMoreType getLoadMoreType() {
