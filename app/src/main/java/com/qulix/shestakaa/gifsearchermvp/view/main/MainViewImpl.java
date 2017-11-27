@@ -2,14 +2,11 @@ package com.qulix.shestakaa.gifsearchermvp.view.main;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.qulix.shestakaa.gifsearchermvp.R;
 import com.qulix.shestakaa.gifsearchermvp.presenter.main.MainPresenter;
 import com.qulix.shestakaa.gifsearchermvp.utils.AdapterData;
@@ -29,7 +27,11 @@ import com.qulix.shestakaa.gifsearchermvp.utils.ViewUtils;
 import com.yalantis.jellytoolbar.listener.JellyListener;
 import com.yalantis.jellytoolbar.widget.JellyToolbar;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.disposables.Disposable;
 
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
@@ -44,15 +46,14 @@ public class MainViewImpl implements MainView {
     private final AppCompatEditText mEditText;
     private final RecyclerAdapter mAdapter;
     private final RecyclerView mRecyclerView;
-    private final TextWatcher mWatcher;
     private final MainPresenter mPresenter;
     private final Snackbar mSnackbar;
     private final TextView mEmptyTextView;
     private final ProgressBar mMainProgressBar;
     private final LinearLayout mErrorView;
     private AdapterData mAdapterData;
-    private final Handler mHandler;
     private String mRequest;
+    private Disposable mDisposable;
 
 
     public MainViewImpl(final View view, final MainPresenter presenter) {
@@ -78,15 +79,10 @@ public class MainViewImpl implements MainView {
         mJellyToolbar.setJellyListener(createJellyListener());
 
         mEditText = (AppCompatEditText) LayoutInflater.from(context)
-                                                      .inflate(R.layout.edit_text,
-                                                               new LinearLayout(context),
-                                                               false);
+                                                      .inflate(R.layout.edit_text, new LinearLayout(context),false);
 
         mEditText.setBackgroundResource(R.color.colorTransparent);
         mEditText.setTextColor(Color.WHITE);
-
-        mHandler = new Handler();
-        mWatcher = initTextWatcher(mHandler);
 
         mJellyToolbar.setContentView(mEditText);
 
@@ -212,7 +208,9 @@ public class MainViewImpl implements MainView {
             public void onToolbarExpandingStarted() {
                 super.onToolbarExpandingStarted();
                 mTitleTextView.setVisibility(INVISIBLE);
-                mEditText.addTextChangedListener(mWatcher);
+                mDisposable = RxTextView.textChanges(mEditText)
+                                        .debounce(300, TimeUnit.MILLISECONDS)
+                                        .subscribe(s -> processTextInputChange(s));
                 ViewUtils.showSoftKeyboard(mEditText);
             }
 
@@ -221,7 +219,7 @@ public class MainViewImpl implements MainView {
                 super.onToolbarCollapsingStarted();
                 mTitleTextView.setVisibility(VISIBLE);
                 mRecyclerView.scrollToPosition(0);
-                mEditText.removeTextChangedListener(mWatcher);
+                mDisposable.dispose();
                 mEditText.getText().clear();
             }
         };
@@ -237,26 +235,6 @@ public class MainViewImpl implements MainView {
         mTitleTextView.setText(title);
     }
 
-    private TextWatcher initTextWatcher(final Handler handler) {
-        return new TextWatcher() {
-
-            private final static int DELAY = 300;
-
-            public void afterTextChanged(final Editable s) {
-                handler.removeCallbacksAndMessages(null);
-                final String request = s.toString();
-                handler.postDelayed(() -> execute(request), DELAY);
-
-                updateIcon(request);
-            }
-
-            @Override
-            public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) { /*ignored*/ }
-            @Override
-            public void onTextChanged(final CharSequence s, final int start, final int before, final int count) { /*ignored*/ }
-        };
-    }
-
     private void execute(final String request) {
         mPresenter.onTextInputChanged(request);
         mRequest = request;
@@ -270,7 +248,15 @@ public class MainViewImpl implements MainView {
 
     }
 
-    public void stopWatcher() {
-        mHandler.removeCallbacksAndMessages(null);
+    public void disposeEditTextObserver() {
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
+    }
+
+    private void processTextInputChange(final CharSequence s) {
+        final String request = s.toString();
+        execute(request);
+        updateIcon(request);
     }
 }

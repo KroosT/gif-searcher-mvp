@@ -78,7 +78,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onPause() {
-        mMainViewImpl.stopWatcher();
+        mMainViewImpl.disposeEditTextObserver();
         super.onPause();
     }
 
