@@ -142,11 +142,9 @@ public class MainViewImpl implements MainView {
 
     @Override
     public void showError() {
-        if (mAdapterData.getUrls().isEmpty()) {
-            mRecyclerView.setVisibility(GONE);
-            mMainProgressBar.setVisibility(GONE);
-            mErrorView.setVisibility(VISIBLE);
-        }
+        mRecyclerView.setVisibility(GONE);
+        mMainProgressBar.setVisibility(GONE);
+        mErrorView.setVisibility(VISIBLE);
     }
 
     @Override

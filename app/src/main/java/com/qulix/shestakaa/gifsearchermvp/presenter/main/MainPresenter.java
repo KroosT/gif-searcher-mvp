@@ -3,6 +3,7 @@ package com.qulix.shestakaa.gifsearchermvp.presenter.main;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 
 import com.qulix.shestakaa.gifsearchermvp.model.API.Data;
 import com.qulix.shestakaa.gifsearchermvp.model.API.Feed;
@@ -56,8 +57,8 @@ public class MainPresenter {
     }
 
     @NonNull
-    public RecyclerView.OnScrollListener createOnScrollListener() {
-        return new RecyclerView.OnScrollListener() {
+    public OnScrollListener createOnScrollListener() {
+        return new OnScrollListener() {
             @Override
             public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
                 final LinearLayoutManager layoutManager =
@@ -183,7 +184,7 @@ public class MainPresenter {
         mView.updateData(adapterData);
     }
 
-    private void processStatusChange(final Boolean status) {
+    private void processStatusChange(final boolean status) {
         if (status) {
             mView.dismissOfflineModeSuggestion();
         } else {

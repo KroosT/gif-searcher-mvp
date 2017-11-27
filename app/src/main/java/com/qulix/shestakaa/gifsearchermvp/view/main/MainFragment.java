@@ -73,9 +73,6 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onResume() {
-        if (!mNetworkStateManager.isConnected()) {
-            mMainViewImpl.showOfflineModeSuggestion();
-        }
         super.onResume();
     }
 

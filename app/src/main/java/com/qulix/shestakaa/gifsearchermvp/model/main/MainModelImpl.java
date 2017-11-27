@@ -38,7 +38,6 @@ public class MainModelImpl implements MainModel {
     @Override
     public Observable<Feed> getByRequest(final String req) {
         return processObservable(mApiInterface.getSearch(req, API_KEY, DEFAULT_LIMIT));
-
     }
 
     @Override
@@ -61,7 +60,6 @@ public class MainModelImpl implements MainModel {
         Validator.isArgNotNull(observable, "observable");
 
         return observable.subscribeOn(Schedulers.io())
-                         .observeOn(AndroidSchedulers.mainThread())
-                         .retry();
+                         .observeOn(AndroidSchedulers.mainThread());
     }
 }
